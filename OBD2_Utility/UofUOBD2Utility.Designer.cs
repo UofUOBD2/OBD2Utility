@@ -37,14 +37,22 @@
             this.menuOption4 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOption5 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHome = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
             this.graphHeader = new System.Windows.Forms.Label();
-            this.graphYLabel = new System.Windows.Forms.Label();
-            this.graphXLabel = new System.Windows.Forms.Label();
             this.bgrndDisplay = new System.Windows.Forms.PictureBox();
             this.startHeader = new System.Windows.Forms.Label();
             this.graphDisplay = new System.Windows.Forms.PictureBox();
+            this.graphGenerateButton = new System.Windows.Forms.Button();
+            this.graphYAxisSelect = new System.Windows.Forms.ListBox();
+            this.graphXAxisSelect = new System.Windows.Forms.ListBox();
+            this.graphBarBox = new System.Windows.Forms.CheckBox();
+            this.graphLineBox = new System.Windows.Forms.CheckBox();
+            this.graphTypeLabel = new System.Windows.Forms.Label();
+            this.graphOption1Select = new System.Windows.Forms.ListBox();
+            this.graphOption2Select = new System.Windows.Forms.ListBox();
+            this.graphOption3Select = new System.Windows.Forms.ListBox();
+            this.graphGraphButton = new System.Windows.Forms.Button();
+            this.menuStatusBar = new System.Windows.Forms.TextBox();
+            this.bg = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.graphYAxisDisplay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.graphXAxisDisplay)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -54,17 +62,17 @@
             // 
             // graphYAxisDisplay
             // 
-            this.graphYAxisDisplay.Location = new System.Drawing.Point(12, 98);
+            this.graphYAxisDisplay.Location = new System.Drawing.Point(25, 109);
             this.graphYAxisDisplay.Name = "graphYAxisDisplay";
-            this.graphYAxisDisplay.Size = new System.Drawing.Size(99, 550);
+            this.graphYAxisDisplay.Size = new System.Drawing.Size(86, 539);
             this.graphYAxisDisplay.TabIndex = 1;
             this.graphYAxisDisplay.TabStop = false;
             // 
             // graphXAxisDisplay
             // 
-            this.graphXAxisDisplay.Location = new System.Drawing.Point(12, 654);
+            this.graphXAxisDisplay.Location = new System.Drawing.Point(25, 654);
             this.graphXAxisDisplay.Name = "graphXAxisDisplay";
-            this.graphXAxisDisplay.Size = new System.Drawing.Size(890, 75);
+            this.graphXAxisDisplay.Size = new System.Drawing.Size(1254, 75);
             this.graphXAxisDisplay.TabIndex = 2;
             this.graphXAxisDisplay.TabStop = false;
             // 
@@ -76,12 +84,10 @@
             this.menuOption3,
             this.menuOption4,
             this.menuOption5,
-            this.menuHome,
-            this.toolStripMenuItem7,
-            this.toolStripMenuItem8});
+            this.menuHome});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1008, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1300, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -123,53 +129,21 @@
             this.menuHome.Text = "Home";
             this.menuHome.Click += new System.EventHandler(this.menuHome_Click);
             // 
-            // toolStripMenuItem7
-            // 
-            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size(125, 20);
-            this.toolStripMenuItem7.Text = "toolStripMenuItem7";
-            // 
-            // toolStripMenuItem8
-            // 
-            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(125, 20);
-            this.toolStripMenuItem8.Text = "toolStripMenuItem8";
-            // 
             // graphHeader
             // 
             this.graphHeader.AutoSize = true;
             this.graphHeader.Font = new System.Drawing.Font("Impact", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.graphHeader.Location = new System.Drawing.Point(391, 52);
+            this.graphHeader.Location = new System.Drawing.Point(109, 63);
             this.graphHeader.Name = "graphHeader";
             this.graphHeader.Size = new System.Drawing.Size(198, 43);
             this.graphHeader.TabIndex = 4;
             this.graphHeader.Text = "GRAPH X VS Y";
             // 
-            // graphYLabel
-            // 
-            this.graphYLabel.AutoSize = true;
-            this.graphYLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.graphYLabel.Location = new System.Drawing.Point(73, 68);
-            this.graphYLabel.Name = "graphYLabel";
-            this.graphYLabel.Size = new System.Drawing.Size(99, 25);
-            this.graphYLabel.TabIndex = 5;
-            this.graphYLabel.Text = "Y LABEL";
-            // 
-            // graphXLabel
-            // 
-            this.graphXLabel.AutoSize = true;
-            this.graphXLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.graphXLabel.Location = new System.Drawing.Point(908, 623);
-            this.graphXLabel.Name = "graphXLabel";
-            this.graphXLabel.Size = new System.Drawing.Size(98, 25);
-            this.graphXLabel.TabIndex = 6;
-            this.graphXLabel.Text = "X LABEL";
-            // 
             // bgrndDisplay
             // 
-            this.bgrndDisplay.Location = new System.Drawing.Point(4, 2);
+            this.bgrndDisplay.Location = new System.Drawing.Point(12, 27);
             this.bgrndDisplay.Name = "bgrndDisplay";
-            this.bgrndDisplay.Size = new System.Drawing.Size(1001, 726);
+            this.bgrndDisplay.Size = new System.Drawing.Size(1276, 712);
             this.bgrndDisplay.TabIndex = 7;
             this.bgrndDisplay.TabStop = false;
             // 
@@ -177,7 +151,7 @@
             // 
             this.startHeader.AutoSize = true;
             this.startHeader.Font = new System.Drawing.Font("Impact", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.startHeader.Location = new System.Drawing.Point(233, 68);
+            this.startHeader.Location = new System.Drawing.Point(457, 136);
             this.startHeader.Name = "startHeader";
             this.startHeader.Size = new System.Drawing.Size(519, 129);
             this.startHeader.TabIndex = 8;
@@ -185,20 +159,127 @@
             // 
             // graphDisplay
             // 
-            this.graphDisplay.Location = new System.Drawing.Point(117, 98);
+            this.graphDisplay.Location = new System.Drawing.Point(117, 109);
             this.graphDisplay.Name = "graphDisplay";
-            this.graphDisplay.Size = new System.Drawing.Size(785, 550);
+            this.graphDisplay.Size = new System.Drawing.Size(1162, 539);
             this.graphDisplay.TabIndex = 0;
             this.graphDisplay.TabStop = false;
+            // 
+            // graphGenerateButton
+            // 
+            this.graphGenerateButton.Location = new System.Drawing.Point(632, 26);
+            this.graphGenerateButton.Name = "graphGenerateButton";
+            this.graphGenerateButton.Size = new System.Drawing.Size(132, 71);
+            this.graphGenerateButton.TabIndex = 9;
+            this.graphGenerateButton.Text = "Load Data";
+            this.graphGenerateButton.UseVisualStyleBackColor = true;
+            this.graphGenerateButton.Click += new System.EventHandler(this.graphGenerateButton_Click);
+            // 
+            // graphYAxisSelect
+            // 
+            this.graphYAxisSelect.FormattingEnabled = true;
+            this.graphYAxisSelect.Location = new System.Drawing.Point(482, 50);
+            this.graphYAxisSelect.Name = "graphYAxisSelect";
+            this.graphYAxisSelect.Size = new System.Drawing.Size(144, 17);
+            this.graphYAxisSelect.TabIndex = 10;
+            // 
+            // graphXAxisSelect
+            // 
+            this.graphXAxisSelect.FormattingEnabled = true;
+            this.graphXAxisSelect.Location = new System.Drawing.Point(482, 27);
+            this.graphXAxisSelect.Name = "graphXAxisSelect";
+            this.graphXAxisSelect.Size = new System.Drawing.Size(144, 17);
+            this.graphXAxisSelect.TabIndex = 11;
+            // 
+            // graphBarBox
+            // 
+            this.graphBarBox.AutoSize = true;
+            this.graphBarBox.Location = new System.Drawing.Point(532, 80);
+            this.graphBarBox.Name = "graphBarBox";
+            this.graphBarBox.Size = new System.Drawing.Size(42, 17);
+            this.graphBarBox.TabIndex = 12;
+            this.graphBarBox.Text = "Bar";
+            this.graphBarBox.UseVisualStyleBackColor = true;
+            // 
+            // graphLineBox
+            // 
+            this.graphLineBox.AutoSize = true;
+            this.graphLineBox.Location = new System.Drawing.Point(580, 80);
+            this.graphLineBox.Name = "graphLineBox";
+            this.graphLineBox.Size = new System.Drawing.Size(46, 17);
+            this.graphLineBox.TabIndex = 13;
+            this.graphLineBox.Text = "Line";
+            this.graphLineBox.UseVisualStyleBackColor = true;
+            // 
+            // graphTypeLabel
+            // 
+            this.graphTypeLabel.AutoSize = true;
+            this.graphTypeLabel.Location = new System.Drawing.Point(479, 80);
+            this.graphTypeLabel.Name = "graphTypeLabel";
+            this.graphTypeLabel.Size = new System.Drawing.Size(31, 13);
+            this.graphTypeLabel.TabIndex = 14;
+            this.graphTypeLabel.Text = "Type";
+            // 
+            // graphOption1Select
+            // 
+            this.graphOption1Select.FormattingEnabled = true;
+            this.graphOption1Select.Location = new System.Drawing.Point(862, 27);
+            this.graphOption1Select.Name = "graphOption1Select";
+            this.graphOption1Select.Size = new System.Drawing.Size(144, 17);
+            this.graphOption1Select.TabIndex = 15;
+            this.graphOption1Select.SelectedIndexChanged += new System.EventHandler(this.graphOption1Select_SelectedIndexChanged);
+            // 
+            // graphOption2Select
+            // 
+            this.graphOption2Select.FormattingEnabled = true;
+            this.graphOption2Select.Location = new System.Drawing.Point(862, 50);
+            this.graphOption2Select.Name = "graphOption2Select";
+            this.graphOption2Select.Size = new System.Drawing.Size(144, 17);
+            this.graphOption2Select.TabIndex = 16;
+            // 
+            // graphOption3Select
+            // 
+            this.graphOption3Select.FormattingEnabled = true;
+            this.graphOption3Select.Location = new System.Drawing.Point(862, 73);
+            this.graphOption3Select.Name = "graphOption3Select";
+            this.graphOption3Select.Size = new System.Drawing.Size(144, 17);
+            this.graphOption3Select.TabIndex = 17;
+            this.graphOption3Select.SelectedIndexChanged += new System.EventHandler(this.graphOption3Select_SelectedIndexChanged);
+            // 
+            // graphGraphButton
+            // 
+            this.graphGraphButton.Location = new System.Drawing.Point(1012, 26);
+            this.graphGraphButton.Name = "graphGraphButton";
+            this.graphGraphButton.Size = new System.Drawing.Size(143, 71);
+            this.graphGraphButton.TabIndex = 18;
+            this.graphGraphButton.Text = "Graph";
+            this.graphGraphButton.UseVisualStyleBackColor = true;
+            this.graphGraphButton.Click += new System.EventHandler(this.graphGraphButton_Click);
+            // 
+            // menuStatusBar
+            // 
+            this.menuStatusBar.Location = new System.Drawing.Point(372, 4);
+            this.menuStatusBar.Name = "menuStatusBar";
+            this.menuStatusBar.Size = new System.Drawing.Size(916, 20);
+            this.menuStatusBar.TabIndex = 19;
             // 
             // UofUOBD2Utility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1008, 741);
+            this.ClientSize = new System.Drawing.Size(1300, 751);
+            this.Controls.Add(this.menuStatusBar);
+            this.Controls.Add(this.graphGraphButton);
+            this.Controls.Add(this.graphOption3Select);
+            this.Controls.Add(this.graphOption2Select);
+            this.Controls.Add(this.graphOption1Select);
+            this.Controls.Add(this.graphTypeLabel);
+            this.Controls.Add(this.graphLineBox);
+            this.Controls.Add(this.graphBarBox);
+            this.Controls.Add(this.graphXAxisSelect);
+            this.Controls.Add(this.graphYAxisSelect);
+            this.Controls.Add(this.graphGenerateButton);
             this.Controls.Add(this.startHeader);
-            this.Controls.Add(this.graphXLabel);
-            this.Controls.Add(this.graphYLabel);
             this.Controls.Add(this.graphHeader);
             this.Controls.Add(this.graphXAxisDisplay);
             this.Controls.Add(this.graphYAxisDisplay);
@@ -230,13 +311,21 @@
         private System.Windows.Forms.ToolStripMenuItem menuOption4;
         private System.Windows.Forms.ToolStripMenuItem menuOption5;
         private System.Windows.Forms.ToolStripMenuItem menuHome;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem8;
         private System.Windows.Forms.Label graphHeader;
-        private System.Windows.Forms.Label graphYLabel;
-        private System.Windows.Forms.Label graphXLabel;
         private System.Windows.Forms.PictureBox bgrndDisplay;
         private System.Windows.Forms.Label startHeader;
         private System.Windows.Forms.PictureBox graphDisplay;
+        private System.Windows.Forms.Button graphGenerateButton;
+        private System.Windows.Forms.ListBox graphYAxisSelect;
+        private System.Windows.Forms.ListBox graphXAxisSelect;
+        private System.Windows.Forms.CheckBox graphBarBox;
+        private System.Windows.Forms.CheckBox graphLineBox;
+        private System.Windows.Forms.Label graphTypeLabel;
+        private System.Windows.Forms.ListBox graphOption1Select;
+        private System.Windows.Forms.ListBox graphOption2Select;
+        private System.Windows.Forms.ListBox graphOption3Select;
+        private System.Windows.Forms.Button graphGraphButton;
+        private System.Windows.Forms.TextBox menuStatusBar;
+        private System.ComponentModel.BackgroundWorker bg;
     }
 }

@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GoogleConnect.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="LogIn.cs">
       <SubType>Form</SubType>
