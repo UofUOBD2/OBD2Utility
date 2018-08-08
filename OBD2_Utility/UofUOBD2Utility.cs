@@ -245,6 +245,9 @@ namespace OBD2_Utility
             DateTime currentDate = new DateTime();
             DateTime lastDate = new DateTime();
 
+            int indicies;
+            int pixelsPerRect = 0;
+
             foreach (List<Object> data in google_results)
             {
 
@@ -281,63 +284,129 @@ namespace OBD2_Utility
 
             bool getOutOfLoop = false;
 
-            double timeSpan = totalTime.TotalSeconds;
 
-
-            // REPRESENTS HOW MANY INDICIES NEED TO BE PLOTTED ON THE GRAPH
-            int seconds = Convert.ToInt32(timeSpan) + 1;
-
-            // ROUND UP IF THERE ARE ANY MILLISECONDS
-            if (((timeSpan + 1) - (double)seconds) > 0)
+            if (graphOption3Select.SelectedItem.Equals("Seconds"))
             {
-                seconds++;
-            }
-
-            int slots = (seconds * 2) - 1;
-
-            // MAKE ROOM FOR THE BORDER
-            int totalNumPixels = graphDisplay.Width - 4;
-
-            // FIND A PICTURE BOX WIDTH THAT WILL FIT THE NUMBER OF REQUIRED INDICIES
-            while (!getOutOfLoop)
-            {
-                if (totalNumPixels % ((seconds * 2) - 1) != 0)
+                double timeSpan = totalTime.TotalSeconds;
+                // REPRESENTS HOW MANY INDICIES NEED TO BE PLOTTED ON THE GRAPH
+                int seconds = Convert.ToInt32(timeSpan) + 1;
+                // ROUND UP IF THERE ARE ANY MILLISECONDS
+                if (((timeSpan + 1) - (double)seconds) > 0)
                 {
-                    totalNumPixels--;
+                    seconds++;
+                }
+                int slots = (seconds * 2) - 1;
+                // MAKE ROOM FOR THE BORDER
+                int totalNumPixels = graphDisplay.Width - 4;
+
+                // FIND A PICTURE BOX WIDTH THAT WILL FIT THE NUMBER OF REQUIRED INDICIES
+                while (!getOutOfLoop)
+                {
+                    if (totalNumPixels % ((seconds * 2) - 1) != 0)
+                    {
+                        totalNumPixels--;
+                    }
+                    else
+                    {
+                        getOutOfLoop = true;
+                    }
+                }
+
+                pixelsPerRect = totalNumPixels / ((seconds * 2) - 1);
+
+                // DETERMINE WHAT KIND OF GRAPH IS BEING PLOTTED
+                String graphType;
+
+                if (graphBarBox.Checked)
+                {
+                    graphType = "bar";
+
+                }
+                else if (graphLineBox.Checked)
+                {
+
+                    graphType = "line";
                 }
                 else
                 {
-                    getOutOfLoop = true;
+                    graphType = "bar";
                 }
+
+                TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
+
+
+                graphData = new Graph(graphType, dates[0].Second, Convert.ToInt32(ts.TotalSeconds) + dates[0].Second, pixelsPerRect, (seconds * 2) - 1, "seconds",
+                    0, 0, 0, 0,
+                    decodedData, dates);
             }
-
-            int pixelsPerRect = totalNumPixels / ((seconds * 2) - 1);
-
-
-            // DETERMINE WHAT KIND OF GRAPH IS BEING PLOTTED
-            String graphType;
-
-            if (graphBarBox.Checked)
+            else if (graphOption3Select.SelectedItem.Equals("Minutes"))
             {
-                graphType = "bar";
+                double timeSpan = totalTime.TotalMinutes;
+                // REPRESENTS HOW MANY INDICIES NEED TO BE PLOTTED ON THE GRAPH
+                int minutes = Convert.ToInt32(timeSpan) + 1;
+                // ROUND UP IF THERE ARE ANY MILLISECONDS
+                if (((timeSpan + 1) - (double)minutes) > 0)
+                {
+                    minutes++;
+                }
+                int slots = (minutes * 2) - 1;
+                // MAKE ROOM FOR THE BORDER
+                int totalNumPixels = graphDisplay.Width - 4;
 
+                // FIND A PICTURE BOX WIDTH THAT WILL FIT THE NUMBER OF REQUIRED INDICIES
+                while (!getOutOfLoop)
+                {
+                    if (totalNumPixels % ((minutes * 2) - 1) != 0)
+                    {
+                        totalNumPixels--;
+                    }
+                    else
+                    {
+                        getOutOfLoop = true;
+                    }
+                }
+
+                pixelsPerRect = totalNumPixels / ((minutes * 2) - 1);
+
+                // DETERMINE WHAT KIND OF GRAPH IS BEING PLOTTED
+                String graphType;
+
+                if (graphBarBox.Checked)
+                {
+                    graphType = "bar";
+
+                }
+                else if (graphLineBox.Checked)
+                {
+
+                    graphType = "line";
+                }
+                else
+                {
+                    graphType = "bar";
+                }
+
+                TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
+
+
+                graphData = new Graph(graphType, dates[0].Minute, Convert.ToInt32(ts.TotalMinutes) + dates[0].Minute, pixelsPerRect, (minutes * 2) - 1, "minutes",
+                    0, 0, 0, 0,
+                    decodedData, dates);
             }
-            else if (graphLineBox.Checked)
-            {
 
-                graphType = "line";
-            }
-            else
-            {
-                graphType = "bar";
-            }
-
-            TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
+            
 
 
-            graphData = new Graph(graphType, dates[0].Second, Convert.ToInt32(ts.TotalSeconds) + dates[0].Second, pixelsPerRect, (seconds * 2) - 1, "seconds", 
-                0, 0, 0, 0, 
-                decodedData, dates);
+            
+
+            
+
+            
+
+            
+
+
+            
 
             graphConfigured = true;
 
@@ -450,12 +519,13 @@ namespace OBD2_Utility
                         // GO TO EACH INDEX ON THE GRAPH
                         for (int i = graphData.xStart; i <= graphData.xEnd; i++)
                         {
-                            if((i % 60) == 0)
+                            if (i != graphData.xStart)
                             {
-                                currGraphIndex = 0;
-                            } else
-                            {
-                                if (i != graphData.xStart)
+                                if ((i % 60) == 0)
+                                {
+                                    currGraphIndex = 0;
+                                }
+                                else
                                 {
                                     currGraphIndex++;
                                 }
@@ -481,9 +551,19 @@ namespace OBD2_Utility
                                     }
 
                                 }
-                                else
+                                else if (graphData.timeInterval == "minutes")
                                 {
-
+                                    if(currGraphIndex == currDate.Minute)
+                                    {
+                                        dataPoint dp = graphData.dataEntries[dpIndex];
+                                        rect = new Rectangle(currXPixel, (graphDisplay.Height - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            e.Graphics.DrawRectangle(pen, rect);
+                                        }
+                                        dpIndex++;
+                                        j = graphData.dates.Count;
+                                    }
                                 }
                             }
 
