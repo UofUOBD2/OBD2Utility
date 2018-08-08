@@ -22,25 +22,60 @@ namespace OBD2_Utility
         bool graphConfigured = false;
 
 
-        List<List<Object>> data;
         List<dataPoint> decodedData;
         List<String> firstDates;
         List<String> secondDates;
         List<List<Object>> google_results;
+        Dictionary<int, String> xAxisDataPoints = new Dictionary<int, String>();
         Graph graphData;
 
-        
         // Initializes the form
         public UofUOBD2Utility()
         {
             InitializeComponent();
             graphDisplay.Paint += GraphDisplay_Paint;
+            graphXAxisDisplay.Paint += GraphXAxisDisplay_Paint;
+            //graphYAxisDisplay.Paint += GraphYAxisDisplay_Paint;
 
             bg.DoWork += Bg_DoWork;
 
             firstDates = new List<string>();
             secondDates = new List<string>();
 
+        }
+
+        private void GraphYAxisDisplay_Paint(object sender, PaintEventArgs e)
+        {
+            updateYAxis(e);
+        }
+
+        private void updateXAxis(PaintEventArgs e)
+        {
+            if (graphConfigured)
+            {
+
+                foreach (int num in xAxisDataPoints.Keys)
+                {
+                    using (Font myFont = new Font("Arial", 11))
+                    {
+                        e.Graphics.DrawString(xAxisDataPoints[num], myFont, Brushes.Black, new Point(num, 0));
+                    }
+                }
+            }
+        }
+
+        private void updateYAxis(PaintEventArgs e)
+        {
+            using (Font myFont = new Font("Arial", 14))
+            {
+                e.Graphics.DrawString("SupBitches", myFont, Brushes.Black, new Point(0, (graphXAxisDisplay.Height - (graphXAxisDisplay.Height / 2))));
+            }
+        }
+
+
+        private void GraphXAxisDisplay_Paint(object sender, PaintEventArgs e)
+        {
+            updateXAxis(e);
         }
 
         // OTHER CODE ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -224,6 +259,12 @@ namespace OBD2_Utility
         // 5. THE USER HAS SELECTED ALL REQUIRED DATA AND PRESSES GRAPH BUTTON
         private void graphGraphButton_Click(object sender, EventArgs e)
         {
+            if(graphOption1Select.SelectedItem.Equals(null) || graphOption2Select.SelectedItem.Equals(null) || graphOption3Select.SelectedItem.Equals(null))
+            {
+                MessageBox.Show("Please select all required boxes");
+                return;
+            }
+
             graphData = new Graph();
 
             configureGraph(graphData);
@@ -245,7 +286,6 @@ namespace OBD2_Utility
             DateTime currentDate = new DateTime();
             DateTime lastDate = new DateTime();
 
-            int indicies;
             int pixelsPerRect = 0;
 
             foreach (List<Object> data in google_results)
@@ -312,7 +352,16 @@ namespace OBD2_Utility
                     }
                 }
 
+                
+
                 pixelsPerRect = totalNumPixels / ((seconds * 2) - 1);
+
+                if(pixelsPerRect <= 1)
+                {
+                    MessageBox.Show("The data points you have selected are far from eachother and can not be represented with the current time scale.\n Please select a wider time scale");
+                    return;
+                }
+
 
                 // DETERMINE WHAT KIND OF GRAPH IS BEING PLOTTED
                 String graphType;
@@ -393,25 +442,119 @@ namespace OBD2_Utility
                     0, 0, 0, 0,
                     decodedData, dates);
             }
+            else if (graphOption3Select.SelectedItem.Equals("Hours"))
+            {
+                double timeSpan = totalTime.TotalHours;
+                // REPRESENTS HOW MANY INDICIES NEED TO BE PLOTTED ON THE GRAPH
+                int hours = Convert.ToInt32(timeSpan) + 1;
+                // ROUND UP IF THERE ARE ANY MILLISECONDS
+                if (((timeSpan + 1) - (double)hours) > 0)
+                {
+                    hours++;
+                }
+                int slots = (hours * 2) - 1;
+                // MAKE ROOM FOR THE BORDER
+                int totalNumPixels = graphDisplay.Width - 4;
 
-            
+                // FIND A PICTURE BOX WIDTH THAT WILL FIT THE NUMBER OF REQUIRED INDICIES
+                while (!getOutOfLoop)
+                {
+                    if (totalNumPixels % ((hours * 2) - 1) != 0)
+                    {
+                        totalNumPixels--;
+                    }
+                    else
+                    {
+                        getOutOfLoop = true;
+                    }
+                }
+
+                pixelsPerRect = totalNumPixels / ((hours * 2) - 1);
+
+                // DETERMINE WHAT KIND OF GRAPH IS BEING PLOTTED
+                String graphType;
+
+                if (graphBarBox.Checked)
+                {
+                    graphType = "bar";
+
+                }
+                else if (graphLineBox.Checked)
+                {
+
+                    graphType = "line";
+                }
+                else
+                {
+                    graphType = "bar";
+                }
+
+                TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
 
 
-            
+                graphData = new Graph(graphType, dates[0].Hour, Convert.ToInt32(ts.TotalHours) + dates[0].Hour, pixelsPerRect, (hours * 2) - 1, "hours",
+                    0, 0, 0, 0,
+                    decodedData, dates);
+            }
+            else if (graphOption3Select.SelectedItem.Equals("Days"))
+            {
+                double timeSpan = totalTime.TotalDays;
 
-            
+                // REPRESENTS HOW MANY INDICIES NEED TO BE PLOTTED ON THE GRAPH
+                int days = Convert.ToInt32(timeSpan) + 1;
 
-            
+                // ROUND UP IF THERE ARE ANY MILLISECONDS
+                if (((timeSpan + 1) - (double)days) > 0)
+                {
+                    days++;
+                }
 
-            
+                int slots = (days * 2) - 1;
+                // MAKE ROOM FOR THE BORDER
+                int totalNumPixels = graphDisplay.Width - 4;
+
+                // FIND A PICTURE BOX WIDTH THAT WILL FIT THE NUMBER OF REQUIRED INDICIES
+                while (!getOutOfLoop)
+                {
+                    if (totalNumPixels % ((days * 2) - 1) != 0)
+                    {
+                        totalNumPixels--;
+                    }
+                    else
+                    {
+                        getOutOfLoop = true;
+                    }
+                }
+
+                pixelsPerRect = totalNumPixels / ((days * 2) - 1);
+
+                // DETERMINE WHAT KIND OF GRAPH IS BEING PLOTTED
+                String graphType;
+
+                if (graphBarBox.Checked)
+                {
+                    graphType = "bar";
+
+                }
+                else if (graphLineBox.Checked)
+                {
+
+                    graphType = "line";
+                }
+                else
+                {
+                    graphType = "bar";
+                }
+
+                TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
 
 
-            
+                graphData = new Graph(graphType, dates[0].Day, days + dates[0].Day, pixelsPerRect, slots, "days",
+                    0, 0, 0, 0,
+                    decodedData, dates);
+            }
 
             graphConfigured = true;
-
-            //graphDisplay.Width = totalNumPixels;
-
             
         }
 
@@ -445,7 +588,7 @@ namespace OBD2_Utility
             {
                 if (nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day)
                 {
-                    firstDates.Add(data[3].ToString());
+                    return true;
                 } else
                 {
                     return false;
@@ -455,7 +598,7 @@ namespace OBD2_Utility
             {
                 if (nextDate.Day != recentDate.Day)
                 {
-                    firstDates.Add(data[3].ToString());
+                    return true;
                 } else
                 {
                    return false;
@@ -508,9 +651,22 @@ namespace OBD2_Utility
                 Rectangle rect;
                 DateTime currDate;
 
+                xAxisDataPoints.Clear();
+
+                bool firstTime = true;
+
                 int dpIndex = 0;
                 int currXPixel = 4;
                 int currGraphIndex = graphData.xStart;
+                int currentDateSecond = 0;
+                int currentDateMinute = 0;
+                int currentDateHour = 0;
+                int currentDateDay = 0;
+
+                int currentSecondIndex = 0;
+                int currentMinuteIndex = 0;
+                int currentHourIndex = 0;
+                int currentDayIndex = 0;
 
                 if (graphData != null)
                 {
@@ -519,11 +675,46 @@ namespace OBD2_Utility
                         // GO TO EACH INDEX ON THE GRAPH
                         for (int i = graphData.xStart; i <= graphData.xEnd; i++)
                         {
+                            // Won't run if it is the first time, all these variables will be correctly set the first time through the loop below
                             if (i != graphData.xStart)
                             {
-                                if ((i % 60) == 0)
+                                // Checking for intervals of 60 (Seconds and Minutes)
+                                if ((graphData.timeInterval.Equals("seconds") || graphData.timeInterval.Equals("minutes")) && (i % 60) == 0)
                                 {
+                                    if (graphData.timeInterval.Equals("seconds")) 
+                                    {
+                                        currentMinuteIndex++;
+                                        currGraphIndex = 0;
+
+                                        if ((currentMinuteIndex % 60) == 0)
+                                        {
+                                            currentHourIndex++;
+                                            currentMinuteIndex = 0;
+                                        }
+
+                                        if ((currentHourIndex % 24) == 0)
+                                        {
+                                            currentDayIndex++;
+                                            currentHourIndex = 0;
+                                        }
+                                    }
+                                    else if (graphData.timeInterval.Equals("minutes"))
+                                    {
+                                        currentHourIndex++;
+                                        currGraphIndex = 0;
+
+                                        if ((currentHourIndex % 24) == 0)
+                                        {
+                                            currentDayIndex++;
+                                            currentHourIndex = 0;
+                                        }
+                                    }
+                                } else if(graphData.timeInterval.Equals("hours") && (i % 24) == 0) 
+                                {
+                                   
+                                    currentDayIndex++;
                                     currGraphIndex = 0;
+                                    
                                 }
                                 else
                                 {
@@ -534,11 +725,28 @@ namespace OBD2_Utility
                             // AT EACH INDEX, CHECK THE CURRENT INDEX TO A DATE IN THE "DATES" LIST
                             for (int j = 0; j < graphData.dates.Count; j++)
                             {
+
                                 currDate = graphData.dates[j];
+
+                                currentDateSecond = currDate.Second;
+                                currentDateMinute = currDate.Minute;
+                                currentDateHour = currDate.Hour;
+                                currentDateDay = currDate.Day;
+
+                                if (firstTime)
+                                {
+                                    currentMinuteIndex = currentDateMinute;
+                                    currentHourIndex = currentDateHour;
+                                    currentDayIndex = currentDateDay;
+                                    firstTime = false;
+                                }
 
                                 if (graphData.timeInterval == "seconds")
                                 {
-                                    if (currGraphIndex == currDate.Second)
+                                    currentSecondIndex = currGraphIndex;
+
+                                    if (currentSecondIndex == currentDateSecond && currentMinuteIndex == currentDateMinute && currentHourIndex == currentDateHour
+                                        && currentDayIndex == currentDateDay)
                                     {
                                         dataPoint dp = graphData.dataEntries[dpIndex];
                                         rect = new Rectangle(currXPixel, (graphDisplay.Height - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
@@ -550,10 +758,48 @@ namespace OBD2_Utility
                                         j = graphData.dates.Count;
                                     }
 
+                                    
+
+
                                 }
                                 else if (graphData.timeInterval == "minutes")
                                 {
-                                    if(currGraphIndex == currDate.Minute)
+
+                                    currentMinuteIndex = currGraphIndex;
+
+                                    if(currentMinuteIndex == currentDateMinute && currentHourIndex == currentDateHour && currentDayIndex == currentDateDay)
+                                    {
+                                        dataPoint dp = graphData.dataEntries[dpIndex];
+                                        rect = new Rectangle(currXPixel, (graphDisplay.Height - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            e.Graphics.DrawRectangle(pen, rect);
+                                        }
+                                        dpIndex++;
+                                        j = graphData.dates.Count;
+                                    }
+                                }
+                                else if (graphData.timeInterval == "hours")
+                                {
+                                    currentHourIndex = currGraphIndex;
+
+                                    if (currentHourIndex == currentDateHour && currentDayIndex == currentDateDay)
+                                    {
+                                        dataPoint dp = graphData.dataEntries[dpIndex];
+                                        rect = new Rectangle(currXPixel, (graphDisplay.Height - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            e.Graphics.DrawRectangle(pen, rect);
+                                        }
+                                        dpIndex++;
+                                        j = graphData.dates.Count;
+                                    }
+                                }
+                                else if (graphData.timeInterval == "days")
+                                {
+                                    currentDayIndex = currGraphIndex;
+
+                                    if (currentDayIndex == currentDateDay)
                                     {
                                         dataPoint dp = graphData.dataEntries[dpIndex];
                                         rect = new Rectangle(currXPixel, (graphDisplay.Height - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
@@ -567,7 +813,12 @@ namespace OBD2_Utility
                                 }
                             }
 
+                            String xAxisDate = currGraphIndex.ToString();
+                            xAxisDataPoints.Add(currXPixel, xAxisDate);
+                            graphXAxisDisplay.Invalidate();
+
                             currXPixel = currXPixel + (graphData.xInterval * 2);
+                            
                         }
 
                     }
@@ -598,28 +849,6 @@ namespace OBD2_Utility
             }
 
         }
-
-
-
-        
-
-        
-            
-
-
-
-
-
-        
-
-
-        
-
-
-
-
-
-
 
         private void Bg_DoWork(object sender, DoWorkEventArgs e)
         {   

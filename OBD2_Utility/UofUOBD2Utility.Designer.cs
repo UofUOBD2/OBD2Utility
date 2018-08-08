@@ -70,9 +70,9 @@
             // 
             // graphXAxisDisplay
             // 
-            this.graphXAxisDisplay.Location = new System.Drawing.Point(25, 654);
+            this.graphXAxisDisplay.Location = new System.Drawing.Point(113, 654);
             this.graphXAxisDisplay.Name = "graphXAxisDisplay";
-            this.graphXAxisDisplay.Size = new System.Drawing.Size(1254, 75);
+            this.graphXAxisDisplay.Size = new System.Drawing.Size(1162, 75);
             this.graphXAxisDisplay.TabIndex = 2;
             this.graphXAxisDisplay.TabStop = false;
             // 
