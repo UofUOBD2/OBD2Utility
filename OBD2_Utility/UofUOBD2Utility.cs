@@ -29,53 +29,37 @@ namespace OBD2_Utility
         Dictionary<int, String> xAxisDataPoints = new Dictionary<int, String>();
         Graph graphData;
 
+        Point lastPoint; 
+
+        PictureBox graphDisplay;
+
+        int OGgraphDisplayWidth;
+
         // Initializes the form
         public UofUOBD2Utility()
         {
             InitializeComponent();
+
+
+            graphDisplay = new PictureBox();
+            graphDisplay.Height = graphFlowPanel.Height - 20;
+            graphDisplay.Width = graphFlowPanel.Width - 20;
+            graphDisplay.SizeMode = PictureBoxSizeMode.StretchImage;
+            graphDisplay.BackColor = System.Drawing.Color.Black;
+
+            graphFlowPanel.Controls.Add(graphDisplay);
+
+
+
             graphDisplay.Paint += GraphDisplay_Paint;
-            graphXAxisDisplay.Paint += GraphXAxisDisplay_Paint;
-            //graphYAxisDisplay.Paint += GraphYAxisDisplay_Paint;
 
             bg.DoWork += Bg_DoWork;
 
             firstDates = new List<string>();
             secondDates = new List<string>();
 
-        }
+            OGgraphDisplayWidth = graphDisplay.Width;
 
-        private void GraphYAxisDisplay_Paint(object sender, PaintEventArgs e)
-        {
-            updateYAxis(e);
-        }
-
-        private void updateXAxis(PaintEventArgs e)
-        {
-            if (graphConfigured)
-            {
-
-                foreach (int num in xAxisDataPoints.Keys)
-                {
-                    using (Font myFont = new Font("Arial", 11))
-                    {
-                        e.Graphics.DrawString(xAxisDataPoints[num], myFont, Brushes.Black, new Point(num, 0));
-                    }
-                }
-            }
-        }
-
-        private void updateYAxis(PaintEventArgs e)
-        {
-            using (Font myFont = new Font("Arial", 14))
-            {
-                e.Graphics.DrawString("SupBitches", myFont, Brushes.Black, new Point(0, (graphXAxisDisplay.Height - (graphXAxisDisplay.Height / 2))));
-            }
-        }
-
-
-        private void GraphXAxisDisplay_Paint(object sender, PaintEventArgs e)
-        {
-            updateXAxis(e);
         }
 
         // OTHER CODE ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -259,7 +243,7 @@ namespace OBD2_Utility
         // 5. THE USER HAS SELECTED ALL REQUIRED DATA AND PRESSES GRAPH BUTTON
         private void graphGraphButton_Click(object sender, EventArgs e)
         {
-            if(graphOption1Select.SelectedItem.Equals(null) || graphOption2Select.SelectedItem.Equals(null) || graphOption3Select.SelectedItem.Equals(null))
+           if(graphOption1Select.SelectedItem.Equals("") || graphOption2Select.SelectedItem.Equals("") || graphOption3Select.SelectedItem.Equals(""))
             {
                 MessageBox.Show("Please select all required boxes");
                 return;
@@ -285,6 +269,8 @@ namespace OBD2_Utility
 
             DateTime currentDate = new DateTime();
             DateTime lastDate = new DateTime();
+
+            graphDisplay.Width = OGgraphDisplayWidth;
 
             int pixelsPerRect = 0;
 
@@ -313,8 +299,6 @@ namespace OBD2_Utility
                     }
                 }
 
-                        
-                
             }
 
             decodedData = decodeData(narrowedData);
@@ -356,11 +340,16 @@ namespace OBD2_Utility
 
                 pixelsPerRect = totalNumPixels / ((seconds * 2) - 1);
 
-                if(pixelsPerRect <= 1)
+                if(pixelsPerRect <= 14)
                 {
-                    MessageBox.Show("The data points you have selected are far from eachother and can not be represented with the current time scale.\n Please select a wider time scale");
-                    return;
+
+                    totalNumPixels = 14 * ((seconds * 2) - 1);
+                    graphDisplay.Width = totalNumPixels + 50;
                 }
+
+                pixelsPerRect = totalNumPixels / ((seconds * 2) - 1);
+
+
 
 
                 // DETERMINE WHAT KIND OF GRAPH IS BEING PLOTTED
@@ -413,6 +402,15 @@ namespace OBD2_Utility
                     {
                         getOutOfLoop = true;
                     }
+                }
+
+                pixelsPerRect = totalNumPixels / ((minutes * 2) - 1);
+
+                if (pixelsPerRect <= 14)
+                {
+
+                    totalNumPixels = 14 * ((minutes * 2) - 1);
+                    graphDisplay.Width = totalNumPixels + 50;
                 }
 
                 pixelsPerRect = totalNumPixels / ((minutes * 2) - 1);
@@ -471,6 +469,15 @@ namespace OBD2_Utility
 
                 pixelsPerRect = totalNumPixels / ((hours * 2) - 1);
 
+                if (pixelsPerRect <= 14)
+                {
+
+                    totalNumPixels = 14 * ((hours * 2) - 1);
+                    graphDisplay.Width = totalNumPixels + 50;
+                }
+
+                pixelsPerRect = totalNumPixels / ((hours * 2) - 1);
+
                 // DETERMINE WHAT KIND OF GRAPH IS BEING PLOTTED
                 String graphType;
 
@@ -524,6 +531,15 @@ namespace OBD2_Utility
                     {
                         getOutOfLoop = true;
                     }
+                }
+
+                pixelsPerRect = totalNumPixels / ((days * 2) - 1);
+
+                if (pixelsPerRect <= 14)
+                {
+
+                    totalNumPixels = 14 * ((days * 2) - 1);
+                    graphDisplay.Width = totalNumPixels + 50;
                 }
 
                 pixelsPerRect = totalNumPixels / ((days * 2) - 1);
@@ -654,6 +670,8 @@ namespace OBD2_Utility
                 xAxisDataPoints.Clear();
 
                 bool firstTime = true;
+                bool firstPoint = true;
+      
 
                 int dpIndex = 0;
                 int currXPixel = 4;
@@ -670,162 +688,215 @@ namespace OBD2_Utility
 
                 if (graphData != null)
                 {
-                    if (graphData.graphType.Equals("bar"))
+
+                    // GO TO EACH INDEX ON THE GRAPH
+                    for (int i = graphData.xStart; i <= graphData.xEnd; i++)
                     {
-                        // GO TO EACH INDEX ON THE GRAPH
-                        for (int i = graphData.xStart; i <= graphData.xEnd; i++)
+                        // Won't run if it is the first time, all these variables will be correctly set the first time through the loop below
+                        if (i != graphData.xStart)
                         {
-                            // Won't run if it is the first time, all these variables will be correctly set the first time through the loop below
-                            if (i != graphData.xStart)
+                            // Checking for intervals of 60 (Seconds and Minutes)
+                            if ((graphData.timeInterval.Equals("seconds") || graphData.timeInterval.Equals("minutes")) && (i % 60) == 0)
                             {
-                                // Checking for intervals of 60 (Seconds and Minutes)
-                                if ((graphData.timeInterval.Equals("seconds") || graphData.timeInterval.Equals("minutes")) && (i % 60) == 0)
+                                if (graphData.timeInterval.Equals("seconds")) 
                                 {
-                                    if (graphData.timeInterval.Equals("seconds")) 
-                                    {
-                                        currentMinuteIndex++;
-                                        currGraphIndex = 0;
+                                    currentMinuteIndex++;
+                                    currGraphIndex = 0;
 
-                                        if ((currentMinuteIndex % 60) == 0)
-                                        {
-                                            currentHourIndex++;
-                                            currentMinuteIndex = 0;
-                                        }
-
-                                        if ((currentHourIndex % 24) == 0)
-                                        {
-                                            currentDayIndex++;
-                                            currentHourIndex = 0;
-                                        }
-                                    }
-                                    else if (graphData.timeInterval.Equals("minutes"))
+                                    if ((currentMinuteIndex % 60) == 0)
                                     {
                                         currentHourIndex++;
-                                        currGraphIndex = 0;
-
-                                        if ((currentHourIndex % 24) == 0)
-                                        {
-                                            currentDayIndex++;
-                                            currentHourIndex = 0;
-                                        }
+                                        currentMinuteIndex = 0;
                                     }
-                                } else if(graphData.timeInterval.Equals("hours") && (i % 24) == 0) 
+
+                                    if ((currentHourIndex % 24) == 0)
+                                    {
+                                        currentDayIndex++;
+                                        currentHourIndex = 0;
+                                    }
+                                }
+                                else if (graphData.timeInterval.Equals("minutes"))
                                 {
-                                   
-                                    currentDayIndex++;
+                                    currentHourIndex++;
                                     currGraphIndex = 0;
-                                    
-                                }
-                                else
-                                {
-                                    currGraphIndex++;
-                                }
-                            }
 
-                            // AT EACH INDEX, CHECK THE CURRENT INDEX TO A DATE IN THE "DATES" LIST
-                            for (int j = 0; j < graphData.dates.Count; j++)
+                                    if ((currentHourIndex % 24) == 0)
+                                    {
+                                        currentDayIndex++;
+                                        currentHourIndex = 0;
+                                    }
+                                }
+                            } else if(graphData.timeInterval.Equals("hours") && (i % 24) == 0) 
                             {
-
-                                currDate = graphData.dates[j];
-
-                                currentDateSecond = currDate.Second;
-                                currentDateMinute = currDate.Minute;
-                                currentDateHour = currDate.Hour;
-                                currentDateDay = currDate.Day;
-
-                                if (firstTime)
-                                {
-                                    currentMinuteIndex = currentDateMinute;
-                                    currentHourIndex = currentDateHour;
-                                    currentDayIndex = currentDateDay;
-                                    firstTime = false;
-                                }
-
-                                if (graphData.timeInterval == "seconds")
-                                {
-                                    currentSecondIndex = currGraphIndex;
-
-                                    if (currentSecondIndex == currentDateSecond && currentMinuteIndex == currentDateMinute && currentHourIndex == currentDateHour
-                                        && currentDayIndex == currentDateDay)
-                                    {
-                                        dataPoint dp = graphData.dataEntries[dpIndex];
-                                        rect = new Rectangle(currXPixel, (graphDisplay.Height - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
-                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
-                                        {
-                                            e.Graphics.DrawRectangle(pen, rect);
-                                        }
-                                        dpIndex++;
-                                        j = graphData.dates.Count;
-                                    }
-
+                                   
+                                currentDayIndex++;
+                                currGraphIndex = 0;
                                     
-
-
-                                }
-                                else if (graphData.timeInterval == "minutes")
-                                {
-
-                                    currentMinuteIndex = currGraphIndex;
-
-                                    if(currentMinuteIndex == currentDateMinute && currentHourIndex == currentDateHour && currentDayIndex == currentDateDay)
-                                    {
-                                        dataPoint dp = graphData.dataEntries[dpIndex];
-                                        rect = new Rectangle(currXPixel, (graphDisplay.Height - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
-                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
-                                        {
-                                            e.Graphics.DrawRectangle(pen, rect);
-                                        }
-                                        dpIndex++;
-                                        j = graphData.dates.Count;
-                                    }
-                                }
-                                else if (graphData.timeInterval == "hours")
-                                {
-                                    currentHourIndex = currGraphIndex;
-
-                                    if (currentHourIndex == currentDateHour && currentDayIndex == currentDateDay)
-                                    {
-                                        dataPoint dp = graphData.dataEntries[dpIndex];
-                                        rect = new Rectangle(currXPixel, (graphDisplay.Height - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
-                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
-                                        {
-                                            e.Graphics.DrawRectangle(pen, rect);
-                                        }
-                                        dpIndex++;
-                                        j = graphData.dates.Count;
-                                    }
-                                }
-                                else if (graphData.timeInterval == "days")
-                                {
-                                    currentDayIndex = currGraphIndex;
-
-                                    if (currentDayIndex == currentDateDay)
-                                    {
-                                        dataPoint dp = graphData.dataEntries[dpIndex];
-                                        rect = new Rectangle(currXPixel, (graphDisplay.Height - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
-                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
-                                        {
-                                            e.Graphics.DrawRectangle(pen, rect);
-                                        }
-                                        dpIndex++;
-                                        j = graphData.dates.Count;
-                                    }
-                                }
                             }
-
-                            String xAxisDate = currGraphIndex.ToString();
-                            xAxisDataPoints.Add(currXPixel, xAxisDate);
-                            graphXAxisDisplay.Invalidate();
-
-                            currXPixel = currXPixel + (graphData.xInterval * 2);
-                            
+                            else
+                            {
+                                currGraphIndex++;
+                            }
                         }
 
-                    }
-                    else if (graphData.graphType.Equals("line"))
-                    {
+                        // AT EACH INDEX, CHECK THE CURRENT INDEX TO A DATE IN THE "DATES" LIST
+                        for (int j = 0; j < graphData.dates.Count; j++)
+                        {
 
+                            currDate = graphData.dates[j];
 
+                            currentDateSecond = currDate.Second;
+                            currentDateMinute = currDate.Minute;
+                            currentDateHour = currDate.Hour;
+                            currentDateDay = currDate.Day;
+
+                            if (firstTime)
+                            {
+                                currentMinuteIndex = currentDateMinute;
+                                currentHourIndex = currentDateHour;
+                                currentDayIndex = currentDateDay;
+                                firstTime = false;
+                            }
+
+                            if (graphData.timeInterval == "seconds")
+                            {
+                                currentSecondIndex = currGraphIndex;
+
+                                if (currentSecondIndex == currentDateSecond && currentMinuteIndex == currentDateMinute && currentHourIndex == currentDateHour
+                                    && currentDayIndex == currentDateDay)
+                                {
+                                    dataPoint dp = graphData.dataEntries[dpIndex];
+
+                                    if (graphData.graphType.Equals("bar"))
+                                    {
+                                        rect = new Rectangle(currXPixel, ((graphDisplay.Height - 30) - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            e.Graphics.DrawRectangle(pen, rect);
+                                        }
+
+                                        using (Font myFont = new Font("Arial", 11))
+                                        {
+                                            e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":"+ currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point(currXPixel, graphDisplay.Height - 25));
+                                        }
+                                    } else if (graphData.graphType.Equals("line"))
+                                    {
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            Point p = new Point(currXPixel + 5, (graphDisplay.Height - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel, (graphDisplay.Height - dp.yValue), 10, 10);
+
+                                            if (!firstPoint)
+                                            {
+                                                e.Graphics.DrawLine(pen, lastPoint, p); 
+                                            }
+                                            firstPoint = false;
+                                            lastPoint = p;
+                                            
+                                        }
+                                    }
+                                    dpIndex++;
+                                    j = graphData.dates.Count;
+                                }
+                            }
+                            else if (graphData.timeInterval == "minutes")
+                            {
+
+                                currentMinuteIndex = currGraphIndex;
+
+                                if(currentMinuteIndex == currentDateMinute && currentHourIndex == currentDateHour && currentDayIndex == currentDateDay)
+                                {
+                                    dataPoint dp = graphData.dataEntries[dpIndex];
+                                    if (graphData.graphType.Equals("bar"))
+                                    {
+                                        rect = new Rectangle(currXPixel, ((graphDisplay.Height - 30) - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            e.Graphics.DrawRectangle(pen, rect);
+                                        }
+
+                                        using (Font myFont = new Font("Arial", 11))
+                                        {
+                                            e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point(currXPixel, graphDisplay.Height - 25));
+                                        }
+                                    }
+                                    else if (graphData.graphType.Equals("line"))
+                                    {
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            e.Graphics.DrawEllipse(pen, currXPixel - 5, (graphDisplay.Height - dp.yValue), 10, 10);
+                                        }
+                                    }
+                                    dpIndex++;
+                                    j = graphData.dates.Count;
+                                }
+                            }
+                            else if (graphData.timeInterval == "hours")
+                            {
+                                currentHourIndex = currGraphIndex;
+
+                                if (currentHourIndex == currentDateHour && currentDayIndex == currentDateDay)
+                                {
+                                    dataPoint dp = graphData.dataEntries[dpIndex];
+                                    if (graphData.graphType.Equals("bar"))
+                                    {
+                                        rect = new Rectangle(currXPixel, ((graphDisplay.Height - 30) - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            e.Graphics.DrawRectangle(pen, rect);
+                                        }
+
+                                        using (Font myFont = new Font("Arial", 11))
+                                        {
+                                            e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point(currXPixel, graphDisplay.Height - 25));
+                                        }
+                                    }
+                                    else if (graphData.graphType.Equals("line"))
+                                    {
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            e.Graphics.DrawEllipse(pen, currXPixel - 5, (graphDisplay.Height - dp.yValue), 10, 10);
+                                        }
+                                    }
+                                    dpIndex++;
+                                    j = graphData.dates.Count;
+                                }
+                            }
+                            else if (graphData.timeInterval == "days")
+                            {
+                                currentDayIndex = currGraphIndex;
+
+                                if (currentDayIndex == currentDateDay)
+                                {
+                                    dataPoint dp = graphData.dataEntries[dpIndex];
+                                    if (graphData.graphType.Equals("bar"))
+                                    {
+                                        rect = new Rectangle(currXPixel, ((graphDisplay.Height - 30) - dp.yValue), (graphData.xInterval - 2), (dp.yValue - 2));
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            e.Graphics.DrawRectangle(pen, rect);
+                                        }
+
+                                        using (Font myFont = new Font("Arial", 11))
+                                        {
+                                            e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point(currXPixel, graphDisplay.Height - 25));
+                                        }
+                                    }
+                                    else if (graphData.graphType.Equals("line"))
+                                    {
+                                        using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                                        {
+                                            e.Graphics.DrawEllipse(pen, currXPixel - 5, (graphDisplay.Height - dp.yValue), 10, 10);
+                                        }
+                                    }
+                                    dpIndex++;
+                                    j = graphData.dates.Count;
+                                }
+                            }
+                        }
+
+                        currXPixel = currXPixel + (graphData.xInterval * 2);
+                            
                     }
                 }
             }
@@ -854,6 +925,9 @@ namespace OBD2_Utility
         {   
         }
 
+        private void startHeader_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }

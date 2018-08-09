@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.graphYAxisDisplay = new System.Windows.Forms.PictureBox();
-            this.graphXAxisDisplay = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuGraphOption = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOption2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,9 +37,6 @@
             this.menuOption5 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHome = new System.Windows.Forms.ToolStripMenuItem();
             this.graphHeader = new System.Windows.Forms.Label();
-            this.bgrndDisplay = new System.Windows.Forms.PictureBox();
-            this.startHeader = new System.Windows.Forms.Label();
-            this.graphDisplay = new System.Windows.Forms.PictureBox();
             this.graphGenerateButton = new System.Windows.Forms.Button();
             this.graphYAxisSelect = new System.Windows.Forms.ListBox();
             this.graphXAxisSelect = new System.Windows.Forms.ListBox();
@@ -53,28 +49,18 @@
             this.graphGraphButton = new System.Windows.Forms.Button();
             this.menuStatusBar = new System.Windows.Forms.TextBox();
             this.bg = new System.ComponentModel.BackgroundWorker();
+            this.graphFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.graphYAxisDisplay)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.graphXAxisDisplay)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bgrndDisplay)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.graphDisplay)).BeginInit();
             this.SuspendLayout();
             // 
             // graphYAxisDisplay
             // 
             this.graphYAxisDisplay.Location = new System.Drawing.Point(25, 109);
             this.graphYAxisDisplay.Name = "graphYAxisDisplay";
-            this.graphYAxisDisplay.Size = new System.Drawing.Size(86, 539);
+            this.graphYAxisDisplay.Size = new System.Drawing.Size(86, 879);
             this.graphYAxisDisplay.TabIndex = 1;
             this.graphYAxisDisplay.TabStop = false;
-            // 
-            // graphXAxisDisplay
-            // 
-            this.graphXAxisDisplay.Location = new System.Drawing.Point(113, 654);
-            this.graphXAxisDisplay.Name = "graphXAxisDisplay";
-            this.graphXAxisDisplay.Size = new System.Drawing.Size(1162, 75);
-            this.graphXAxisDisplay.TabIndex = 2;
-            this.graphXAxisDisplay.TabStop = false;
             // 
             // menuStrip1
             // 
@@ -87,7 +73,7 @@
             this.menuHome});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1300, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1904, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -138,32 +124,6 @@
             this.graphHeader.Size = new System.Drawing.Size(198, 43);
             this.graphHeader.TabIndex = 4;
             this.graphHeader.Text = "GRAPH X VS Y";
-            // 
-            // bgrndDisplay
-            // 
-            this.bgrndDisplay.Location = new System.Drawing.Point(12, 27);
-            this.bgrndDisplay.Name = "bgrndDisplay";
-            this.bgrndDisplay.Size = new System.Drawing.Size(1276, 712);
-            this.bgrndDisplay.TabIndex = 7;
-            this.bgrndDisplay.TabStop = false;
-            // 
-            // startHeader
-            // 
-            this.startHeader.AutoSize = true;
-            this.startHeader.Font = new System.Drawing.Font("Impact", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.startHeader.Location = new System.Drawing.Point(457, 136);
-            this.startHeader.Name = "startHeader";
-            this.startHeader.Size = new System.Drawing.Size(519, 129);
-            this.startHeader.TabIndex = 8;
-            this.startHeader.Text = "\r\n  Welcome to the UofU OBD2 Utility \r\nPlease Select an option from above\r\n";
-            // 
-            // graphDisplay
-            // 
-            this.graphDisplay.Location = new System.Drawing.Point(117, 109);
-            this.graphDisplay.Name = "graphDisplay";
-            this.graphDisplay.Size = new System.Drawing.Size(1162, 539);
-            this.graphDisplay.TabIndex = 0;
-            this.graphDisplay.TabStop = false;
             // 
             // graphGenerateButton
             // 
@@ -263,11 +223,20 @@
             this.menuStatusBar.Size = new System.Drawing.Size(916, 20);
             this.menuStatusBar.TabIndex = 19;
             // 
+            // graphFlowPanel
+            // 
+            this.graphFlowPanel.AutoScroll = true;
+            this.graphFlowPanel.Location = new System.Drawing.Point(118, 113);
+            this.graphFlowPanel.Name = "graphFlowPanel";
+            this.graphFlowPanel.Size = new System.Drawing.Size(1774, 875);
+            this.graphFlowPanel.TabIndex = 21;
+            // 
             // UofUOBD2Utility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1300, 751);
+            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.Controls.Add(this.graphFlowPanel);
             this.Controls.Add(this.menuStatusBar);
             this.Controls.Add(this.graphGraphButton);
             this.Controls.Add(this.graphOption3Select);
@@ -279,23 +248,16 @@
             this.Controls.Add(this.graphXAxisSelect);
             this.Controls.Add(this.graphYAxisSelect);
             this.Controls.Add(this.graphGenerateButton);
-            this.Controls.Add(this.startHeader);
             this.Controls.Add(this.graphHeader);
-            this.Controls.Add(this.graphXAxisDisplay);
             this.Controls.Add(this.graphYAxisDisplay);
-            this.Controls.Add(this.graphDisplay);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.bgrndDisplay);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "UofUOBD2Utility";
             this.Text = "UofUOBD2Utility";
             this.Load += new System.EventHandler(this.UofUOBD2Utility_Load);
             ((System.ComponentModel.ISupportInitialize)(this.graphYAxisDisplay)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.graphXAxisDisplay)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.bgrndDisplay)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.graphDisplay)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -303,7 +265,6 @@
 
         #endregion
         private System.Windows.Forms.PictureBox graphYAxisDisplay;
-        private System.Windows.Forms.PictureBox graphXAxisDisplay;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem menuGraphOption;
         private System.Windows.Forms.ToolStripMenuItem menuOption2;
@@ -312,9 +273,6 @@
         private System.Windows.Forms.ToolStripMenuItem menuOption5;
         private System.Windows.Forms.ToolStripMenuItem menuHome;
         private System.Windows.Forms.Label graphHeader;
-        private System.Windows.Forms.PictureBox bgrndDisplay;
-        private System.Windows.Forms.Label startHeader;
-        private System.Windows.Forms.PictureBox graphDisplay;
         private System.Windows.Forms.Button graphGenerateButton;
         private System.Windows.Forms.ListBox graphYAxisSelect;
         private System.Windows.Forms.ListBox graphXAxisSelect;
@@ -327,5 +285,6 @@
         private System.Windows.Forms.Button graphGraphButton;
         private System.Windows.Forms.TextBox menuStatusBar;
         private System.ComponentModel.BackgroundWorker bg;
+        private System.Windows.Forms.FlowLayoutPanel graphFlowPanel;
     }
 }
