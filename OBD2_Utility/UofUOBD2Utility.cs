@@ -28,6 +28,7 @@ namespace OBD2_Utility
         List<List<Object>> google_results;
         Dictionary<int, String> xAxisDataPoints = new Dictionary<int, String>();
         Graph graphData;
+        Graph targetGraph;
 
         Point lastPoint; 
 
@@ -250,6 +251,7 @@ namespace OBD2_Utility
             }
 
             graphData = new Graph();
+            targetGraph = new Graph();
 
             configureGraph(graphData);
 
@@ -321,7 +323,7 @@ namespace OBD2_Utility
                 }
                 int slots = (seconds * 2) - 1;
                 // MAKE ROOM FOR THE BORDER
-                int totalNumPixels = graphDisplay.Width - 4;
+                int totalNumPixels = graphDisplay.Width - 8;
 
                 // FIND A PICTURE BOX WIDTH THAT WILL FIT THE NUMBER OF REQUIRED INDICIES
                 while (!getOutOfLoop)
@@ -344,7 +346,11 @@ namespace OBD2_Utility
                 {
 
                     totalNumPixels = 14 * ((seconds * 2) - 1);
-                    graphDisplay.Width = totalNumPixels + 50;
+                    if(totalNumPixels > graphDisplay.Width)
+                    {
+                        graphDisplay.Width = totalNumPixels + 50;
+                    }
+                    
                 }
 
                 pixelsPerRect = totalNumPixels / ((seconds * 2) - 1);
@@ -410,7 +416,10 @@ namespace OBD2_Utility
                 {
 
                     totalNumPixels = 14 * ((minutes * 2) - 1);
-                    graphDisplay.Width = totalNumPixels + 50;
+                    if (totalNumPixels > graphDisplay.Width)
+                    {
+                        graphDisplay.Width = totalNumPixels + 50;
+                    }
                 }
 
                 pixelsPerRect = totalNumPixels / ((minutes * 2) - 1);
@@ -473,7 +482,10 @@ namespace OBD2_Utility
                 {
 
                     totalNumPixels = 14 * ((hours * 2) - 1);
-                    graphDisplay.Width = totalNumPixels + 50;
+                    if (totalNumPixels > graphDisplay.Width)
+                    {
+                        graphDisplay.Width = totalNumPixels + 50;
+                    }
                 }
 
                 pixelsPerRect = totalNumPixels / ((hours * 2) - 1);
@@ -539,7 +551,10 @@ namespace OBD2_Utility
                 {
 
                     totalNumPixels = 14 * ((days * 2) - 1);
-                    graphDisplay.Width = totalNumPixels + 50;
+                    if (totalNumPixels > graphDisplay.Width)
+                    {
+                        graphDisplay.Width = totalNumPixels + 50;
+                    }
                 }
 
                 pixelsPerRect = totalNumPixels / ((days * 2) - 1);
@@ -775,10 +790,6 @@ namespace OBD2_Utility
                                             e.Graphics.DrawRectangle(pen, rect);
                                         }
 
-                                        using (Font myFont = new Font("Arial", 11))
-                                        {
-                                            e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":"+ currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point(currXPixel, graphDisplay.Height - 25));
-                                        }
                                     } else if (graphData.graphType.Equals("line"))
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
@@ -801,7 +812,6 @@ namespace OBD2_Utility
                             }
                             else if (graphData.timeInterval == "minutes")
                             {
-
                                 currentMinuteIndex = currGraphIndex;
 
                                 if(currentMinuteIndex == currentDateMinute && currentHourIndex == currentDateHour && currentDayIndex == currentDateDay)
@@ -814,17 +824,21 @@ namespace OBD2_Utility
                                         {
                                             e.Graphics.DrawRectangle(pen, rect);
                                         }
-
-                                        using (Font myFont = new Font("Arial", 11))
-                                        {
-                                            e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point(currXPixel, graphDisplay.Height - 25));
-                                        }
                                     }
                                     else if (graphData.graphType.Equals("line"))
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            e.Graphics.DrawEllipse(pen, currXPixel - 5, (graphDisplay.Height - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + 5, (graphDisplay.Height - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel, (graphDisplay.Height - dp.yValue), 10, 10);
+
+                                            if (!firstPoint)
+                                            {
+                                                e.Graphics.DrawLine(pen, lastPoint, p);
+                                            }
+                                            firstPoint = false;
+                                            lastPoint = p;
+
                                         }
                                     }
                                     dpIndex++;
@@ -845,17 +859,21 @@ namespace OBD2_Utility
                                         {
                                             e.Graphics.DrawRectangle(pen, rect);
                                         }
-
-                                        using (Font myFont = new Font("Arial", 11))
-                                        {
-                                            e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point(currXPixel, graphDisplay.Height - 25));
-                                        }
                                     }
                                     else if (graphData.graphType.Equals("line"))
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            e.Graphics.DrawEllipse(pen, currXPixel - 5, (graphDisplay.Height - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + 5, (graphDisplay.Height - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel, (graphDisplay.Height - dp.yValue), 10, 10);
+
+                                            if (!firstPoint)
+                                            {
+                                                e.Graphics.DrawLine(pen, lastPoint, p);
+                                            }
+                                            firstPoint = false;
+                                            lastPoint = p;
+
                                         }
                                     }
                                     dpIndex++;
@@ -876,21 +894,60 @@ namespace OBD2_Utility
                                         {
                                             e.Graphics.DrawRectangle(pen, rect);
                                         }
-
-                                        using (Font myFont = new Font("Arial", 11))
-                                        {
-                                            e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point(currXPixel, graphDisplay.Height - 25));
-                                        }
                                     }
                                     else if (graphData.graphType.Equals("line"))
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            e.Graphics.DrawEllipse(pen, currXPixel - 5, (graphDisplay.Height - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + 5, (graphDisplay.Height - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel, (graphDisplay.Height - dp.yValue), 10, 10);
+
+                                            if (!firstPoint)
+                                            {
+                                                e.Graphics.DrawLine(pen, lastPoint, p);
+                                            }
+                                            firstPoint = false;
+                                            lastPoint = p;
+
                                         }
                                     }
                                     dpIndex++;
                                     j = graphData.dates.Count;
+                                }
+                            }
+                            // LEFT OFF HERE!!!!!!!!!!! PUT LITTLE MARK ON EACH GRAPH INDEX
+                            rect = new Rectangle(currXPixel + ((graphData.xInterval / 2) - 2), graphDisplay.Height - 40, 2, 15);
+                            using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                            {
+                                e.Graphics.DrawRectangle(pen, rect);
+                            }
+
+                            if (graphData.xInterval > 60)
+                            {
+                                using (Font myFont = new Font("Arial", 9))
+                                {
+                                    e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 30, graphDisplay.Height - 25));
+                                }
+                            } else {
+
+                                using (Font myFont = new Font("Arial", 9))
+                                {
+                                    if (graphData.timeInterval.Equals("seconds"))
+                                    {
+                                        e.Graphics.DrawString(currentSecondIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                    }
+                                    else if (graphData.timeInterval.Equals("minutes"))
+                                    {
+                                        e.Graphics.DrawString(currentMinuteIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                    }
+                                    else if (graphData.timeInterval.Equals("hours"))
+                                    {
+                                        e.Graphics.DrawString(currentHourIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                    }
+                                    else if (graphData.timeInterval.Equals("days"))
+                                    {
+                                        e.Graphics.DrawString(currentDayIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                    }
                                 }
                             }
                         }
