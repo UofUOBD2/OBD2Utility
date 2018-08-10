@@ -30,6 +30,16 @@ namespace OBD2_Utility
         Graph graphData;
         Graph targetGraph;
 
+        int incramentValue = 5;
+
+        System.Windows.Forms.Timer time;
+
+        bool takingDown;
+        bool buildingUp;
+        bool graphUpdateDone;
+
+        bool firstTimeGraphing;
+
         Point lastPoint; 
 
         PictureBox graphDisplay;
@@ -41,6 +51,10 @@ namespace OBD2_Utility
         {
             InitializeComponent();
 
+            takingDown = false;
+            buildingUp = false;
+            graphUpdateDone = true;
+            firstTimeGraphing = true;
 
             graphDisplay = new PictureBox();
             graphDisplay.Height = graphFlowPanel.Height - 20;
@@ -50,7 +64,10 @@ namespace OBD2_Utility
 
             graphFlowPanel.Controls.Add(graphDisplay);
 
-
+            time = new System.Windows.Forms.Timer();
+            time.Interval = 17;
+            time.Tick += Time_Tick;
+            time.Start();
 
             graphDisplay.Paint += GraphDisplay_Paint;
 
@@ -61,6 +78,12 @@ namespace OBD2_Utility
 
             OGgraphDisplayWidth = graphDisplay.Width;
 
+        }
+
+        private void Time_Tick(object sender, EventArgs e)
+        {
+            updateGraph();
+            graphDisplay.Invalidate();
         }
 
         // OTHER CODE ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -250,16 +273,29 @@ namespace OBD2_Utility
                 return;
             }
 
-            graphData = new Graph();
+            
             targetGraph = new Graph();
 
-            configureGraph(graphData);
 
-            graphDisplay.Invalidate();
+            if (firstTimeGraphing)
+            {
+                graphData = new Graph();
+                graphUpdateDone = true;
+                graphData = configureGraph(graphData);
+                firstTimeGraphing = false;
+            }
+            else
+            {
+                graphUpdateDone = false;
+                buildingUp = false;
+                takingDown = true;
+            }
+
+         
         }
 
         // 6. CONFIGURE THE GRAPH SO THAT IT IS FORMATTED CORRECTLY FOR THE SCREEN
-        private void configureGraph(Graph _graph)
+        private Graph configureGraph(Graph _graph)
         {
             bool first = true;
 
@@ -322,6 +358,12 @@ namespace OBD2_Utility
                     seconds++;
                 }
                 int slots = (seconds * 2) - 1;
+
+                if(slots >= 2000)
+                {
+                    MessageBox.Show("To many values, please make the distance between data point 1 and 2 smaller.");
+                    return _graph;
+                }
                 // MAKE ROOM FOR THE BORDER
                 int totalNumPixels = graphDisplay.Width - 8;
 
@@ -379,7 +421,7 @@ namespace OBD2_Utility
                 TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
 
 
-                graphData = new Graph(graphType, dates[0].Second, Convert.ToInt32(ts.TotalSeconds) + dates[0].Second, pixelsPerRect, (seconds * 2) - 1, "seconds",
+                _graph = new Graph(graphType, dates[0].Second, Convert.ToInt32(ts.TotalSeconds) + dates[0].Second, pixelsPerRect, (seconds * 2) - 1, "seconds",
                     0, 0, 0, 0,
                     decodedData, dates);
             }
@@ -394,6 +436,13 @@ namespace OBD2_Utility
                     minutes++;
                 }
                 int slots = (minutes * 2) - 1;
+
+                if (slots >= 2000)
+                {
+                    MessageBox.Show("To many values, please make the distance between data point 1 and 2 smaller.");
+                    return _graph;
+                }
+
                 // MAKE ROOM FOR THE BORDER
                 int totalNumPixels = graphDisplay.Width - 4;
 
@@ -445,7 +494,7 @@ namespace OBD2_Utility
                 TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
 
 
-                graphData = new Graph(graphType, dates[0].Minute, Convert.ToInt32(ts.TotalMinutes) + dates[0].Minute, pixelsPerRect, (minutes * 2) - 1, "minutes",
+                _graph = new Graph(graphType, dates[0].Minute, Convert.ToInt32(ts.TotalMinutes) + dates[0].Minute, pixelsPerRect, (minutes * 2) - 1, "minutes",
                     0, 0, 0, 0,
                     decodedData, dates);
             }
@@ -460,6 +509,13 @@ namespace OBD2_Utility
                     hours++;
                 }
                 int slots = (hours * 2) - 1;
+
+                if (slots >= 2000)
+                {
+                    MessageBox.Show("To many values, please make the distance between data point 1 and 2 smaller.");
+                    return _graph;
+                }
+
                 // MAKE ROOM FOR THE BORDER
                 int totalNumPixels = graphDisplay.Width - 4;
 
@@ -511,7 +567,7 @@ namespace OBD2_Utility
                 TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
 
 
-                graphData = new Graph(graphType, dates[0].Hour, Convert.ToInt32(ts.TotalHours) + dates[0].Hour, pixelsPerRect, (hours * 2) - 1, "hours",
+                _graph = new Graph(graphType, dates[0].Hour, Convert.ToInt32(ts.TotalHours) + dates[0].Hour, pixelsPerRect, (hours * 2) - 1, "hours",
                     0, 0, 0, 0,
                     decodedData, dates);
             }
@@ -529,6 +585,13 @@ namespace OBD2_Utility
                 }
 
                 int slots = (days * 2) - 1;
+
+                if (slots >= 2000)
+                {
+                    MessageBox.Show("To many values, please make the distance between data point 1 and 2 smaller.");
+                    return _graph;
+                }
+
                 // MAKE ROOM FOR THE BORDER
                 int totalNumPixels = graphDisplay.Width - 4;
 
@@ -580,13 +643,13 @@ namespace OBD2_Utility
                 TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
 
 
-                graphData = new Graph(graphType, dates[0].Day, days + dates[0].Day, pixelsPerRect, slots, "days",
+                _graph = new Graph(graphType, dates[0].Day, days + dates[0].Day, pixelsPerRect, slots, "days",
                     0, 0, 0, 0,
                     decodedData, dates);
             }
 
             graphConfigured = true;
-            
+            return _graph;
         }
 
         private bool isValidDate(DateTime nextDate, DateTime recentDate)
@@ -670,7 +733,78 @@ namespace OBD2_Utility
         private void GraphDisplay_Paint(object sender, PaintEventArgs e)
         {
             drawGraphData(e);
-            drawGraphBorder(e);
+        }
+
+        private void updateGraph()
+        {
+            List<dataPoint> temp = new List<dataPoint>();
+
+            if (!graphUpdateDone)
+            {
+                if (takingDown)
+                {
+                    bool needToKeepGoing = false;
+
+                    foreach (dataPoint dp in graphData.dataEntries)
+                    {
+                        if (dp.yValue != 0)
+                        {
+                            if((dp.yValue - incramentValue) < 0)
+                            {
+                                dp.yValue--;
+                            } else
+                            {
+                                dp.yValue -= incramentValue;
+                            }
+                            needToKeepGoing = true;
+                        }
+
+                        temp.Add(dp);
+                    }
+
+                    graphData.dataEntries = temp;
+
+                    if (!needToKeepGoing)
+                    {
+
+                        takingDown = false;
+                        buildingUp = true;
+                        graphData = new Graph();
+                        graphData = configureGraph(graphData);
+                        targetGraph = configureGraph(targetGraph);
+                        graphData.dataEntries = zeroOut(graphData.dataEntries);
+                    }
+
+                    
+                }
+
+                else if (buildingUp)
+                {
+                    bool needToKeepGoing = false;
+
+                    for (int i = 0; i < graphData.dataEntries.Count; i++)
+                    {
+                        if (graphData.dataEntries[i].yValue != targetGraph.dataEntries[i].yValue)
+                        {
+                            if(graphData.dataEntries[i].yValue + incramentValue > targetGraph.dataEntries[i].yValue)
+                            {
+                                graphData.dataEntries[i].yValue++;
+                            } else
+                            {
+                                graphData.dataEntries[i].yValue += incramentValue;
+                            }
+                            
+                            needToKeepGoing = true;
+                        }
+                    }
+
+                    if (!needToKeepGoing)
+                    {
+                        graphUpdateDone = true;
+                    }
+
+                }
+            }
         }
 
         // 9. DRAW THE GRAPH BEING STORED IN GLOBAL GRAPH OBJECT
@@ -703,7 +837,6 @@ namespace OBD2_Utility
 
                 if (graphData != null)
                 {
-
                     // GO TO EACH INDEX ON THE GRAPH
                     for (int i = graphData.xStart; i <= graphData.xEnd; i++)
                     {
@@ -794,8 +927,8 @@ namespace OBD2_Utility
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            Point p = new Point(currXPixel + 5, (graphDisplay.Height - dp.yValue) + 5);
-                                            e.Graphics.DrawEllipse(pen, currXPixel, (graphDisplay.Height - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 30) - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 30) - dp.yValue), 10, 10);
 
                                             if (!firstPoint)
                                             {
@@ -829,8 +962,8 @@ namespace OBD2_Utility
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            Point p = new Point(currXPixel + 5, (graphDisplay.Height - dp.yValue) + 5);
-                                            e.Graphics.DrawEllipse(pen, currXPixel, (graphDisplay.Height - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 30) - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 30) - dp.yValue), 10, 10);
 
                                             if (!firstPoint)
                                             {
@@ -864,8 +997,8 @@ namespace OBD2_Utility
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            Point p = new Point(currXPixel + 5, (graphDisplay.Height - dp.yValue) + 5);
-                                            e.Graphics.DrawEllipse(pen, currXPixel, (graphDisplay.Height - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 30) - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 30) - dp.yValue), 10, 10);
 
                                             if (!firstPoint)
                                             {
@@ -899,8 +1032,8 @@ namespace OBD2_Utility
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            Point p = new Point(currXPixel + 5, (graphDisplay.Height - dp.yValue) + 5);
-                                            e.Graphics.DrawEllipse(pen, currXPixel, (graphDisplay.Height - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 30) - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 30) - dp.yValue), 10, 10);
 
                                             if (!firstPoint)
                                             {
@@ -982,9 +1115,18 @@ namespace OBD2_Utility
         {   
         }
 
-        private void startHeader_Click(object sender, EventArgs e)
+        private List<dataPoint> zeroOut(List<dataPoint> dp)
         {
+            List<dataPoint> temp = new List<dataPoint>();
 
+            foreach (dataPoint _dp in dp)
+            {
+                _dp.yValue = 0;
+                temp.Add(_dp);
+            }
+
+            dp = temp;
+            return dp;
         }
     }
 }
