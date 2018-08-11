@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.graphYAxisDisplay = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuGraphOption = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOption2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,17 +49,10 @@
             this.menuStatusBar = new System.Windows.Forms.TextBox();
             this.bg = new System.ComponentModel.BackgroundWorker();
             this.graphFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
-            ((System.ComponentModel.ISupportInitialize)(this.graphYAxisDisplay)).BeginInit();
+            this.graphDataPointOneLabel = new System.Windows.Forms.Label();
+            this.graphDataPointTwoLabel = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // graphYAxisDisplay
-            // 
-            this.graphYAxisDisplay.Location = new System.Drawing.Point(25, 109);
-            this.graphYAxisDisplay.Name = "graphYAxisDisplay";
-            this.graphYAxisDisplay.Size = new System.Drawing.Size(86, 879);
-            this.graphYAxisDisplay.TabIndex = 1;
-            this.graphYAxisDisplay.TabStop = false;
             // 
             // menuStrip1
             // 
@@ -119,7 +111,7 @@
             // 
             this.graphHeader.AutoSize = true;
             this.graphHeader.Font = new System.Drawing.Font("Impact", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.graphHeader.Location = new System.Drawing.Point(109, 63);
+            this.graphHeader.Location = new System.Drawing.Point(1702, 41);
             this.graphHeader.Name = "graphHeader";
             this.graphHeader.Size = new System.Drawing.Size(198, 43);
             this.graphHeader.TabIndex = 4;
@@ -127,9 +119,9 @@
             // 
             // graphGenerateButton
             // 
-            this.graphGenerateButton.Location = new System.Drawing.Point(632, 26);
+            this.graphGenerateButton.Location = new System.Drawing.Point(1729, 182);
             this.graphGenerateButton.Name = "graphGenerateButton";
-            this.graphGenerateButton.Size = new System.Drawing.Size(132, 71);
+            this.graphGenerateButton.Size = new System.Drawing.Size(144, 71);
             this.graphGenerateButton.TabIndex = 9;
             this.graphGenerateButton.Text = "Load Data";
             this.graphGenerateButton.UseVisualStyleBackColor = true;
@@ -138,7 +130,7 @@
             // graphYAxisSelect
             // 
             this.graphYAxisSelect.FormattingEnabled = true;
-            this.graphYAxisSelect.Location = new System.Drawing.Point(482, 50);
+            this.graphYAxisSelect.Location = new System.Drawing.Point(1729, 136);
             this.graphYAxisSelect.Name = "graphYAxisSelect";
             this.graphYAxisSelect.Size = new System.Drawing.Size(144, 17);
             this.graphYAxisSelect.TabIndex = 10;
@@ -146,7 +138,7 @@
             // graphXAxisSelect
             // 
             this.graphXAxisSelect.FormattingEnabled = true;
-            this.graphXAxisSelect.Location = new System.Drawing.Point(482, 27);
+            this.graphXAxisSelect.Location = new System.Drawing.Point(1729, 113);
             this.graphXAxisSelect.Name = "graphXAxisSelect";
             this.graphXAxisSelect.Size = new System.Drawing.Size(144, 17);
             this.graphXAxisSelect.TabIndex = 11;
@@ -154,7 +146,7 @@
             // graphBarBox
             // 
             this.graphBarBox.AutoSize = true;
-            this.graphBarBox.Location = new System.Drawing.Point(532, 80);
+            this.graphBarBox.Location = new System.Drawing.Point(1729, 159);
             this.graphBarBox.Name = "graphBarBox";
             this.graphBarBox.Size = new System.Drawing.Size(42, 17);
             this.graphBarBox.TabIndex = 12;
@@ -164,7 +156,7 @@
             // graphLineBox
             // 
             this.graphLineBox.AutoSize = true;
-            this.graphLineBox.Location = new System.Drawing.Point(580, 80);
+            this.graphLineBox.Location = new System.Drawing.Point(1777, 159);
             this.graphLineBox.Name = "graphLineBox";
             this.graphLineBox.Size = new System.Drawing.Size(46, 17);
             this.graphLineBox.TabIndex = 13;
@@ -183,24 +175,24 @@
             // graphOption1Select
             // 
             this.graphOption1Select.FormattingEnabled = true;
-            this.graphOption1Select.Location = new System.Drawing.Point(862, 27);
+            this.graphOption1Select.Location = new System.Drawing.Point(1729, 281);
             this.graphOption1Select.Name = "graphOption1Select";
-            this.graphOption1Select.Size = new System.Drawing.Size(144, 17);
+            this.graphOption1Select.Size = new System.Drawing.Size(144, 251);
             this.graphOption1Select.TabIndex = 15;
             this.graphOption1Select.SelectedIndexChanged += new System.EventHandler(this.graphOption1Select_SelectedIndexChanged);
             // 
             // graphOption2Select
             // 
             this.graphOption2Select.FormattingEnabled = true;
-            this.graphOption2Select.Location = new System.Drawing.Point(862, 50);
+            this.graphOption2Select.Location = new System.Drawing.Point(1729, 575);
             this.graphOption2Select.Name = "graphOption2Select";
-            this.graphOption2Select.Size = new System.Drawing.Size(144, 17);
+            this.graphOption2Select.Size = new System.Drawing.Size(144, 329);
             this.graphOption2Select.TabIndex = 16;
             // 
             // graphOption3Select
             // 
             this.graphOption3Select.FormattingEnabled = true;
-            this.graphOption3Select.Location = new System.Drawing.Point(862, 73);
+            this.graphOption3Select.Location = new System.Drawing.Point(1729, 910);
             this.graphOption3Select.Name = "graphOption3Select";
             this.graphOption3Select.Size = new System.Drawing.Size(144, 17);
             this.graphOption3Select.TabIndex = 17;
@@ -208,9 +200,9 @@
             // 
             // graphGraphButton
             // 
-            this.graphGraphButton.Location = new System.Drawing.Point(1012, 26);
+            this.graphGraphButton.Location = new System.Drawing.Point(1729, 933);
             this.graphGraphButton.Name = "graphGraphButton";
-            this.graphGraphButton.Size = new System.Drawing.Size(143, 71);
+            this.graphGraphButton.Size = new System.Drawing.Size(144, 51);
             this.graphGraphButton.TabIndex = 18;
             this.graphGraphButton.Text = "Graph";
             this.graphGraphButton.UseVisualStyleBackColor = true;
@@ -226,16 +218,36 @@
             // graphFlowPanel
             // 
             this.graphFlowPanel.AutoScroll = true;
-            this.graphFlowPanel.Location = new System.Drawing.Point(118, 113);
+            this.graphFlowPanel.Location = new System.Drawing.Point(12, 41);
             this.graphFlowPanel.Name = "graphFlowPanel";
-            this.graphFlowPanel.Size = new System.Drawing.Size(1774, 875);
+            this.graphFlowPanel.Size = new System.Drawing.Size(1684, 975);
             this.graphFlowPanel.TabIndex = 21;
+            // 
+            // graphDataPointOneLabel
+            // 
+            this.graphDataPointOneLabel.AutoSize = true;
+            this.graphDataPointOneLabel.Location = new System.Drawing.Point(1726, 265);
+            this.graphDataPointOneLabel.Name = "graphDataPointOneLabel";
+            this.graphDataPointOneLabel.Size = new System.Drawing.Size(113, 13);
+            this.graphDataPointOneLabel.TabIndex = 22;
+            this.graphDataPointOneLabel.Text = "Select Data Point One";
+            // 
+            // graphDataPointTwoLabel
+            // 
+            this.graphDataPointTwoLabel.AutoSize = true;
+            this.graphDataPointTwoLabel.Location = new System.Drawing.Point(1726, 559);
+            this.graphDataPointTwoLabel.Name = "graphDataPointTwoLabel";
+            this.graphDataPointTwoLabel.Size = new System.Drawing.Size(114, 13);
+            this.graphDataPointTwoLabel.TabIndex = 23;
+            this.graphDataPointTwoLabel.Text = "Select Data Point Two";
             // 
             // UofUOBD2Utility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.Controls.Add(this.graphDataPointTwoLabel);
+            this.Controls.Add(this.graphDataPointOneLabel);
             this.Controls.Add(this.graphFlowPanel);
             this.Controls.Add(this.menuStatusBar);
             this.Controls.Add(this.graphGraphButton);
@@ -249,13 +261,11 @@
             this.Controls.Add(this.graphYAxisSelect);
             this.Controls.Add(this.graphGenerateButton);
             this.Controls.Add(this.graphHeader);
-            this.Controls.Add(this.graphYAxisDisplay);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "UofUOBD2Utility";
             this.Text = "UofUOBD2Utility";
             this.Load += new System.EventHandler(this.UofUOBD2Utility_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.graphYAxisDisplay)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -264,7 +274,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.PictureBox graphYAxisDisplay;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem menuGraphOption;
         private System.Windows.Forms.ToolStripMenuItem menuOption2;
@@ -286,5 +295,7 @@
         private System.Windows.Forms.TextBox menuStatusBar;
         private System.ComponentModel.BackgroundWorker bg;
         private System.Windows.Forms.FlowLayoutPanel graphFlowPanel;
+        private System.Windows.Forms.Label graphDataPointOneLabel;
+        private System.Windows.Forms.Label graphDataPointTwoLabel;
     }
 }

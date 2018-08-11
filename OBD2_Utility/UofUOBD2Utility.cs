@@ -199,8 +199,6 @@ namespace OBD2_Utility
 
         }
 
-
-
         private void graphOption3Select_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -262,12 +260,10 @@ namespace OBD2_Utility
 
         }
 
-        
-
         // 5. THE USER HAS SELECTED ALL REQUIRED DATA AND PRESSES GRAPH BUTTON
         private void graphGraphButton_Click(object sender, EventArgs e)
         {
-           if(graphOption1Select.SelectedItem.Equals("") || graphOption2Select.SelectedItem.Equals("") || graphOption3Select.SelectedItem.Equals(""))
+           if(ReferenceEquals(graphOption1Select.SelectedItem, null) || ReferenceEquals(graphOption2Select.SelectedItem, null) || ReferenceEquals(graphOption3Select.SelectedItem, null))
             {
                 MessageBox.Show("Please select all required boxes");
                 return;
@@ -820,6 +816,8 @@ namespace OBD2_Utility
 
                 bool firstTime = true;
                 bool firstPoint = true;
+
+                bool firstDataPoint = true;
       
 
                 int dpIndex = 0;
@@ -927,8 +925,8 @@ namespace OBD2_Utility
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 30) - dp.yValue) + 5);
-                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 30) - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 45) - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 45) - dp.yValue), 10, 10);
 
                                             if (!firstPoint)
                                             {
@@ -939,6 +937,20 @@ namespace OBD2_Utility
                                             
                                         }
                                     }
+
+                                    using (Font myFont = new Font("Arial", 9))
+                                    {
+                                        if (firstDataPoint)
+                                        {
+                                            e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 10, (graphDisplay.Height - dp.yValue) - 65));
+                                            firstDataPoint = false;
+                                        }
+                                        else
+                                        {
+                                            e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 15, (graphDisplay.Height - dp.yValue) - 65));
+                                        }
+                                    }
+
                                     dpIndex++;
                                     j = graphData.dates.Count;
                                 }
@@ -962,8 +974,8 @@ namespace OBD2_Utility
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 30) - dp.yValue) + 5);
-                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 30) - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 45) - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 45) - dp.yValue), 10, 10);
 
                                             if (!firstPoint)
                                             {
@@ -972,6 +984,18 @@ namespace OBD2_Utility
                                             firstPoint = false;
                                             lastPoint = p;
 
+                                        }
+                                    }
+                                    using (Font myFont = new Font("Arial", 9))
+                                    {
+                                        if (firstDataPoint)
+                                        {
+                                            e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 10, (graphDisplay.Height - dp.yValue) - 65));
+                                            firstDataPoint = false;
+                                        }
+                                        else
+                                        {
+                                            e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 15, (graphDisplay.Height - dp.yValue) - 65));
                                         }
                                     }
                                     dpIndex++;
@@ -997,8 +1021,8 @@ namespace OBD2_Utility
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 30) - dp.yValue) + 5);
-                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 30) - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 45) - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 45) - dp.yValue), 10, 10);
 
                                             if (!firstPoint)
                                             {
@@ -1007,6 +1031,18 @@ namespace OBD2_Utility
                                             firstPoint = false;
                                             lastPoint = p;
 
+                                        }
+                                    }
+                                    using (Font myFont = new Font("Arial", 9))
+                                    {
+                                        if (firstDataPoint)
+                                        {
+                                            e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 10, (graphDisplay.Height - dp.yValue) - 65));
+                                            firstDataPoint = false;
+                                        }
+                                        else
+                                        {
+                                            e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 15, (graphDisplay.Height - dp.yValue) - 65));
                                         }
                                     }
                                     dpIndex++;
@@ -1032,8 +1068,8 @@ namespace OBD2_Utility
                                     {
                                         using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
                                         {
-                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 30) - dp.yValue) + 5);
-                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 30) - dp.yValue), 10, 10);
+                                            Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 45) - dp.yValue) + 5);
+                                            e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 45) - dp.yValue), 10, 10);
 
                                             if (!firstPoint)
                                             {
@@ -1042,6 +1078,18 @@ namespace OBD2_Utility
                                             firstPoint = false;
                                             lastPoint = p;
 
+                                        }
+                                    }
+                                    using (Font myFont = new Font("Arial", 9))
+                                    {
+                                        if (firstDataPoint)
+                                        {
+                                            e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 10, (graphDisplay.Height - dp.yValue) - 65));
+                                            firstDataPoint = false;
+                                        }
+                                        else
+                                        {
+                                            e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 15, (graphDisplay.Height - dp.yValue) - 65));
                                         }
                                     }
                                     dpIndex++;
