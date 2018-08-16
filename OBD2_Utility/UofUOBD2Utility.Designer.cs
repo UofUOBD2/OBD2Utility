@@ -222,6 +222,7 @@
             this.graphFlowPanel.Name = "graphFlowPanel";
             this.graphFlowPanel.Size = new System.Drawing.Size(1684, 975);
             this.graphFlowPanel.TabIndex = 21;
+            this.graphFlowPanel.MouseHover += new System.EventHandler(this.graphFlowPanel_MouseHover);
             // 
             // graphDataPointOneLabel
             // 
@@ -262,6 +263,7 @@
             this.Controls.Add(this.graphGenerateButton);
             this.Controls.Add(this.graphHeader);
             this.Controls.Add(this.menuStrip1);
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "UofUOBD2Utility";
             this.Text = "UofUOBD2Utility";
