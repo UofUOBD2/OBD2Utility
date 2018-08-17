@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.menuGraphOption = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuOption2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuOption3 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuGraph1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuGraph2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuGraph3 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuOption4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.menuOption5 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.menuHome = new System.Windows.Forms.ToolStripMenuItem();
             this.graphHeader = new System.Windows.Forms.Label();
             this.graphGenerateButton = new System.Windows.Forms.Button();
@@ -57,11 +57,11 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuGraphOption,
-            this.menuOption2,
-            this.menuOption3,
+            this.menuGraph1,
+            this.menuGraph2,
+            this.menuGraph3,
             this.menuOption4,
-            this.menuOption5,
+            this.menuSettings,
             this.menuHome});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -69,36 +69,38 @@
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // menuGraphOption
+            // menuGraph1
             // 
-            this.menuGraphOption.Name = "menuGraphOption";
-            this.menuGraphOption.Size = new System.Drawing.Size(68, 20);
-            this.menuGraphOption.Text = "Graphing";
-            this.menuGraphOption.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            this.menuGraph1.Name = "menuGraph1";
+            this.menuGraph1.Size = new System.Drawing.Size(76, 20);
+            this.menuGraph1.Text = "Graph One";
+            this.menuGraph1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
-            // menuOption2
+            // menuGraph2
             // 
-            this.menuOption2.Name = "menuOption2";
-            this.menuOption2.Size = new System.Drawing.Size(62, 20);
-            this.menuOption2.Text = "Option2";
+            this.menuGraph2.Name = "menuGraph2";
+            this.menuGraph2.Size = new System.Drawing.Size(76, 20);
+            this.menuGraph2.Text = "Graph Two";
+            this.menuGraph2.Click += new System.EventHandler(this.menuGraph2_Click);
             // 
-            // menuOption3
+            // menuGraph3
             // 
-            this.menuOption3.Name = "menuOption3";
-            this.menuOption3.Size = new System.Drawing.Size(62, 20);
-            this.menuOption3.Text = "Option3";
+            this.menuGraph3.Name = "menuGraph3";
+            this.menuGraph3.Size = new System.Drawing.Size(84, 20);
+            this.menuGraph3.Text = "Graph Three";
+            this.menuGraph3.Click += new System.EventHandler(this.menuGraph3_Click);
             // 
             // menuOption4
             // 
             this.menuOption4.Name = "menuOption4";
-            this.menuOption4.Size = new System.Drawing.Size(62, 20);
-            this.menuOption4.Text = "Option4";
+            this.menuOption4.Size = new System.Drawing.Size(95, 20);
+            this.menuOption4.Text = "Trouble Codes";
             // 
-            // menuOption5
+            // menuSettings
             // 
-            this.menuOption5.Name = "menuOption5";
-            this.menuOption5.Size = new System.Drawing.Size(62, 20);
-            this.menuOption5.Text = "Option5";
+            this.menuSettings.Name = "menuSettings";
+            this.menuSettings.Size = new System.Drawing.Size(61, 20);
+            this.menuSettings.Text = "Settings";
             // 
             // menuHome
             // 
@@ -177,16 +179,16 @@
             this.graphOption1Select.FormattingEnabled = true;
             this.graphOption1Select.Location = new System.Drawing.Point(1729, 281);
             this.graphOption1Select.Name = "graphOption1Select";
-            this.graphOption1Select.Size = new System.Drawing.Size(144, 251);
+            this.graphOption1Select.Size = new System.Drawing.Size(144, 290);
             this.graphOption1Select.TabIndex = 15;
             this.graphOption1Select.SelectedIndexChanged += new System.EventHandler(this.graphOption1Select_SelectedIndexChanged);
             // 
             // graphOption2Select
             // 
             this.graphOption2Select.FormattingEnabled = true;
-            this.graphOption2Select.Location = new System.Drawing.Point(1729, 575);
+            this.graphOption2Select.Location = new System.Drawing.Point(1729, 614);
             this.graphOption2Select.Name = "graphOption2Select";
-            this.graphOption2Select.Size = new System.Drawing.Size(144, 329);
+            this.graphOption2Select.Size = new System.Drawing.Size(144, 290);
             this.graphOption2Select.TabIndex = 16;
             // 
             // graphOption3Select
@@ -210,9 +212,9 @@
             // 
             // menuStatusBar
             // 
-            this.menuStatusBar.Location = new System.Drawing.Point(372, 4);
+            this.menuStatusBar.Location = new System.Drawing.Point(451, 4);
             this.menuStatusBar.Name = "menuStatusBar";
-            this.menuStatusBar.Size = new System.Drawing.Size(916, 20);
+            this.menuStatusBar.Size = new System.Drawing.Size(1441, 20);
             this.menuStatusBar.TabIndex = 19;
             // 
             // graphFlowPanel
@@ -236,7 +238,7 @@
             // graphDataPointTwoLabel
             // 
             this.graphDataPointTwoLabel.AutoSize = true;
-            this.graphDataPointTwoLabel.Location = new System.Drawing.Point(1726, 559);
+            this.graphDataPointTwoLabel.Location = new System.Drawing.Point(1725, 598);
             this.graphDataPointTwoLabel.Name = "graphDataPointTwoLabel";
             this.graphDataPointTwoLabel.Size = new System.Drawing.Size(114, 13);
             this.graphDataPointTwoLabel.TabIndex = 23;
@@ -277,11 +279,11 @@
 
         #endregion
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem menuGraphOption;
-        private System.Windows.Forms.ToolStripMenuItem menuOption2;
-        private System.Windows.Forms.ToolStripMenuItem menuOption3;
+        private System.Windows.Forms.ToolStripMenuItem menuGraph1;
+        private System.Windows.Forms.ToolStripMenuItem menuGraph2;
+        private System.Windows.Forms.ToolStripMenuItem menuGraph3;
         private System.Windows.Forms.ToolStripMenuItem menuOption4;
-        private System.Windows.Forms.ToolStripMenuItem menuOption5;
+        private System.Windows.Forms.ToolStripMenuItem menuSettings;
         private System.Windows.Forms.ToolStripMenuItem menuHome;
         private System.Windows.Forms.Label graphHeader;
         private System.Windows.Forms.Button graphGenerateButton;

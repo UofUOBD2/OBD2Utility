@@ -61,52 +61,7 @@ namespace OBD2_Utility
         }
 
 
-        // IF WE WANT TO MAKE THE CLASS PRIVATE
-        // GETTERS AND SETTERS
-        //public void setGraphType(String _graphType)
-        //{
-        //    graphType = _graphType;
-        //}
-        //public String getGraphType()
-        //{
-        //    return graphType;
-        //}
-
-        //public void setXNum(int _xNum)
-        //{
-        //    xNum = _xNum;
-        //}
-        //public int getXNum()
-        //{
-        //    return xNum;
-        //}
-
-        //public void setYNum(int _yNum)
-        //{
-        //    yNum = _yNum;
-        //}
-        //public int getYNum()
-        //{
-        //    return yNum;
-        //}
-
-        //public void setXInterval(int _xInterval)
-        //{
-        //    xInterval = _xInterval;
-        //}
-        //public int getXInterval()
-        //{
-        //    return xInterval;
-        //}
-
-        //public void setYInterval(int _yInterval)
-        //{
-        //    yInterval = _yInterval;
-        //}
-        //public int getYInterval()
-        //{
-        //    return yInterval;
-        //}
+       
 
 
 
