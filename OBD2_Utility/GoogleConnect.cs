@@ -52,6 +52,7 @@ namespace OBD2_Utility
 
         }
 
+        // Going to copy a lot of this function to do what I need it to do.
         public static List<List<Object>> retreiveData(String rng, String dataType, String spreadSheet, SheetsService service)
         {
 
@@ -68,7 +69,7 @@ namespace OBD2_Utility
 
             foreach (List<Object> list in values)
             {
-
+                // 
                 if (index != 1)
                 {
 

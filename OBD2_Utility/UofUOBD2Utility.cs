@@ -384,6 +384,50 @@ namespace OBD2_Utility
 
         }
 
+        private void graphGenerateButton_Click2(object sender, EventArgs e)
+        {
+
+            graphDisplay.Image = null;
+            firstDates = new List<string>();
+            secondDates.Clear();
+
+            menuStatusBar.Text = "Building database...";
+
+            // The spreadsheet we want to connect to
+            String spreadsheetId = "1vY4Znnn7MdustYiD6mFECE6WxLbRpm1YJ4HyQtjlqoI";
+
+            // Creates the object we will use to interact with spreadsheets
+            SheetsService service = GoogleConnect.connectToGoogle();
+
+            // Reads current data from the google spread sheet
+            // -----  The retrieveData function is something he wrote, I need to modify it. -----
+            google_results = GoogleConnect.retreiveData("A:B", (String)graphXAxisSelect.SelectedItem, spreadsheetId, service);
+
+            menuStatusBar.Text = "Configuring data...";
+
+            menuStatusBar.Text = "Please Select the remaining parameters available...";
+
+            foreach (List<Object> data in google_results)
+            {
+
+                String date = data[3].ToString();
+                firstDates.Add(date);
+
+            }
+
+            graphOption1Select.DataSource = firstDates;
+
+            List<String> timeOptions = new List<String>();
+            timeOptions.Add("Seconds");
+            timeOptions.Add("Minutes");
+            timeOptions.Add("Hours");
+            timeOptions.Add("Days");
+
+            graphOption3Select.DataSource = timeOptions;
+
+
+        }
+
         // 4. UPDATE OPTION BOX 2 AS THE USER CHANGES THEIR SELECTION FOR OPTION BOX 1
         private void graphOption1Select_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1342,7 +1386,7 @@ namespace OBD2_Utility
                             }
                         }
 
-                        // INCRAMENT THE INDEX
+                        // INCREMENT THE INDEX
                         currXPixel = (currXPixel + (graphData.xInterval * 2)) - zoomLevel;
 
                     }

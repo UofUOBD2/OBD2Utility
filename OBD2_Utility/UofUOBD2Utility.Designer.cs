@@ -65,7 +65,7 @@
             this.menuHome});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1904, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1284, 24);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -220,9 +220,9 @@
             // graphFlowPanel
             // 
             this.graphFlowPanel.AutoScroll = true;
-            this.graphFlowPanel.Location = new System.Drawing.Point(12, 41);
+            this.graphFlowPanel.Location = new System.Drawing.Point(12, 30);
             this.graphFlowPanel.Name = "graphFlowPanel";
-            this.graphFlowPanel.Size = new System.Drawing.Size(1684, 975);
+            this.graphFlowPanel.Size = new System.Drawing.Size(1260, 975);
             this.graphFlowPanel.TabIndex = 21;
             this.graphFlowPanel.MouseHover += new System.EventHandler(this.graphFlowPanel_MouseHover);
             // 
@@ -248,7 +248,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1904, 1041);
+            this.ClientSize = new System.Drawing.Size(1284, 781);
             this.Controls.Add(this.graphDataPointTwoLabel);
             this.Controls.Add(this.graphDataPointOneLabel);
             this.Controls.Add(this.graphFlowPanel);
