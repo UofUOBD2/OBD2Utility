@@ -76,17 +76,27 @@ namespace OBD2_Utility
 
             graphDisplay.Paint += GraphDisplay_Paint;
 
+            dashBoard.Paint += DashBoard_Paint;
+
             OGgraphDisplayWidth = graphDisplay.Width;
 
             menuStatusBar.Enabled = false;
+
+            Controls.Add(dashBoard);
 
             this.graphFlowPanel.MouseWheel += GraphFlowPanel_MouseWheel;
 
         }
 
+        private void DashBoard_Paint(object sender, PaintEventArgs e)
+        {
+            drawDashBoard(e);
+        }
+
         // OTHER CODE ------------------------------------------------------------------------------------------------------------------------------------------------
         private void setUpNextOption(String option)
         {
+
             foreach (Control c in this.Controls)
             {
                 if (c.Name.Contains(option))
@@ -102,13 +112,13 @@ namespace OBD2_Utility
 
         private void UofUOBD2Utility_Load(object sender, EventArgs e)
         {
-            setUpNextOption("start");
+            setUpNextOption("dashBoard");
             this.Focus();
         }
 
         private void menuHome_Click(object sender, EventArgs e)
         {
-            setUpNextOption("start");
+            setUpNextOption("dashBoard");
         }
 
         private void GraphFlowPanel_MouseWheel(object sender, MouseEventArgs e)
@@ -1296,6 +1306,19 @@ namespace OBD2_Utility
             }
         }
 
+        private void drawDashBoard(PaintEventArgs e)
+        {
+            Rectangle rect = new Rectangle();
+
+
+            rect = new Rectangle(200, 200, 200, 200);
+   
+            using (SolidBrush brush = new SolidBrush(System.Drawing.Color.Red))
+            {
+                e.Graphics.FillRectangle(brush, rect);
+            }
+        }
+
         // 9. DRAW THE GRAPH BEING STORED IN GLOBAL GRAPH OBJECT
         private void drawGraphData(PaintEventArgs e)
         {
@@ -1467,7 +1490,7 @@ namespace OBD2_Utility
                                     {
                                         drawRectangle(dp, currXPixel, e);
 
-                                        // LINE
+                                    // LINE
                                     }
                                     else if (graphData.graphType.Equals("line"))
                                     {
@@ -1809,8 +1832,5 @@ namespace OBD2_Utility
             }
         }
 
-        
-
-        
     }
 }

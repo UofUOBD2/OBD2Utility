@@ -37,6 +37,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.displayBox = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.signUpButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // usrBox
@@ -93,13 +94,14 @@
             // 
             // button1
             // 
+            this.button1.BackColor = System.Drawing.Color.Yellow;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(28, 332);
+            this.button1.Location = new System.Drawing.Point(28, 319);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(225, 23);
             this.button1.TabIndex = 6;
             this.button1.Text = "Log In";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // displayBox
@@ -119,11 +121,24 @@
             this.label5.TabIndex = 8;
             this.label5.Text = "Welcome to the";
             // 
-            // Form1
+            // signUpButton
+            // 
+            this.signUpButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.signUpButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.signUpButton.Location = new System.Drawing.Point(28, 348);
+            this.signUpButton.Name = "signUpButton";
+            this.signUpButton.Size = new System.Drawing.Size(225, 23);
+            this.signUpButton.TabIndex = 9;
+            this.signUpButton.Text = "Sign Up";
+            this.signUpButton.UseVisualStyleBackColor = false;
+            this.signUpButton.Click += new System.EventHandler(this.signUpButton_Click);
+            // 
+            // LogIn
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(285, 445);
+            this.Controls.Add(this.signUpButton);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.displayBox);
             this.Controls.Add(this.button1);
@@ -133,7 +148,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pwdBox);
             this.Controls.Add(this.usrBox);
-            this.Name = "Form1";
+            this.Name = "LogIn";
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -151,6 +166,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox displayBox;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button signUpButton;
     }
 }
 

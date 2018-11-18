@@ -34,27 +34,49 @@ namespace OBD2_Utility
             String username = usrBox.Text;
             String password = pwdBox.Text;
 
-            
-            
-
             // Update the user on the status of the application
             displayBox.Text = "Checking Credentials";
 
-            displayBox.Text = "Loading...";
+            String spreadSheetID = "1VPuLBGybTZU2DLpzTosy2yr6TYtsfdltVDREBnBmb2M";
+            SheetsService service = GoogleConnect.connectToGoogle();
+            List<List<Object>> google_results = GoogleConnect.retrieveLoginData("A:B", spreadSheetID, service);
 
-            // Creates a new instance of the application window and passes data read from google sheet.
-            this.Hide();
-            UofUOBD2Utility application = new UofUOBD2Utility();
-            application.ShowDialog();
+            foreach(List<Object> data in google_results)
+            {
+                if(data[0].Equals(username) && data[1].Equals(password))
+                {
+                    displayBox.Text = "Loading...";
+
+                    // Creates a new instance of the application window and passes data read from google sheet.
+                    this.Hide();
+                    UofUOBD2Utility application = new UofUOBD2Utility();
+                    application.ShowDialog();
+                }
+            }
+
+            displayBox.Text = "Incorrect Credentials";
 
         }
 
-        
+        private void signUpButton_Click(object sender, EventArgs e)
+        {
+            String username = usrBox.Text;
+            String password = pwdBox.Text;
 
-        
+            if(username.Equals("") || password.Equals(""))
+            {
+                displayBox.Text = "Can not provide blank password or username";
+            } else
+            {
+                String spreadSheetID = "1VPuLBGybTZU2DLpzTosy2yr6TYtsfdltVDREBnBmb2M";
+                SheetsService service = GoogleConnect.connectToGoogle();
+                List<List<Object>> google_results = GoogleConnect.retrieveLoginData("A:B", spreadSheetID, service);
 
-        
+                int nextEmptyCell = google_results.Count() + 2;
 
-        
+                GoogleConnect.updateData(username, "A" + nextEmptyCell, spreadSheetID, service);
+                GoogleConnect.updateData(password, "B" + nextEmptyCell, spreadSheetID, service);
+            }
+        }
     }  
 }

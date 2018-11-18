@@ -51,7 +51,10 @@
             this.graphFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.graphDataPointOneLabel = new System.Windows.Forms.Label();
             this.graphDataPointTwoLabel = new System.Windows.Forms.Label();
+            this.dashBoard = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
+            this.graphFlowPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dashBoard)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -220,6 +223,7 @@
             // graphFlowPanel
             // 
             this.graphFlowPanel.AutoScroll = true;
+            this.graphFlowPanel.Controls.Add(this.dashBoard);
             this.graphFlowPanel.Location = new System.Drawing.Point(12, 41);
             this.graphFlowPanel.Name = "graphFlowPanel";
             this.graphFlowPanel.Size = new System.Drawing.Size(1107, 794);
@@ -244,10 +248,20 @@
             this.graphDataPointTwoLabel.TabIndex = 23;
             this.graphDataPointTwoLabel.Text = "Select Data Point Two";
             // 
+            // dashBoard
+            // 
+            this.dashBoard.BackColor = System.Drawing.Color.White;
+            this.dashBoard.Location = new System.Drawing.Point(3, 3);
+            this.dashBoard.Name = "dashBoard";
+            this.dashBoard.Size = new System.Drawing.Size(1283, 794);
+            this.dashBoard.TabIndex = 24;
+            this.dashBoard.TabStop = false;
+            // 
             // UofUOBD2Utility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(1334, 861);
             this.Controls.Add(this.graphDataPointTwoLabel);
             this.Controls.Add(this.graphDataPointOneLabel);
@@ -272,6 +286,8 @@
             this.Load += new System.EventHandler(this.UofUOBD2Utility_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.graphFlowPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dashBoard)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -301,5 +317,6 @@
         private System.Windows.Forms.FlowLayoutPanel graphFlowPanel;
         private System.Windows.Forms.Label graphDataPointOneLabel;
         private System.Windows.Forms.Label graphDataPointTwoLabel;
+        private System.Windows.Forms.PictureBox dashBoard;
     }
 }
