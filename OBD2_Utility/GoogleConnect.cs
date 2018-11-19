@@ -104,6 +104,35 @@ namespace OBD2_Utility
 
         }
 
+        public static List<List<Object>> retrieveLoginData(String rng, String spreadSheet, SheetsService service)
+        {
+            String range = "Sheet1!" + rng;
+            SpreadsheetsResource.ValuesResource.GetRequest getRequest = service.Spreadsheets.Values.Get(spreadSheet, range);
+            ValueRange response = getRequest.Execute();
+            IList<IList<Object>> values = response.Values;
+
+            List<List<Object>> results = new List<List<Object>>();
+
+            int index = 1;
+
+            foreach (List<Object> list in values)
+            {
+                if(index != 1)
+                {
+                    results.Add(list);
+                }
+
+                index++;
+            }
+
+            return results;
+        }
+
+        public static void addUser(String rng, String spreadSheet, SheetsService service)
+        {
+
+        }
+
         public static void updateData(String msg, String rng, String spreadSheet, SheetsService service)
         {
             ValueRange body = new ValueRange();

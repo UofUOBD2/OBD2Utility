@@ -19,38 +19,42 @@ namespace OBD2_Utility
 {
     public partial class UofUOBD2Utility : Form
     {
-        bool graphConfigured = false;
 
+        bool graphOneSelected;
+        bool graphTwoSelected;
+        bool graphThreeSelected;
+
+        bool first_time = true;
+
+        // Items needed for graphing
+        bool graphConfigured = false;
+        bool takingDown;
+        bool buildingUp;
+        bool graphUpdateDone;
+        bool firstTimeGraphing;
+
+        int incramentValue;
+        int yMultiplier;
+        int yPixelScale;
+        int OGgraphDisplayWidth;
+        int zoomLevel;
+        int MAXZOOMLEVEL;
 
         List<dataPoint> decodedData;
         List<String> firstDates;
         List<String> secondDates;
         List<List<Object>> google_results;
-        Dictionary<int, String> xAxisDataPoints = new Dictionary<int, String>();
+        Point lastPoint;
+
         Graph graphData;
         Graph targetGraph;
 
-
-        int incramentValue = 5;
-        int yMultiplier;
-        int yPixelScale = 1;
-
         System.Windows.Forms.Timer time;
-
-        bool takingDown;
-        bool buildingUp;
-        bool graphUpdateDone;
-
-
-        bool firstTimeGraphing;
-
-        Point lastPoint; 
-
         PictureBox graphDisplay;
 
-        int OGgraphDisplayWidth;
-        int zoomLevel = 0;
-        const int MAXZOOMLEVEL = 30;
+        GraphConfig graphOne;
+        GraphConfig graphTwo;
+        GraphConfig graphThree;
 
 
         // Initializes the form
@@ -58,17 +62,11 @@ namespace OBD2_Utility
         {
             InitializeComponent();
 
-            takingDown = false;
-            buildingUp = false;
-            graphUpdateDone = true;
-            firstTimeGraphing = true;
+            graphOne = new GraphConfig(graphFlowPanel.Height, graphFlowPanel.Width);
+            graphTwo = new GraphConfig(graphFlowPanel.Height, graphFlowPanel.Width);
+            graphThree = new GraphConfig(graphFlowPanel.Height, graphFlowPanel.Width);
 
             graphDisplay = new PictureBox();
-            graphDisplay.Height = graphFlowPanel.Height - 20;
-            graphDisplay.Width = graphFlowPanel.Width - 20;
-            graphDisplay.SizeMode = PictureBoxSizeMode.StretchImage;
-            graphDisplay.BackColor = System.Drawing.Color.Black;
-
             graphFlowPanel.Controls.Add(graphDisplay);
 
             time = new System.Windows.Forms.Timer();
@@ -78,23 +76,27 @@ namespace OBD2_Utility
 
             graphDisplay.Paint += GraphDisplay_Paint;
 
-            bg.DoWork += Bg_DoWork;
-
-            firstDates = new List<string>();
-            secondDates = new List<string>();
+            dashBoard.Paint += DashBoard_Paint;
 
             OGgraphDisplayWidth = graphDisplay.Width;
 
             menuStatusBar.Enabled = false;
 
+            Controls.Add(dashBoard);
+
             this.graphFlowPanel.MouseWheel += GraphFlowPanel_MouseWheel;
 
         }
 
-        // OTHER CODE ------------------------------------------------------------------------------------------------------------------------------------------------
+        private void DashBoard_Paint(object sender, PaintEventArgs e)
+        {
+            drawDashBoard(e);
+        }
 
+        // OTHER CODE ------------------------------------------------------------------------------------------------------------------------------------------------
         private void setUpNextOption(String option)
         {
+
             foreach (Control c in this.Controls)
             {
                 if (c.Name.Contains(option))
@@ -110,13 +112,13 @@ namespace OBD2_Utility
 
         private void UofUOBD2Utility_Load(object sender, EventArgs e)
         {
-            setUpNextOption("start");
+            setUpNextOption("dashBoard");
             this.Focus();
         }
 
         private void menuHome_Click(object sender, EventArgs e)
         {
-            setUpNextOption("start");
+            setUpNextOption("dashBoard");
         }
 
         private void GraphFlowPanel_MouseWheel(object sender, MouseEventArgs e)
@@ -157,19 +159,192 @@ namespace OBD2_Utility
             graphDisplay.Invalidate();
         }
 
+        private double MonthDifference(DateTime lValue, DateTime rValue)
+        {
+            return (lValue.Month - rValue.Month) + 12 * (lValue.Year - rValue.Year);
+        }
         //GRAPHING CODE -----------------------------------------------------------------------------------------------------------------------------------------------
 
         // 1. CLICKING THE GRAPH OPTION
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            if (!first_time)
+            {
+                if (graphThreeSelected)
+                {
+                    switchGraphs(3);
+                }
+                else if (graphTwoSelected)
+                {
+                    switchGraphs(2);
+                }
+            }
+            else
+            {
+                first_time = false;
+            }
+
+
+            graphThreeSelected = false;
+            graphTwoSelected = false;
+            graphOneSelected = true;
+
             setUpNextOption("graph");
 
             List<String> xOptions = new List<string>(new String[] { "1", "2", "3" });
             List<String> yOptions = new List<string>(new String[] { "Time", "Option 2", "Option 3" });
 
+            graphConfigured = graphOne.graphConfigured;
+            takingDown = graphOne.takingDown;
+            buildingUp = graphOne.buildingUp;
+            graphUpdateDone = graphOne.graphUpdateDone;
+            firstTimeGraphing = graphOne.firstTimeGraphing;
+
+            incramentValue = graphOne.incramentValue;
+            yMultiplier = graphOne.yMultiplier;
+            yPixelScale = graphOne.yPixelScale;
+            OGgraphDisplayWidth = graphOne.OGgraphDisplayWidth;
+            zoomLevel = graphOne.zoomLevel;
+            MAXZOOMLEVEL = graphOne.MAXZOOMLEVEL;
+
+            decodedData = graphOne.decodedData;
+            firstDates = graphOne.firstDates;
+            secondDates = graphOne.secondDates;
+            google_results = graphOne.google_results;
+            lastPoint = graphOne.lastPoint;
+
+            graphData = graphOne.graphData;
+            targetGraph = graphOne.targetGraph;
+
+            graphFlowPanel.Controls.RemoveAt(0);
+            graphDisplay = new PictureBox();
+            graphDisplay = graphOne.graphDisplay;
+            graphFlowPanel.Controls.Add(graphDisplay);
+            graphDisplay.Paint += GraphDisplay_Paint;
+
+            graphDisplay.Invalidate();
+
+            configureOptionBox(xOptions, yOptions);
+        }
+
+        private void menuGraph2_Click(object sender, EventArgs e)
+        {
+            if (!first_time)
+            {
+                if (graphThreeSelected)
+                {
+                    switchGraphs(3);
+                }
+                else if (graphOneSelected)
+                {
+                    switchGraphs(1);
+                }
+            } else
+            {
+                first_time = false;
+            }
+
+            graphThreeSelected = false;
+            graphTwoSelected = true;
+            graphOneSelected = false;
+
+            setUpNextOption("graph");
+
+            List<String> xOptions = new List<string>(new String[] { "1", "2", "3" });
+            List<String> yOptions = new List<string>(new String[] { "Time", "Option 2", "Option 3" });
+
+            graphConfigured = graphTwo.graphConfigured;
+            takingDown = graphTwo.takingDown;
+            buildingUp = graphTwo.buildingUp;
+            graphUpdateDone = graphTwo.graphUpdateDone;
+            firstTimeGraphing = graphTwo.firstTimeGraphing;
+
+            incramentValue = graphTwo.incramentValue;
+            yMultiplier = graphTwo.yMultiplier;
+            yPixelScale = graphTwo.yPixelScale;
+            OGgraphDisplayWidth = graphTwo.OGgraphDisplayWidth;
+            zoomLevel = graphTwo.zoomLevel;
+            MAXZOOMLEVEL = graphTwo.MAXZOOMLEVEL;
+
+            decodedData = graphTwo.decodedData;
+            firstDates = graphTwo.firstDates;
+            secondDates = graphTwo.secondDates;
+            google_results = graphTwo.google_results;
+            lastPoint = graphTwo.lastPoint;
+
+            graphData = graphTwo.graphData;
+            targetGraph = graphTwo.targetGraph;
+
+            graphFlowPanel.Controls.RemoveAt(0);
+            graphDisplay = new PictureBox();
+            graphDisplay = graphTwo.graphDisplay;
+            graphFlowPanel.Controls.Add(graphDisplay);
+            graphDisplay.Paint += GraphDisplay_Paint;
+
+
+            configureOptionBox(xOptions, yOptions);
+        }
+
+        private void menuGraph3_Click(object sender, EventArgs e)
+        {
+            if (!first_time)
+            {
+                if (graphOneSelected)
+                {
+                    switchGraphs(1);
+                }
+                else if (graphTwoSelected)
+                {
+                    switchGraphs(2);
+                }
+            }
+            else
+            {
+                first_time = false;
+            }
+
+
+            graphThreeSelected = true;
+            graphTwoSelected = false;
+            graphOneSelected = false;
+
+            setUpNextOption("graph");
+
+            List<String> xOptions = new List<string>(new String[] { "1", "2", "3" });
+            List<String> yOptions = new List<string>(new String[] { "Time", "Option 2", "Option 3" });
+
+            graphConfigured = graphThree.graphConfigured;
+            takingDown = graphThree.takingDown;
+            buildingUp = graphThree.buildingUp;
+            graphUpdateDone = graphThree.graphUpdateDone;
+            firstTimeGraphing = graphThree.firstTimeGraphing;
+
+            incramentValue = graphThree.incramentValue;
+            yMultiplier = graphThree.yMultiplier;
+            yPixelScale = graphThree.yPixelScale;
+            OGgraphDisplayWidth = graphThree.OGgraphDisplayWidth;
+            zoomLevel = graphThree.zoomLevel;
+            MAXZOOMLEVEL = graphThree.MAXZOOMLEVEL;
+
+            decodedData = graphThree.decodedData;
+            firstDates = graphThree.firstDates;
+            secondDates = graphThree.secondDates;
+            google_results = graphThree.google_results;
+            lastPoint = graphThree.lastPoint;
+
+            graphData = graphThree.graphData;
+            targetGraph = graphThree.targetGraph;
+
+            graphFlowPanel.Controls.RemoveAt(0);
+            graphDisplay = new PictureBox();
+            graphDisplay = graphThree.graphDisplay;
+            graphFlowPanel.Controls.Add(graphDisplay);
+            graphDisplay.Paint += GraphDisplay_Paint;
+
             configureOptionBox(xOptions, yOptions);
 
         }
+
 
         // 2. SET UP THE OPTION BOX FOR THE USER
         private void configureOptionBox(List<String> xOptions, List<String> yOptions)
@@ -217,6 +392,8 @@ namespace OBD2_Utility
             timeOptions.Add("Minutes");
             timeOptions.Add("Hours");
             timeOptions.Add("Days");
+            timeOptions.Add("Months");
+            timeOptions.Add("Years");
 
             graphOption3Select.DataSource = timeOptions;
 
@@ -226,7 +403,6 @@ namespace OBD2_Utility
         // 4. UPDATE OPTION BOX 2 AS THE USER CHANGES THEIR SELECTION FOR OPTION BOX 1
         private void graphOption1Select_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             secondDates.Clear();
             graphOption2Select.DataSource = new List<String>();
 
@@ -263,33 +439,51 @@ namespace OBD2_Utility
                     firstDates.Add(date);
                     first = false;
 
-                } else
+                }
+                else
                 {
                     nextDate = Convert.ToDateTime(data[3]);
 
                     if (graphOption3Select.SelectedItem.Equals("Seconds"))
                     {
-                        if(nextDate.Second != recentDate.Second || nextDate.Minute != recentDate.Minute || nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day)
+                        if (nextDate.Second != recentDate.Second || nextDate.Minute != recentDate.Minute || nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day || nextDate.Month != recentDate.Month || nextDate.Year != recentDate.Year)
                         {
                             firstDates.Add(data[3].ToString());
                         }
 
-                    } else if (graphOption3Select.SelectedItem.Equals("Minutes"))
+                    }
+                    else if (graphOption3Select.SelectedItem.Equals("Minutes"))
                     {
-                        if (nextDate.Minute != recentDate.Minute || nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day)
+                        if (nextDate.Minute != recentDate.Minute || nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day || nextDate.Month != recentDate.Month || nextDate.Year != recentDate.Year)
                         {
                             firstDates.Add(data[3].ToString());
                         }
 
-                    } else if (graphOption3Select.SelectedItem.Equals("Hours"))
+                    }
+                    else if (graphOption3Select.SelectedItem.Equals("Hours"))
                     {
-                        if (nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day)
+                        if (nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day || nextDate.Month != recentDate.Month || nextDate.Year != recentDate.Year)
                         {
                             firstDates.Add(data[3].ToString());
                         }
-                    } else if (graphOption3Select.SelectedItem.Equals("Days"))
+                    }
+                    else if (graphOption3Select.SelectedItem.Equals("Days"))
                     {
-                        if (nextDate.Day != recentDate.Day)
+                        if (nextDate.Day != recentDate.Day || nextDate.Month != recentDate.Month || nextDate.Year != recentDate.Year)
+                        {
+                            firstDates.Add(data[3].ToString());
+                        }
+                    }
+                    else if (graphOption3Select.SelectedItem.Equals("Months"))
+                    {
+                        if (nextDate.Month != recentDate.Month || nextDate.Year != recentDate.Year)
+                        {
+                            firstDates.Add(data[3].ToString());
+                        }
+                    }
+                    else if (graphOption3Select.SelectedItem.Equals("Years"))
+                    {
+                        if (nextDate.Year != recentDate.Year)
                         {
                             firstDates.Add(data[3].ToString());
                         }
@@ -307,13 +501,13 @@ namespace OBD2_Utility
         // 5. THE USER HAS SELECTED ALL REQUIRED DATA AND PRESSES GRAPH BUTTON
         private void graphGraphButton_Click(object sender, EventArgs e)
         {
-           if(ReferenceEquals(graphOption1Select.SelectedItem, null) || ReferenceEquals(graphOption2Select.SelectedItem, null) || ReferenceEquals(graphOption3Select.SelectedItem, null))
+            if (ReferenceEquals(graphOption1Select.SelectedItem, null) || ReferenceEquals(graphOption2Select.SelectedItem, null) || ReferenceEquals(graphOption3Select.SelectedItem, null))
             {
                 MessageBox.Show("Please select all required boxes");
                 return;
             }
 
-            
+
             targetGraph = new Graph();
 
 
@@ -332,7 +526,7 @@ namespace OBD2_Utility
             }
 
 
-         
+
         }
 
         // 6. CONFIGURE THE GRAPH SO THAT IT IS FORMATTED CORRECTLY FOR THE SCREEN
@@ -361,19 +555,30 @@ namespace OBD2_Utility
                     if (graphOption3Select.SelectedValue.Equals("Seconds"))
                     {
                         currentDate = Convert.ToDateTime(data[3]).AddSeconds(-1);
-                    } else if (graphOption3Select.SelectedValue.Equals("Minutes"))
+                    }
+                    else if (graphOption3Select.SelectedValue.Equals("Minutes"))
                     {
                         currentDate = Convert.ToDateTime(data[3]).AddMinutes(-1);
-                    } else if (graphOption3Select.SelectedValue.Equals("Hours"))
+                    }
+                    else if (graphOption3Select.SelectedValue.Equals("Hours"))
                     {
                         currentDate = Convert.ToDateTime(data[3]).AddHours(-1);
-                    } else if (graphOption3Select.SelectedValue.Equals("Days"))
+                    }
+                    else if (graphOption3Select.SelectedValue.Equals("Days"))
                     {
                         currentDate = Convert.ToDateTime(data[3]).AddDays(-1);
                     }
-                    
+                    else if (graphOption3Select.SelectedValue.Equals("Months"))
+                    {
+                        currentDate = Convert.ToDateTime(data[3]).AddMonths(-1);
+                    }
+                    else if (graphOption3Select.SelectedValue.Equals("Years"))
+                    {
+                        currentDate = Convert.ToDateTime(data[3]).AddYears(-1);
+                    }
+
                     first = false;
-                } 
+                }
 
                 lastDate = currentDate;
                 currentDate = Convert.ToDateTime(data[3]);
@@ -386,7 +591,7 @@ namespace OBD2_Utility
                     narrowedData.Add(data);
                     dates.Add(currentDate);
                 }
-                
+
 
             }
 
@@ -411,7 +616,7 @@ namespace OBD2_Utility
                 }
                 int slots = (seconds * 2) - 1;
 
-                if(slots >= 2000)
+                if (slots >= 2000)
                 {
                     MessageBox.Show("To many values, please make the distance between data point 1 and 2 smaller.");
                     return _graph;
@@ -434,15 +639,15 @@ namespace OBD2_Utility
 
                 pixelsPerRect = totalNumPixels / ((seconds * 2) - 1);
 
-                if(pixelsPerRect <= 14)
+                if (pixelsPerRect <= 14)
                 {
 
                     totalNumPixels = 14 * ((seconds * 2) - 1);
-                    if(totalNumPixels > graphDisplay.Width)
+                    if (totalNumPixels > graphDisplay.Width)
                     {
                         graphDisplay.Width = totalNumPixels + 50;
                     }
-                    
+
                 }
 
                 pixelsPerRect = totalNumPixels / ((seconds * 2) - 1);
@@ -693,6 +898,158 @@ namespace OBD2_Utility
                     0, 0, 0, 0,
                     decodedData, dates);
             }
+            else if (graphOption3Select.SelectedItem.Equals("Months"))
+            {
+                double timeSpan = MonthDifference(dates[(dates.Count - 1)], dates[0]);
+
+                // REPRESENTS HOW MANY INDICIES NEED TO BE PLOTTED ON THE GRAPH
+                int months = Convert.ToInt32(timeSpan) + 1;
+
+                // ROUND UP IF THERE ARE ANY MILLISECONDS
+                if (((timeSpan + 1) - (double)months) > 0)
+                {
+                    months++;
+                }
+
+                int slots = (months * 2) - 1;
+
+                if (slots >= 2000)
+                {
+                    MessageBox.Show("To many values, please make the distance between data point 1 and 2 smaller.");
+                    return _graph;
+                }
+
+                // MAKE ROOM FOR THE BORDER
+                int totalNumPixels = graphDisplay.Width - 4;
+
+                // FIND A PICTURE BOX WIDTH THAT WILL FIT THE NUMBER OF REQUIRED INDICIES
+                while (!getOutOfLoop)
+                {
+                    if (totalNumPixels % ((months * 2) - 1) != 0)
+                    {
+                        totalNumPixels--;
+                    }
+                    else
+                    {
+                        getOutOfLoop = true;
+                    }
+                }
+
+                pixelsPerRect = totalNumPixels / ((months * 2) - 1);
+
+                if (pixelsPerRect <= 14)
+                {
+
+                    totalNumPixels = 14 * ((months * 2) - 1);
+                    if (totalNumPixels > graphDisplay.Width)
+                    {
+                        graphDisplay.Width = totalNumPixels + 50;
+                    }
+                }
+
+                pixelsPerRect = totalNumPixels / ((months * 2) - 1);
+
+                // DETERMINE WHAT KIND OF GRAPH IS BEING PLOTTED
+                String graphType;
+
+                if (graphBarBox.Checked)
+                {
+                    graphType = "bar";
+
+                }
+                else if (graphLineBox.Checked)
+                {
+
+                    graphType = "line";
+                }
+                else
+                {
+                    graphType = "bar";
+                }
+
+                TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
+
+
+                _graph = new Graph(graphType, dates[0].Month, months + dates[0].Month, pixelsPerRect, slots, "months",
+                    0, 0, 0, 0,
+                    decodedData, dates);
+            }
+            else if (graphOption3Select.SelectedItem.Equals("Years"))
+            {
+                double timeSpan = dates[dates.Count - 1].Year - dates[0].Year;
+
+                // REPRESENTS HOW MANY INDICIES NEED TO BE PLOTTED ON THE GRAPH
+                int years = Convert.ToInt32(timeSpan) + 1;
+
+                // ROUND UP IF THERE ARE ANY MILLISECONDS
+                if (((timeSpan + 1) - (double)years) > 0)
+                {
+                    years++;
+                }
+
+                int slots = (years * 2) - 1;
+
+                if (slots >= 2000)
+                {
+                    MessageBox.Show("To many values, please make the distance between data point 1 and 2 smaller.");
+                    return _graph;
+                }
+
+                // MAKE ROOM FOR THE BORDER
+                int totalNumPixels = graphDisplay.Width - 4;
+
+                // FIND A PICTURE BOX WIDTH THAT WILL FIT THE NUMBER OF REQUIRED INDICIES
+                while (!getOutOfLoop)
+                {
+                    if (totalNumPixels % ((years * 2) - 1) != 0)
+                    {
+                        totalNumPixels--;
+                    }
+                    else
+                    {
+                        getOutOfLoop = true;
+                    }
+                }
+
+                pixelsPerRect = totalNumPixels / ((years * 2) - 1);
+
+                if (pixelsPerRect <= 14)
+                {
+
+                    totalNumPixels = 14 * ((years * 2) - 1);
+                    if (totalNumPixels > graphDisplay.Width)
+                    {
+                        graphDisplay.Width = totalNumPixels + 50;
+                    }
+                }
+
+                pixelsPerRect = totalNumPixels / ((years * 2) - 1);
+
+                // DETERMINE WHAT KIND OF GRAPH IS BEING PLOTTED
+                String graphType;
+
+                if (graphBarBox.Checked)
+                {
+                    graphType = "bar";
+
+                }
+                else if (graphLineBox.Checked)
+                {
+
+                    graphType = "line";
+                }
+                else
+                {
+                    graphType = "bar";
+                }
+
+                TimeSpan ts = dates[dates.Count - 1].Subtract(dates[0]);
+
+
+                _graph = new Graph(graphType, dates[0].Year, years + dates[0].Year, pixelsPerRect, slots, "years",
+                    0, 0, 0, 0,
+                    decodedData, dates);
+            }
 
             graphConfigured = true;
             return _graph;
@@ -702,11 +1059,11 @@ namespace OBD2_Utility
         {
             // Determine the largest Y value....
 
-            int largestYValue = 0; 
+            int largestYValue = 0;
 
-            foreach(dataPoint dp in decodedData)
+            foreach (dataPoint dp in decodedData)
             {
-                if(dp.yValue > largestYValue)
+                if (dp.yValue > largestYValue)
                 {
                     largestYValue = dp.yValue;
                 }
@@ -723,37 +1080,39 @@ namespace OBD2_Utility
                 largestYValue++;
             }
 
-            
+
             // Determine how many pixels should be used for each incrament
 
             int numPixels = graphDisplay.Height;
 
-            if(largestYValue > numPixels)
+            if (largestYValue > numPixels)
             {
                 yPixelScale = 1;
 
-                while(largestYValue > numPixels)
+                while (largestYValue > numPixels)
                 {
-                    yPixelScale = yPixelScale * 10; 
+                    yPixelScale = yPixelScale * 10;
                     largestYValue = largestYValue / 10;
                 }
 
-            } else
+            }
+            else
             {
                 yPixelScale = 1;
             }
-            while(numPixels % largestYValue != 0)
+            while (numPixels % largestYValue != 0)
             {
                 numPixels--;
             }
-            if(yPixelScale > 10)
+            if (yPixelScale > 10)
             {
                 incramentValue = yPixelScale;
-            } else
+            }
+            else
             {
                 incramentValue = 5;
             }
-            
+
             yMultiplier = numPixels / largestYValue;
 
             // Try first with 1, if the pixels per index is 1 then try 10 and so on...
@@ -767,11 +1126,12 @@ namespace OBD2_Utility
 
             if (graphOption3Select.SelectedItem.Equals("Seconds"))
             {
-                if (nextDate.Second != recentDate.Second || nextDate.Minute != recentDate.Minute || nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day)
+                if (nextDate.Second != recentDate.Second || nextDate.Minute != recentDate.Minute || nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day || nextDate.Month != recentDate.Month || nextDate.Year != recentDate.Year)
                 {
                     return true;
 
-                } else
+                }
+                else
                 {
                     return false;
                 }
@@ -779,11 +1139,12 @@ namespace OBD2_Utility
             }
             else if (graphOption3Select.SelectedItem.Equals("Minutes"))
             {
-                if (nextDate.Minute != recentDate.Minute || nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day)
+                if (nextDate.Minute != recentDate.Minute || nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day || nextDate.Month != recentDate.Month || nextDate.Year != recentDate.Year)
                 {
                     return true;
 
-                } else
+                }
+                else
                 {
                     return false;
                 }
@@ -791,22 +1152,46 @@ namespace OBD2_Utility
             }
             else if (graphOption3Select.SelectedItem.Equals("Hours"))
             {
-                if (nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day)
+                if (nextDate.Hour != recentDate.Hour || nextDate.Day != recentDate.Day || nextDate.Month != recentDate.Month || nextDate.Year != recentDate.Year)
                 {
                     return true;
-                } else
+                }
+                else
                 {
                     return false;
                 }
             }
             else if (graphOption3Select.SelectedItem.Equals("Days"))
             {
-                if (nextDate.Day != recentDate.Day)
+                if (nextDate.Day != recentDate.Day || nextDate.Month != recentDate.Month || nextDate.Year != recentDate.Year)
                 {
                     return true;
-                } else
+                }
+                else
                 {
-                   return false;
+                    return false;
+                }
+            }
+            else if (graphOption3Select.SelectedItem.Equals("Months"))
+            {
+                if (nextDate.Month != recentDate.Month || nextDate.Year != recentDate.Year)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (graphOption3Select.SelectedItem.Equals("Years"))
+            {
+                if (nextDate.Year != recentDate.Year)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
 
@@ -820,7 +1205,7 @@ namespace OBD2_Utility
         {
             int value;
             int i = 0;
-             
+
             dataPoint dp;
             List<dataPoint> results = new List<dataPoint>();
 
@@ -861,10 +1246,11 @@ namespace OBD2_Utility
                     {
                         if (dp.yValue != 0)
                         {
-                            if((dp.yValue - incramentValue) < 0)
+                            if ((dp.yValue - incramentValue) < 0)
                             {
                                 dp.yValue--;
-                            } else
+                            }
+                            else
                             {
                                 dp.yValue -= incramentValue;
                             }
@@ -887,7 +1273,7 @@ namespace OBD2_Utility
                         graphData.dataEntries = zeroOut(graphData.dataEntries);
                     }
 
-                    
+
                 }
 
                 else if (buildingUp)
@@ -898,14 +1284,15 @@ namespace OBD2_Utility
                     {
                         if (graphData.dataEntries[i].yValue != targetGraph.dataEntries[i].yValue)
                         {
-                            if(graphData.dataEntries[i].yValue + incramentValue > targetGraph.dataEntries[i].yValue)
+                            if (graphData.dataEntries[i].yValue + incramentValue > targetGraph.dataEntries[i].yValue)
                             {
                                 graphData.dataEntries[i].yValue++;
-                            } else
+                            }
+                            else
                             {
                                 graphData.dataEntries[i].yValue += incramentValue;
                             }
-                            
+
                             needToKeepGoing = true;
                         }
                     }
@@ -919,6 +1306,19 @@ namespace OBD2_Utility
             }
         }
 
+        private void drawDashBoard(PaintEventArgs e)
+        {
+            Rectangle rect = new Rectangle();
+
+
+            rect = new Rectangle(200, 200, 200, 200);
+   
+            using (SolidBrush brush = new SolidBrush(System.Drawing.Color.Red))
+            {
+                e.Graphics.FillRectangle(brush, rect);
+            }
+        }
+
         // 9. DRAW THE GRAPH BEING STORED IN GLOBAL GRAPH OBJECT
         private void drawGraphData(PaintEventArgs e)
         {
@@ -926,8 +1326,6 @@ namespace OBD2_Utility
             {
                 Rectangle rect;
                 DateTime currDate;
-
-                xAxisDataPoints.Clear();
 
                 bool firstTime = true;
                 bool firstPoint = true;
@@ -941,11 +1339,15 @@ namespace OBD2_Utility
                 int currentDateMinute = 0;
                 int currentDateHour = 0;
                 int currentDateDay = 0;
+                int currentDateMonth = 0;
+                int currentDateYear = 0;
 
                 int currentSecondIndex = 0;
                 int currentMinuteIndex = 0;
                 int currentHourIndex = 0;
                 int currentDayIndex = 0;
+                int currentMonthIndex = 0;
+                int currentYearIndex = 0;
 
                 if (graphData != null)
                 {
@@ -958,7 +1360,7 @@ namespace OBD2_Utility
                             // Checking for intervals of 60 (Seconds and Minutes)
                             if ((graphData.timeInterval.Equals("seconds") || graphData.timeInterval.Equals("minutes")) && (i % 60) == 0)
                             {
-                                if (graphData.timeInterval.Equals("seconds")) 
+                                if (graphData.timeInterval.Equals("seconds"))
                                 {
                                     currentMinuteIndex++;
                                     currGraphIndex = 0;
@@ -974,6 +1376,18 @@ namespace OBD2_Utility
                                         currentDayIndex++;
                                         currentHourIndex = 0;
                                     }
+
+                                    if ((currentDayIndex % 30) == 0)
+                                    {
+                                        currentMonthIndex++;
+                                        currentDayIndex = 0;
+                                    }
+
+                                    if ((currentMonthIndex % 12) == 0)
+                                    {
+                                        currentYearIndex++;
+                                        currentMonthIndex = 0;
+                                    }
                                 }
                                 else if (graphData.timeInterval.Equals("minutes"))
                                 {
@@ -985,14 +1399,52 @@ namespace OBD2_Utility
                                         currentDayIndex++;
                                         currentHourIndex = 0;
                                     }
+                                    if ((currentDayIndex % 30) == 0)
+                                    {
+                                        currentMonthIndex++;
+                                        currentDayIndex = 0;
+                                    }
+
+                                    if ((currentMonthIndex % 12) == 0)
+                                    {
+                                        currentYearIndex++;
+                                        currentMonthIndex = 0;
+                                    }
                                 }
                             }
-                            else if(graphData.timeInterval.Equals("hours") && (i % 24) == 0) 
+                            else if (graphData.timeInterval.Equals("hours") && (i % 24) == 0)
                             {
-                                   
+
                                 currentDayIndex++;
                                 currGraphIndex = 0;
-                                    
+
+                                if ((currentDayIndex % 30) == 0)
+                                {
+                                    currentMonthIndex++;
+                                    currentDayIndex = 0;
+                                }
+
+                                if ((currentMonthIndex % 12) == 0)
+                                {
+                                    currentYearIndex++;
+                                    currentMonthIndex = 0;
+                                }
+
+                            } else if(graphData.timeInterval.Equals("days") && (i % 30) == 0)
+                            {
+                                currentMonthIndex++;
+                                currGraphIndex = 0;
+
+                                if ((currentMonthIndex % 12) == 0)
+                                {
+                                    currentYearIndex++;
+                                    currentMonthIndex = 0;
+                                }
+
+                            } else if(graphData.timeInterval.Equals("months") && (i % 12) == 0)
+                            {
+                                currentYearIndex++;
+                                currGraphIndex = 0;
                             }
                             else
                             {
@@ -1010,12 +1462,16 @@ namespace OBD2_Utility
                             currentDateMinute = currDate.Minute;
                             currentDateHour = currDate.Hour;
                             currentDateDay = currDate.Day;
+                            currentDateMonth = currDate.Month;
+                            currentDateYear = currDate.Year;
 
                             if (firstTime)
                             {
                                 currentMinuteIndex = currentDateMinute;
                                 currentHourIndex = currentDateHour;
                                 currentDayIndex = currentDateDay;
+                                currentMonthIndex = currentDateMonth;
+                                currentYearIndex = currentDateYear;
                                 firstTime = false;
                             }
 
@@ -1024,7 +1480,7 @@ namespace OBD2_Utility
                                 currentSecondIndex = currGraphIndex;
 
                                 if (currentSecondIndex == currentDateSecond && currentMinuteIndex == currentDateMinute && currentHourIndex == currentDateHour
-                                    && currentDayIndex == currentDateDay)
+                                    && currentDayIndex == currentDateDay && currentMonthIndex == currentDateMonth && currentYearIndex == currentDateYear)
                                 {
                                     dataPoint dp = graphData.dataEntries[dpIndex];
 
@@ -1035,14 +1491,15 @@ namespace OBD2_Utility
                                         drawRectangle(dp, currXPixel, e);
 
                                     // LINE
-                                    } else if (graphData.graphType.Equals("line"))
+                                    }
+                                    else if (graphData.graphType.Equals("line"))
                                     {
                                         firstPoint = drawDot(dp, currXPixel, e, firstPoint);
                                     }
 
                                     // Y VALUE
                                     firstDataPoint = drawYValue(dp, currXPixel, e, firstDataPoint);
-                                    
+
                                     dpIndex++;
                                     j = graphData.dates.Count;
                                 }
@@ -1051,7 +1508,8 @@ namespace OBD2_Utility
                             {
                                 currentMinuteIndex = currGraphIndex;
 
-                                if(currentMinuteIndex == currentDateMinute && currentHourIndex == currentDateHour && currentDayIndex == currentDateDay)
+                                if (currentMinuteIndex == currentDateMinute && currentHourIndex == currentDateHour && currentDayIndex == currentDateDay
+                                    && currentMonthIndex == currentDateMonth && currentYearIndex == currentDateYear)
                                 {
                                     dataPoint dp = graphData.dataEntries[dpIndex];
                                     if (graphData.graphType.Equals("bar"))
@@ -1071,7 +1529,8 @@ namespace OBD2_Utility
                             {
                                 currentHourIndex = currGraphIndex;
 
-                                if (currentHourIndex == currentDateHour && currentDayIndex == currentDateDay)
+                                if (currentHourIndex == currentDateHour && currentDayIndex == currentDateDay
+                                    && currentMonthIndex == currentDateMonth && currentYearIndex == currentDateYear)
                                 {
                                     dataPoint dp = graphData.dataEntries[dpIndex];
                                     if (graphData.graphType.Equals("bar"))
@@ -1091,7 +1550,7 @@ namespace OBD2_Utility
                             {
                                 currentDayIndex = currGraphIndex;
 
-                                if (currentDayIndex == currentDateDay)
+                                if (currentDayIndex == currentDateDay && currentMonthIndex == currentDateMonth && currentYearIndex == currentDateYear)
                                 {
                                     dataPoint dp = graphData.dataEntries[dpIndex];
                                     if (graphData.graphType.Equals("bar"))
@@ -1107,12 +1566,55 @@ namespace OBD2_Utility
                                     j = graphData.dates.Count;
                                 }
                             }
+                            else if (graphData.timeInterval == "months")
+                            {
+                                currentMonthIndex = currGraphIndex;
+
+                                if (currentMonthIndex == currentDateMonth && currentYearIndex == currentDateYear)
+                                {
+                                    dataPoint dp = graphData.dataEntries[dpIndex];
+
+                                    if (graphData.graphType.Equals("bar"))
+                                    {
+                                        drawRectangle(dp, currXPixel, e);
+                                    }
+                                    else if (graphData.graphType.Equals("line"))
+                                    {
+                                        firstPoint = drawDot(dp, currXPixel, e, firstPoint);
+                                    }
+                                    firstDataPoint = drawYValue(dp, currXPixel, e, firstDataPoint);
+                                    dpIndex++;
+                                    j = graphData.dates.Count;
+                                }
+                            }
+                            else if (graphData.timeInterval == "years")
+                            {
+                                currentYearIndex = currGraphIndex;
+
+                                if (currentYearIndex == currentDateYear)
+                                {
+                                    dataPoint dp = graphData.dataEntries[dpIndex];
+
+                                    if (graphData.graphType.Equals("bar"))
+                                    {
+                                        drawRectangle(dp, currXPixel, e);
+                                    }
+                                    else if (graphData.graphType.Equals("line"))
+                                    {
+                                        firstPoint = drawDot(dp, currXPixel, e, firstPoint);
+                                    }
+                                    firstDataPoint = drawYValue(dp, currXPixel, e, firstDataPoint);
+                                    dpIndex++;
+                                    j = graphData.dates.Count;
+                                }
+                            }
 
                             // LITTLE MARK FOR EACH INDEX
-                            if(zoomLevel >= 17)
+                            if (zoomLevel >= 17)
                             {
                                 rect = new Rectangle(currXPixel + (((graphData.xInterval - (zoomLevel - 17)) / 2) - 1), graphDisplay.Height - 40, 1, 10);
-                            } else
+                            }
+                            else
                             {
                                 rect = new Rectangle(currXPixel + ((graphData.xInterval / 2) - 2), graphDisplay.Height - 40, 2, 10);
                             }
@@ -1123,11 +1625,12 @@ namespace OBD2_Utility
 
 
                             // TIMESTAMP ON X AXIS
-                            int xIntervalCheckAmount; 
-                            if(zoomLevel - 17 > 0)
+                            int xIntervalCheckAmount;
+                            if (zoomLevel - 17 > 0)
                             {
                                 xIntervalCheckAmount = zoomLevel - 17;
-                            } else
+                            }
+                            else
                             {
                                 xIntervalCheckAmount = 0;
                             }
@@ -1168,7 +1671,7 @@ namespace OBD2_Utility
 
                         // INCRAMENT THE INDEX
                         currXPixel = (currXPixel + (graphData.xInterval * 2)) - zoomLevel;
-                            
+
                     }
                 }
             }
@@ -1203,7 +1706,7 @@ namespace OBD2_Utility
                 {
                     e.Graphics.DrawLine(pen, lastPoint, p);
                 }
-                
+
                 lastPoint = p;
 
             }
@@ -1229,7 +1732,7 @@ namespace OBD2_Utility
         }
 
         private void Bg_DoWork(object sender, DoWorkEventArgs e)
-        {   
+        {
         }
 
         // USED TO TAKE A LIST OF DATAPOINTS AND MAKE ALL Y VALUES = 0
@@ -1245,6 +1748,88 @@ namespace OBD2_Utility
 
             dp = temp;
             return dp;
+        }
+
+        private void switchGraphs(int num)
+        {
+            if (num == 1)
+            {
+                graphOne.graphConfigured = graphConfigured;
+                graphOne.takingDown = takingDown;
+                graphOne.buildingUp = buildingUp;
+                graphOne.graphUpdateDone = graphUpdateDone;
+                graphOne.firstTimeGraphing = firstTimeGraphing;
+
+                graphOne.incramentValue = incramentValue;
+                graphOne.yMultiplier = yMultiplier;
+                graphOne.yPixelScale = yPixelScale;
+                graphOne.OGgraphDisplayWidth = OGgraphDisplayWidth;
+                graphOne.zoomLevel = zoomLevel;
+                graphOne.MAXZOOMLEVEL = MAXZOOMLEVEL;
+
+                graphOne.decodedData = decodedData;
+                graphOne.firstDates = firstDates;
+                graphOne.secondDates = secondDates;
+                graphOne.google_results = google_results;
+                graphOne.lastPoint = lastPoint;
+
+                graphOne.graphData = graphData;
+                graphOne.targetGraph = targetGraph;
+
+                graphOne.graphDisplay = graphDisplay;
+
+            } else if(num == 2)
+            {
+                graphTwo.graphConfigured = graphConfigured;
+                graphTwo.takingDown = takingDown;
+                graphTwo.buildingUp = buildingUp;
+                graphTwo.graphUpdateDone = graphUpdateDone;
+                graphTwo.firstTimeGraphing = firstTimeGraphing;
+
+                graphTwo.incramentValue = incramentValue;
+                graphTwo.yMultiplier = yMultiplier;
+                graphTwo.yPixelScale = yPixelScale;
+                graphTwo.OGgraphDisplayWidth = OGgraphDisplayWidth;
+                graphTwo.zoomLevel = zoomLevel;
+                graphTwo.MAXZOOMLEVEL = MAXZOOMLEVEL;
+
+                graphTwo.decodedData = decodedData;
+                graphTwo.firstDates = firstDates;
+                graphTwo.secondDates = secondDates;
+                graphTwo.google_results = google_results;
+                graphTwo.lastPoint = lastPoint;
+
+                graphTwo.graphData = graphData;
+                graphTwo.targetGraph = targetGraph;
+
+                graphTwo.graphDisplay = graphDisplay;
+
+            } else if(num == 3)
+            {
+                graphThree.graphConfigured = graphConfigured;
+                graphThree.takingDown = takingDown;
+                graphThree.buildingUp = buildingUp;
+                graphThree.graphUpdateDone = graphUpdateDone;
+                graphThree.firstTimeGraphing = firstTimeGraphing;
+
+                graphThree.incramentValue = incramentValue;
+                graphThree.yMultiplier = yMultiplier;
+                graphThree.yPixelScale = yPixelScale;
+                graphThree.OGgraphDisplayWidth = OGgraphDisplayWidth;
+                graphThree.zoomLevel = zoomLevel;
+                graphThree.MAXZOOMLEVEL = MAXZOOMLEVEL;
+
+                graphThree.decodedData = decodedData;
+                graphThree.firstDates = firstDates;
+                graphThree.secondDates = secondDates;
+                graphThree.google_results = google_results;
+                graphThree.lastPoint = lastPoint;
+
+                graphThree.graphData = graphData;
+                graphThree.targetGraph = targetGraph;
+
+                graphThree.graphDisplay = graphDisplay;
+            }
         }
 
     }

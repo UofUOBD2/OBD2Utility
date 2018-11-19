@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="GoogleConnect.cs" />
     <Compile Include="Graph.cs" />
+    <Compile Include="GraphConfig.cs" />
     <Compile Include="LogIn.cs">
       <SubType>Form</SubType>
     </Compile>
