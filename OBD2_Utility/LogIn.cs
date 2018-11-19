@@ -34,27 +34,32 @@ namespace OBD2_Utility
             String username = usrBox.Text;
             String password = pwdBox.Text;
 
-            // Update the user on the status of the application
-            displayBox.Text = "Checking Credentials";
+            this.Hide();
+            UofUOBD2Utility application = new UofUOBD2Utility();
+            application.ShowDialog();
+            this.Close();
 
-            String spreadSheetID = "1VPuLBGybTZU2DLpzTosy2yr6TYtsfdltVDREBnBmb2M";
-            SheetsService service = GoogleConnect.connectToGoogle();
-            List<List<Object>> google_results = GoogleConnect.retrieveLoginData("A:B", spreadSheetID, service);
+            //// Update the user on the status of the application
+            //displayBox.Text = "Checking Credentials";
 
-            foreach(List<Object> data in google_results)
-            {
-                if(data[0].Equals(username) && data[1].Equals(password))
-                {
-                    displayBox.Text = "Loading...";
+            //String spreadSheetID = "1VPuLBGybTZU2DLpzTosy2yr6TYtsfdltVDREBnBmb2M";
+            //SheetsService service = GoogleConnect.connectToGoogle();
+            //List<List<Object>> google_results = GoogleConnect.retrieveLoginData("A:B", spreadSheetID, service);
 
-                    // Creates a new instance of the application window and passes data read from google sheet.
-                    this.Hide();
-                    UofUOBD2Utility application = new UofUOBD2Utility();
-                    application.ShowDialog();
-                }
-            }
+            //foreach(List<Object> data in google_results)
+            //{
+            //    if(data[0].Equals(username) && data[1].Equals(password))
+            //    {
+            //        displayBox.Text = "Loading...";
 
-            displayBox.Text = "Incorrect Credentials";
+            //        // Creates a new instance of the application window and passes data read from google sheet.
+            //        this.Hide();
+            //        UofUOBD2Utility application = new UofUOBD2Utility();
+            //        application.ShowDialog();
+            //    }
+            //}
+
+            //displayBox.Text = "Incorrect Credentials";
 
         }
 

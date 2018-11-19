@@ -41,7 +41,6 @@
             this.graphXAxisSelect = new System.Windows.Forms.ListBox();
             this.graphBarBox = new System.Windows.Forms.CheckBox();
             this.graphLineBox = new System.Windows.Forms.CheckBox();
-            this.graphTypeLabel = new System.Windows.Forms.Label();
             this.graphOption1Select = new System.Windows.Forms.ListBox();
             this.graphOption2Select = new System.Windows.Forms.ListBox();
             this.graphOption3Select = new System.Windows.Forms.ListBox();
@@ -49,11 +48,18 @@
             this.menuStatusBar = new System.Windows.Forms.TextBox();
             this.bg = new System.ComponentModel.BackgroundWorker();
             this.graphFlowPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.dashBoard = new System.Windows.Forms.PictureBox();
             this.graphDataPointOneLabel = new System.Windows.Forms.Label();
             this.graphDataPointTwoLabel = new System.Windows.Forms.Label();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.dashBoard = new System.Windows.Forms.PictureBox();
+            this.aGauge1 = new System.Windows.Forms.AGauge();
+            this.aGauge2 = new System.Windows.Forms.AGauge();
             this.menuStrip1.SuspendLayout();
-            this.graphFlowPanel.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dashBoard)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,7 +76,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1166, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1206, 28);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -118,7 +124,7 @@
             // 
             this.graphHeader.AutoSize = true;
             this.graphHeader.Font = new System.Drawing.Font("Impact", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.graphHeader.Location = new System.Drawing.Point(1001, 54);
+            this.graphHeader.Location = new System.Drawing.Point(1016, 19);
             this.graphHeader.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.graphHeader.Name = "graphHeader";
             this.graphHeader.Size = new System.Drawing.Size(127, 54);
@@ -127,10 +133,10 @@
             // 
             // graphGenerateButton
             // 
-            this.graphGenerateButton.Location = new System.Drawing.Point(1007, 197);
-            this.graphGenerateButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphGenerateButton.Location = new System.Drawing.Point(1012, 162);
+            this.graphGenerateButton.Margin = new System.Windows.Forms.Padding(4);
             this.graphGenerateButton.Name = "graphGenerateButton";
-            this.graphGenerateButton.Size = new System.Drawing.Size(121, 41);
+            this.graphGenerateButton.Size = new System.Drawing.Size(121, 72);
             this.graphGenerateButton.TabIndex = 9;
             this.graphGenerateButton.Text = "Load Data";
             this.graphGenerateButton.UseVisualStyleBackColor = true;
@@ -140,8 +146,8 @@
             // 
             this.graphYAxisSelect.FormattingEnabled = true;
             this.graphYAxisSelect.ItemHeight = 16;
-            this.graphYAxisSelect.Location = new System.Drawing.Point(1007, 140);
-            this.graphYAxisSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphYAxisSelect.Location = new System.Drawing.Point(1012, 105);
+            this.graphYAxisSelect.Margin = new System.Windows.Forms.Padding(4);
             this.graphYAxisSelect.Name = "graphYAxisSelect";
             this.graphYAxisSelect.Size = new System.Drawing.Size(121, 20);
             this.graphYAxisSelect.TabIndex = 10;
@@ -150,8 +156,8 @@
             // 
             this.graphXAxisSelect.FormattingEnabled = true;
             this.graphXAxisSelect.ItemHeight = 16;
-            this.graphXAxisSelect.Location = new System.Drawing.Point(1007, 112);
-            this.graphXAxisSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphXAxisSelect.Location = new System.Drawing.Point(1012, 77);
+            this.graphXAxisSelect.Margin = new System.Windows.Forms.Padding(4);
             this.graphXAxisSelect.Name = "graphXAxisSelect";
             this.graphXAxisSelect.Size = new System.Drawing.Size(121, 20);
             this.graphXAxisSelect.TabIndex = 11;
@@ -159,8 +165,8 @@
             // graphBarBox
             // 
             this.graphBarBox.AutoSize = true;
-            this.graphBarBox.Location = new System.Drawing.Point(1010, 168);
-            this.graphBarBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphBarBox.Location = new System.Drawing.Point(1012, 133);
+            this.graphBarBox.Margin = new System.Windows.Forms.Padding(4);
             this.graphBarBox.Name = "graphBarBox";
             this.graphBarBox.Size = new System.Drawing.Size(52, 21);
             this.graphBarBox.TabIndex = 12;
@@ -170,32 +176,22 @@
             // graphLineBox
             // 
             this.graphLineBox.AutoSize = true;
-            this.graphLineBox.Location = new System.Drawing.Point(1070, 168);
-            this.graphLineBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphLineBox.Location = new System.Drawing.Point(1076, 133);
+            this.graphLineBox.Margin = new System.Windows.Forms.Padding(4);
             this.graphLineBox.Name = "graphLineBox";
             this.graphLineBox.Size = new System.Drawing.Size(57, 21);
             this.graphLineBox.TabIndex = 13;
             this.graphLineBox.Text = "Line";
             this.graphLineBox.UseVisualStyleBackColor = true;
             // 
-            // graphTypeLabel
-            // 
-            this.graphTypeLabel.AutoSize = true;
-            this.graphTypeLabel.Location = new System.Drawing.Point(639, 98);
-            this.graphTypeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.graphTypeLabel.Name = "graphTypeLabel";
-            this.graphTypeLabel.Size = new System.Drawing.Size(40, 17);
-            this.graphTypeLabel.TabIndex = 14;
-            this.graphTypeLabel.Text = "Type";
-            // 
             // graphOption1Select
             // 
             this.graphOption1Select.FormattingEnabled = true;
             this.graphOption1Select.ItemHeight = 16;
-            this.graphOption1Select.Location = new System.Drawing.Point(1004, 263);
-            this.graphOption1Select.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphOption1Select.Location = new System.Drawing.Point(1012, 259);
+            this.graphOption1Select.Margin = new System.Windows.Forms.Padding(4);
             this.graphOption1Select.Name = "graphOption1Select";
-            this.graphOption1Select.Size = new System.Drawing.Size(130, 132);
+            this.graphOption1Select.Size = new System.Drawing.Size(121, 100);
             this.graphOption1Select.TabIndex = 15;
             this.graphOption1Select.SelectedIndexChanged += new System.EventHandler(this.graphOption1Select_SelectedIndexChanged);
             // 
@@ -203,18 +199,19 @@
             // 
             this.graphOption2Select.FormattingEnabled = true;
             this.graphOption2Select.ItemHeight = 16;
-            this.graphOption2Select.Location = new System.Drawing.Point(1002, 431);
-            this.graphOption2Select.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphOption2Select.Location = new System.Drawing.Point(1012, 397);
+            this.graphOption2Select.Margin = new System.Windows.Forms.Padding(4);
             this.graphOption2Select.Name = "graphOption2Select";
-            this.graphOption2Select.Size = new System.Drawing.Size(126, 148);
+            this.graphOption2Select.Size = new System.Drawing.Size(121, 100);
             this.graphOption2Select.TabIndex = 16;
+            this.graphOption2Select.SelectedIndexChanged += new System.EventHandler(this.graphOption2Select_SelectedIndexChanged);
             // 
             // graphOption3Select
             // 
             this.graphOption3Select.FormattingEnabled = true;
             this.graphOption3Select.ItemHeight = 16;
-            this.graphOption3Select.Location = new System.Drawing.Point(1001, 587);
-            this.graphOption3Select.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphOption3Select.Location = new System.Drawing.Point(1012, 503);
+            this.graphOption3Select.Margin = new System.Windows.Forms.Padding(4);
             this.graphOption3Select.Name = "graphOption3Select";
             this.graphOption3Select.Size = new System.Drawing.Size(121, 20);
             this.graphOption3Select.TabIndex = 17;
@@ -222,10 +219,10 @@
             // 
             // graphGraphButton
             // 
-            this.graphGraphButton.Location = new System.Drawing.Point(1002, 615);
-            this.graphGraphButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphGraphButton.Location = new System.Drawing.Point(1012, 531);
+            this.graphGraphButton.Margin = new System.Windows.Forms.Padding(4);
             this.graphGraphButton.Name = "graphGraphButton";
-            this.graphGraphButton.Size = new System.Drawing.Size(121, 38);
+            this.graphGraphButton.Size = new System.Drawing.Size(121, 103);
             this.graphGraphButton.TabIndex = 18;
             this.graphGraphButton.Text = "Graph";
             this.graphGraphButton.UseVisualStyleBackColor = true;
@@ -234,7 +231,7 @@
             // menuStatusBar
             // 
             this.menuStatusBar.Location = new System.Drawing.Point(591, 5);
-            this.menuStatusBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.menuStatusBar.Margin = new System.Windows.Forms.Padding(4);
             this.menuStatusBar.Name = "menuStatusBar";
             this.menuStatusBar.Size = new System.Drawing.Size(402, 22);
             this.menuStatusBar.TabIndex = 19;
@@ -242,69 +239,190 @@
             // graphFlowPanel
             // 
             this.graphFlowPanel.AutoScroll = true;
-            this.graphFlowPanel.Controls.Add(this.dashBoard);
-            this.graphFlowPanel.Location = new System.Drawing.Point(16, 50);
-            this.graphFlowPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphFlowPanel.Location = new System.Drawing.Point(7, 7);
+            this.graphFlowPanel.Margin = new System.Windows.Forms.Padding(4);
             this.graphFlowPanel.Name = "graphFlowPanel";
-            this.graphFlowPanel.Size = new System.Drawing.Size(977, 603);
+            this.graphFlowPanel.Size = new System.Drawing.Size(997, 627);
             this.graphFlowPanel.TabIndex = 21;
             this.graphFlowPanel.MouseHover += new System.EventHandler(this.graphFlowPanel_MouseHover);
-            // 
-            // dashBoard
-            // 
-            this.dashBoard.BackColor = System.Drawing.Color.White;
-            this.dashBoard.Location = new System.Drawing.Point(4, 4);
-            this.dashBoard.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.dashBoard.Name = "dashBoard";
-            this.dashBoard.Size = new System.Drawing.Size(1134, 890);
-            this.dashBoard.TabIndex = 24;
-            this.dashBoard.TabStop = false;
             // 
             // graphDataPointOneLabel
             // 
             this.graphDataPointOneLabel.AutoSize = true;
-            this.graphDataPointOneLabel.Location = new System.Drawing.Point(1001, 242);
+            this.graphDataPointOneLabel.Location = new System.Drawing.Point(1054, 238);
             this.graphDataPointOneLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.graphDataPointOneLabel.Name = "graphDataPointOneLabel";
-            this.graphDataPointOneLabel.Size = new System.Drawing.Size(148, 17);
+            this.graphDataPointOneLabel.Size = new System.Drawing.Size(39, 17);
             this.graphDataPointOneLabel.TabIndex = 22;
-            this.graphDataPointOneLabel.Text = "Select Data Point One";
+            this.graphDataPointOneLabel.Text = "DP 1";
             // 
             // graphDataPointTwoLabel
             // 
             this.graphDataPointTwoLabel.AutoSize = true;
-            this.graphDataPointTwoLabel.Location = new System.Drawing.Point(1001, 410);
+            this.graphDataPointTwoLabel.Location = new System.Drawing.Point(1054, 376);
             this.graphDataPointTwoLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.graphDataPointTwoLabel.Name = "graphDataPointTwoLabel";
-            this.graphDataPointTwoLabel.Size = new System.Drawing.Size(147, 17);
+            this.graphDataPointTwoLabel.Size = new System.Drawing.Size(39, 17);
             this.graphDataPointTwoLabel.TabIndex = 23;
-            this.graphDataPointTwoLabel.Text = "Select Data Point Two";
+            this.graphDataPointTwoLabel.Text = "DP 2";
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.ItemSize = new System.Drawing.Size(0, 1);
+            this.tabControl1.Location = new System.Drawing.Point(0, 31);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1200, 650);
+            this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabControl1.TabIndex = 25;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.BackColor = System.Drawing.Color.White;
+            this.tabPage1.Controls.Add(this.graphFlowPanel);
+            this.tabPage1.Controls.Add(this.graphHeader);
+            this.tabPage1.Controls.Add(this.graphDataPointTwoLabel);
+            this.tabPage1.Controls.Add(this.graphGraphButton);
+            this.tabPage1.Controls.Add(this.graphXAxisSelect);
+            this.tabPage1.Controls.Add(this.graphOption3Select);
+            this.tabPage1.Controls.Add(this.graphDataPointOneLabel);
+            this.tabPage1.Controls.Add(this.graphOption2Select);
+            this.tabPage1.Controls.Add(this.graphYAxisSelect);
+            this.tabPage1.Controls.Add(this.graphBarBox);
+            this.tabPage1.Controls.Add(this.graphLineBox);
+            this.tabPage1.Controls.Add(this.graphOption1Select);
+            this.tabPage1.Controls.Add(this.graphGenerateButton);
+            this.tabPage1.Location = new System.Drawing.Point(4, 5);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1192, 641);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.BackColor = System.Drawing.Color.White;
+            this.tabPage2.Controls.Add(this.aGauge2);
+            this.tabPage2.Controls.Add(this.aGauge1);
+            this.tabPage2.Controls.Add(this.dashBoard);
+            this.tabPage2.Location = new System.Drawing.Point(4, 5);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1192, 641);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "tabPage2";
+            // 
+            // dashBoard
+            // 
+            this.dashBoard.BackColor = System.Drawing.Color.White;
+            this.dashBoard.Location = new System.Drawing.Point(7, 7);
+            this.dashBoard.Margin = new System.Windows.Forms.Padding(4);
+            this.dashBoard.Name = "dashBoard";
+            this.dashBoard.Size = new System.Drawing.Size(1150, 600);
+            this.dashBoard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.dashBoard.TabIndex = 24;
+            this.dashBoard.TabStop = false;
+            this.dashBoard.Click += new System.EventHandler(this.dashBoard_Click);
+            // 
+            // aGauge1
+            // 
+            this.aGauge1.BaseArcColor = System.Drawing.Color.Gray;
+            this.aGauge1.BaseArcRadius = 80;
+            this.aGauge1.BaseArcStart = 135;
+            this.aGauge1.BaseArcSweep = 270;
+            this.aGauge1.BaseArcWidth = 2;
+            this.aGauge1.Center = new System.Drawing.Point(100, 100);
+            this.aGauge1.Location = new System.Drawing.Point(249, 154);
+            this.aGauge1.MaxValue = 400F;
+            this.aGauge1.MinValue = -100F;
+            this.aGauge1.Name = "aGauge1";
+            this.aGauge1.NeedleColor1 = System.Windows.Forms.AGaugeNeedleColor.Red;
+            this.aGauge1.NeedleColor2 = System.Drawing.Color.DimGray;
+            this.aGauge1.NeedleRadius = 80;
+            this.aGauge1.NeedleType = System.Windows.Forms.NeedleType.Advance;
+            this.aGauge1.NeedleWidth = 2;
+            this.aGauge1.ScaleLinesInterColor = System.Drawing.Color.Black;
+            this.aGauge1.ScaleLinesInterInnerRadius = 73;
+            this.aGauge1.ScaleLinesInterOuterRadius = 80;
+            this.aGauge1.ScaleLinesInterWidth = 1;
+            this.aGauge1.ScaleLinesMajorColor = System.Drawing.Color.Black;
+            this.aGauge1.ScaleLinesMajorInnerRadius = 70;
+            this.aGauge1.ScaleLinesMajorOuterRadius = 80;
+            this.aGauge1.ScaleLinesMajorStepValue = 50F;
+            this.aGauge1.ScaleLinesMajorWidth = 2;
+            this.aGauge1.ScaleLinesMinorColor = System.Drawing.Color.Gray;
+            this.aGauge1.ScaleLinesMinorInnerRadius = 75;
+            this.aGauge1.ScaleLinesMinorOuterRadius = 80;
+            this.aGauge1.ScaleLinesMinorTicks = 9;
+            this.aGauge1.ScaleLinesMinorWidth = 1;
+            this.aGauge1.ScaleNumbersColor = System.Drawing.Color.Black;
+            this.aGauge1.ScaleNumbersFormat = null;
+            this.aGauge1.ScaleNumbersRadius = 95;
+            this.aGauge1.ScaleNumbersRotation = 0;
+            this.aGauge1.ScaleNumbersStartScaleLine = 0;
+            this.aGauge1.ScaleNumbersStepScaleLines = 1;
+            this.aGauge1.Size = new System.Drawing.Size(300, 282);
+            this.aGauge1.TabIndex = 25;
+            this.aGauge1.Text = "aGauge1";
+            this.aGauge1.Value = 0F;
+            // 
+            // aGauge2
+            // 
+            this.aGauge2.BaseArcColor = System.Drawing.Color.Gray;
+            this.aGauge2.BaseArcRadius = 80;
+            this.aGauge2.BaseArcStart = 135;
+            this.aGauge2.BaseArcSweep = 270;
+            this.aGauge2.BaseArcWidth = 2;
+            this.aGauge2.Center = new System.Drawing.Point(100, 100);
+            this.aGauge2.Location = new System.Drawing.Point(659, 169);
+            this.aGauge2.MaxValue = 400F;
+            this.aGauge2.MinValue = -100F;
+            this.aGauge2.Name = "aGauge2";
+            this.aGauge2.NeedleColor1 = System.Windows.Forms.AGaugeNeedleColor.Gray;
+            this.aGauge2.NeedleColor2 = System.Drawing.Color.DimGray;
+            this.aGauge2.NeedleRadius = 80;
+            this.aGauge2.NeedleType = System.Windows.Forms.NeedleType.Advance;
+            this.aGauge2.NeedleWidth = 2;
+            this.aGauge2.ScaleLinesInterColor = System.Drawing.Color.Black;
+            this.aGauge2.ScaleLinesInterInnerRadius = 73;
+            this.aGauge2.ScaleLinesInterOuterRadius = 80;
+            this.aGauge2.ScaleLinesInterWidth = 1;
+            this.aGauge2.ScaleLinesMajorColor = System.Drawing.Color.Black;
+            this.aGauge2.ScaleLinesMajorInnerRadius = 70;
+            this.aGauge2.ScaleLinesMajorOuterRadius = 80;
+            this.aGauge2.ScaleLinesMajorStepValue = 50F;
+            this.aGauge2.ScaleLinesMajorWidth = 2;
+            this.aGauge2.ScaleLinesMinorColor = System.Drawing.Color.Gray;
+            this.aGauge2.ScaleLinesMinorInnerRadius = 75;
+            this.aGauge2.ScaleLinesMinorOuterRadius = 80;
+            this.aGauge2.ScaleLinesMinorTicks = 9;
+            this.aGauge2.ScaleLinesMinorWidth = 1;
+            this.aGauge2.ScaleNumbersColor = System.Drawing.Color.Black;
+            this.aGauge2.ScaleNumbersFormat = null;
+            this.aGauge2.ScaleNumbersRadius = 95;
+            this.aGauge2.ScaleNumbersRotation = 0;
+            this.aGauge2.ScaleNumbersStartScaleLine = 0;
+            this.aGauge2.ScaleNumbersStepScaleLines = 1;
+            this.aGauge2.Size = new System.Drawing.Size(330, 299);
+            this.aGauge2.TabIndex = 26;
+            this.aGauge2.Text = "aGauge2";
+            this.aGauge2.Value = 0F;
             // 
             // UofUOBD2Utility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1166, 678);
-            this.Controls.Add(this.graphDataPointTwoLabel);
-            this.Controls.Add(this.graphDataPointOneLabel);
-            this.Controls.Add(this.graphFlowPanel);
+            this.ClientSize = new System.Drawing.Size(1206, 693);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStatusBar);
-            this.Controls.Add(this.graphGraphButton);
-            this.Controls.Add(this.graphOption3Select);
-            this.Controls.Add(this.graphOption2Select);
-            this.Controls.Add(this.graphOption1Select);
-            this.Controls.Add(this.graphTypeLabel);
-            this.Controls.Add(this.graphLineBox);
-            this.Controls.Add(this.graphBarBox);
-            this.Controls.Add(this.graphXAxisSelect);
-            this.Controls.Add(this.graphYAxisSelect);
-            this.Controls.Add(this.graphGenerateButton);
-            this.Controls.Add(this.graphHeader);
             this.Controls.Add(this.menuStrip1);
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(1184, 725);
             this.Name = "UofUOBD2Utility";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
@@ -312,7 +430,10 @@
             this.Load += new System.EventHandler(this.UofUOBD2Utility_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.graphFlowPanel.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dashBoard)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -333,7 +454,6 @@
         private System.Windows.Forms.ListBox graphXAxisSelect;
         private System.Windows.Forms.CheckBox graphBarBox;
         private System.Windows.Forms.CheckBox graphLineBox;
-        private System.Windows.Forms.Label graphTypeLabel;
         private System.Windows.Forms.ListBox graphOption1Select;
         private System.Windows.Forms.ListBox graphOption2Select;
         private System.Windows.Forms.ListBox graphOption3Select;
@@ -343,6 +463,11 @@
         private System.Windows.Forms.FlowLayoutPanel graphFlowPanel;
         private System.Windows.Forms.Label graphDataPointOneLabel;
         private System.Windows.Forms.Label graphDataPointTwoLabel;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.PictureBox dashBoard;
+        private System.Windows.Forms.AGauge aGauge2;
+        private System.Windows.Forms.AGauge aGauge1;
     }
 }

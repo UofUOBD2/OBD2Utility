@@ -24,6 +24,9 @@ namespace OBD2_Utility
         bool graphTwoSelected;
         bool graphThreeSelected;
 
+        bool graphing;
+        bool dashboard;
+
         bool first_time = true;
 
         // Items needed for graphing
@@ -62,6 +65,8 @@ namespace OBD2_Utility
         {
             InitializeComponent();
 
+            
+
             graphOne = new GraphConfig(graphFlowPanel.Height, graphFlowPanel.Width);
             graphTwo = new GraphConfig(graphFlowPanel.Height, graphFlowPanel.Width);
             graphThree = new GraphConfig(graphFlowPanel.Height, graphFlowPanel.Width);
@@ -74,15 +79,19 @@ namespace OBD2_Utility
             time.Tick += Time_Tick;
             time.Start();
 
-            graphDisplay.Paint += GraphDisplay_Paint;
+            dashboard = true;
+            graphing = false;
 
+            tabControl1.TabPages.Remove(tabPage1);
+            //tabControl1.TabPages.Remove(tabPage2);
+
+
+            graphDisplay.Paint += GraphDisplay_Paint;
             dashBoard.Paint += DashBoard_Paint;
 
             OGgraphDisplayWidth = graphDisplay.Width;
 
             menuStatusBar.Enabled = false;
-
-            Controls.Add(dashBoard);
 
             this.graphFlowPanel.MouseWheel += GraphFlowPanel_MouseWheel;
 
@@ -99,7 +108,7 @@ namespace OBD2_Utility
 
             foreach (Control c in this.Controls)
             {
-                if (c.Name.Contains(option))
+                if (c.Name.Contains(option) || c.Name.Contains("tab"))
                 {
                     c.Show();
                 }
@@ -118,7 +127,14 @@ namespace OBD2_Utility
 
         private void menuHome_Click(object sender, EventArgs e)
         {
-            setUpNextOption("dashBoard");
+            if (!dashboard)
+            {
+                tabControl1.TabPages.Remove(tabPage1);
+                tabControl1.TabPages.Add(tabPage2);
+                graphing = false;
+                dashboard = true;
+            }
+            //setUpNextOption("dashBoard");
         }
 
         private void GraphFlowPanel_MouseWheel(object sender, MouseEventArgs e)
@@ -168,6 +184,16 @@ namespace OBD2_Utility
         // 1. CLICKING THE GRAPH OPTION
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            if(!graphing)
+            {
+                tabControl1.TabPages.Remove(tabPage2);
+                tabControl1.TabPages.Add(tabPage1);
+                graphing = true;
+                dashboard = false;
+            } 
+            
+            
+
             if (!first_time)
             {
                 if (graphThreeSelected)
@@ -229,6 +255,14 @@ namespace OBD2_Utility
 
         private void menuGraph2_Click(object sender, EventArgs e)
         {
+            if (!graphing)
+            {
+                tabControl1.TabPages.Remove(tabPage2);
+                tabControl1.TabPages.Add(tabPage1);
+                graphing = true;
+                dashboard = false;
+            }
+
             if (!first_time)
             {
                 if (graphThreeSelected)
@@ -287,6 +321,14 @@ namespace OBD2_Utility
 
         private void menuGraph3_Click(object sender, EventArgs e)
         {
+            if (!graphing)
+            {
+                tabControl1.TabPages.Remove(tabPage2);
+                tabControl1.TabPages.Add(tabPage1);
+                graphing = true;
+                dashboard = false;
+            }
+
             if (!first_time)
             {
                 if (graphOneSelected)
@@ -1311,12 +1353,76 @@ namespace OBD2_Utility
             Rectangle rect = new Rectangle();
 
 
-            rect = new Rectangle(200, 200, 200, 200);
-   
-            using (SolidBrush brush = new SolidBrush(System.Drawing.Color.Red))
+            //rect = new Rectangle(200, 200, 200, 200);
+
+            //using (SolidBrush brush = new SolidBrush(System.Drawing.Color.Red))
+            //{
+            //    e.Graphics.FillRectangle(brush, rect);
+            //}
+
+            int xScale = dashBoard.Width / 7;
+
+            int rpmX;
+            int rpmY;
+            int rpmWidth;
+            int rpmHeight;
+            float rpmStartAngle;
+            float rpmSweepAngle;
+
+
+            int speedX;
+            int speedY;
+            int speedWidth;
+            int speedHeight;
+            float speedStartAngle;
+            float speedSweepAngle;
+
+            using (Font myFont = new Font("Arial", 20))
             {
-                e.Graphics.FillRectangle(brush, rect);
+ 
+                e.Graphics.DrawString("Howdy Partner", myFont, Brushes.Red, 350, 40);
+
             }
+
+            // RPM
+            using (Pen blackPen = new Pen(System.Drawing.Color.Black, 3))
+            {
+                rpmX = xScale * 1;
+                rpmY = (dashBoard.Height / 2);
+                rpmWidth = xScale * 2;
+                rpmHeight = xScale * 2;
+
+                rpmStartAngle = 160.0F;
+                rpmSweepAngle = 220.0F;
+
+                e.Graphics.DrawArc(blackPen, rpmX, rpmY, rpmWidth, rpmHeight, rpmStartAngle, rpmSweepAngle);
+
+                
+            }
+
+            // SPEED
+            using (Pen blackPen = new Pen(System.Drawing.Color.Black, 3))
+            {
+
+
+                speedX = xScale * 4;
+                speedY = (dashBoard.Height / 2);
+                speedWidth = xScale * 2;
+                speedHeight = xScale * 2;
+
+                speedStartAngle = 160.0F;
+                speedSweepAngle = 220.0F;
+
+                e.Graphics.DrawArc(blackPen, speedX, speedY, speedWidth, speedHeight, speedStartAngle, speedSweepAngle);
+            }
+
+            using (Pen redPen = new Pen(System.Drawing.Color.Red, 3))
+            {
+                e.Graphics.DrawLine(redPen, rpmX + (xScale), rpmY + (xScale * 1.35F), rpmX - 20, rpmY - 20);
+                e.Graphics.DrawLine(redPen, speedX + (xScale), speedY + (xScale * 1.35F), speedX - 20, speedY - 20);
+            }
+
+
         }
 
         // 9. DRAW THE GRAPH BEING STORED IN GLOBAL GRAPH OBJECT
@@ -1832,5 +1938,14 @@ namespace OBD2_Utility
             }
         }
 
+        private void dashBoard_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void graphOption2Select_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
