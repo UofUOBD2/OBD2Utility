@@ -1355,28 +1355,6 @@ namespace OBD2_Utility
 
             //rect = new Rectangle(200, 200, 200, 200);
 
-            //using (SolidBrush brush = new SolidBrush(System.Drawing.Color.Red))
-            //{
-            //    e.Graphics.FillRectangle(brush, rect);
-            //}
-
-            int xScale = dashBoard.Width / 7;
-
-            int rpmX;
-            int rpmY;
-            int rpmWidth;
-            int rpmHeight;
-            float rpmStartAngle;
-            float rpmSweepAngle;
-
-
-            int speedX;
-            int speedY;
-            int speedWidth;
-            int speedHeight;
-            float speedStartAngle;
-            float speedSweepAngle;
-
             using (Font myFont = new Font("Arial", 20))
             {
  
@@ -1384,42 +1362,15 @@ namespace OBD2_Utility
 
             }
 
-            // RPM
-            using (Pen blackPen = new Pen(System.Drawing.Color.Black, 3))
+            if(ReferenceEquals(null, google_results))
             {
-                rpmX = xScale * 1;
-                rpmY = (dashBoard.Height / 2);
-                rpmWidth = xScale * 2;
-                rpmHeight = xScale * 2;
-
-                rpmStartAngle = 160.0F;
-                rpmSweepAngle = 220.0F;
-
-                e.Graphics.DrawArc(blackPen, rpmX, rpmY, rpmWidth, rpmHeight, rpmStartAngle, rpmSweepAngle);
-
-                
+                setGaugeValue("rpmGauge", 0);
+                setGaugeValue("speedGauge", 0);
             }
-
-            // SPEED
-            using (Pen blackPen = new Pen(System.Drawing.Color.Black, 3))
+            else
             {
-
-
-                speedX = xScale * 4;
-                speedY = (dashBoard.Height / 2);
-                speedWidth = xScale * 2;
-                speedHeight = xScale * 2;
-
-                speedStartAngle = 160.0F;
-                speedSweepAngle = 220.0F;
-
-                e.Graphics.DrawArc(blackPen, speedX, speedY, speedWidth, speedHeight, speedStartAngle, speedSweepAngle);
-            }
-
-            using (Pen redPen = new Pen(System.Drawing.Color.Red, 3))
-            {
-                e.Graphics.DrawLine(redPen, rpmX + (xScale), rpmY + (xScale * 1.35F), rpmX - 20, rpmY - 20);
-                e.Graphics.DrawLine(redPen, speedX + (xScale), speedY + (xScale * 1.35F), speedX - 20, speedY - 20);
+                setGaugeValue("rpmGauge", 50);
+                setGaugeValue("speedGauge", 50);
             }
 
 
@@ -1945,6 +1896,22 @@ namespace OBD2_Utility
 
         private void graphOption2Select_SelectedIndexChanged(object sender, EventArgs e)
         {
+
+        }
+
+
+
+
+        // HELPER FUNCTIONS FOR GAUGES
+
+        private void setGaugeValue(String name, int value)
+        {
+            var control = this.Controls.Find(name, true);
+
+            foreach (AGauge c in control)
+            {
+                c.Value = value;
+            }
 
         }
     }

@@ -76,3 +76,4 @@ C:\Users\Skoga\Documents\Visual Studio 2015\Projects\OBD2Utility\OBD2_Utility\ob
 C:\Users\Skoga\Documents\Visual Studio 2015\Projects\OBD2Utility\OBD2_Utility\obj\Debug\OBD2_Utility.Properties.Resources.resources
 C:\Users\Skoga\Documents\Visual Studio 2015\Projects\OBD2Utility\OBD2_Utility\obj\Debug\OBD2_Utility.UofUOBD2Utility.resources
 C:\Users\Skoga\Documents\Visual Studio 2015\Projects\OBD2Utility\OBD2_Utility\obj\Debug\OBD2_Utility.csproj.GenerateResource.Cache
+C:\Users\Skoga\Documents\Visual Studio 2015\Projects\OBD2Utility\OBD2_Utility\bin\Debug\AGauge.dll

@@ -53,9 +53,9 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.speedGauge = new System.Windows.Forms.AGauge();
+            this.rpmGauge = new System.Windows.Forms.AGauge();
             this.dashBoard = new System.Windows.Forms.PictureBox();
-            this.aGauge1 = new System.Windows.Forms.AGauge();
-            this.aGauge2 = new System.Windows.Forms.AGauge();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -305,8 +305,8 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.White;
-            this.tabPage2.Controls.Add(this.aGauge2);
-            this.tabPage2.Controls.Add(this.aGauge1);
+            this.tabPage2.Controls.Add(this.speedGauge);
+            this.tabPage2.Controls.Add(this.rpmGauge);
             this.tabPage2.Controls.Add(this.dashBoard);
             this.tabPage2.Location = new System.Drawing.Point(4, 5);
             this.tabPage2.Name = "tabPage2";
@@ -314,6 +314,90 @@
             this.tabPage2.Size = new System.Drawing.Size(1192, 641);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
+            // 
+            // speedGauge
+            // 
+            this.speedGauge.BaseArcColor = System.Drawing.Color.Gray;
+            this.speedGauge.BaseArcRadius = 80;
+            this.speedGauge.BaseArcStart = 135;
+            this.speedGauge.BaseArcSweep = 270;
+            this.speedGauge.BaseArcWidth = 2;
+            this.speedGauge.Center = new System.Drawing.Point(100, 100);
+            this.speedGauge.Location = new System.Drawing.Point(609, 186);
+            this.speedGauge.MaxValue = 400F;
+            this.speedGauge.MinValue = -100F;
+            this.speedGauge.Name = "speedGauge";
+            this.speedGauge.NeedleColor1 = System.Windows.Forms.AGaugeNeedleColor.Gray;
+            this.speedGauge.NeedleColor2 = System.Drawing.Color.DimGray;
+            this.speedGauge.NeedleRadius = 80;
+            this.speedGauge.NeedleType = System.Windows.Forms.NeedleType.Advance;
+            this.speedGauge.NeedleWidth = 2;
+            this.speedGauge.ScaleLinesInterColor = System.Drawing.Color.Black;
+            this.speedGauge.ScaleLinesInterInnerRadius = 73;
+            this.speedGauge.ScaleLinesInterOuterRadius = 80;
+            this.speedGauge.ScaleLinesInterWidth = 1;
+            this.speedGauge.ScaleLinesMajorColor = System.Drawing.Color.Black;
+            this.speedGauge.ScaleLinesMajorInnerRadius = 70;
+            this.speedGauge.ScaleLinesMajorOuterRadius = 80;
+            this.speedGauge.ScaleLinesMajorStepValue = 50F;
+            this.speedGauge.ScaleLinesMajorWidth = 2;
+            this.speedGauge.ScaleLinesMinorColor = System.Drawing.Color.Gray;
+            this.speedGauge.ScaleLinesMinorInnerRadius = 75;
+            this.speedGauge.ScaleLinesMinorOuterRadius = 80;
+            this.speedGauge.ScaleLinesMinorTicks = 9;
+            this.speedGauge.ScaleLinesMinorWidth = 1;
+            this.speedGauge.ScaleNumbersColor = System.Drawing.Color.Black;
+            this.speedGauge.ScaleNumbersFormat = null;
+            this.speedGauge.ScaleNumbersRadius = 95;
+            this.speedGauge.ScaleNumbersRotation = 0;
+            this.speedGauge.ScaleNumbersStartScaleLine = 0;
+            this.speedGauge.ScaleNumbersStepScaleLines = 1;
+            this.speedGauge.Size = new System.Drawing.Size(330, 299);
+            this.speedGauge.TabIndex = 26;
+            this.speedGauge.Text = "speedGauge";
+            this.speedGauge.Value = 0F;
+            // 
+            // rpmGauge
+            // 
+            this.rpmGauge.BaseArcColor = System.Drawing.Color.Gray;
+            this.rpmGauge.BaseArcRadius = 80;
+            this.rpmGauge.BaseArcStart = 135;
+            this.rpmGauge.BaseArcSweep = 270;
+            this.rpmGauge.BaseArcWidth = 2;
+            this.rpmGauge.Center = new System.Drawing.Point(100, 100);
+            this.rpmGauge.Location = new System.Drawing.Point(250, 186);
+            this.rpmGauge.MaxValue = 400F;
+            this.rpmGauge.MinValue = -100F;
+            this.rpmGauge.Name = "rpmGauge";
+            this.rpmGauge.NeedleColor1 = System.Windows.Forms.AGaugeNeedleColor.Red;
+            this.rpmGauge.NeedleColor2 = System.Drawing.Color.DimGray;
+            this.rpmGauge.NeedleRadius = 80;
+            this.rpmGauge.NeedleType = System.Windows.Forms.NeedleType.Advance;
+            this.rpmGauge.NeedleWidth = 2;
+            this.rpmGauge.ScaleLinesInterColor = System.Drawing.Color.Black;
+            this.rpmGauge.ScaleLinesInterInnerRadius = 73;
+            this.rpmGauge.ScaleLinesInterOuterRadius = 80;
+            this.rpmGauge.ScaleLinesInterWidth = 1;
+            this.rpmGauge.ScaleLinesMajorColor = System.Drawing.Color.Black;
+            this.rpmGauge.ScaleLinesMajorInnerRadius = 70;
+            this.rpmGauge.ScaleLinesMajorOuterRadius = 80;
+            this.rpmGauge.ScaleLinesMajorStepValue = 50F;
+            this.rpmGauge.ScaleLinesMajorWidth = 2;
+            this.rpmGauge.ScaleLinesMinorColor = System.Drawing.Color.Gray;
+            this.rpmGauge.ScaleLinesMinorInnerRadius = 75;
+            this.rpmGauge.ScaleLinesMinorOuterRadius = 80;
+            this.rpmGauge.ScaleLinesMinorTicks = 9;
+            this.rpmGauge.ScaleLinesMinorWidth = 1;
+            this.rpmGauge.ScaleNumbersColor = System.Drawing.Color.Black;
+            this.rpmGauge.ScaleNumbersFormat = null;
+            this.rpmGauge.ScaleNumbersRadius = 95;
+            this.rpmGauge.ScaleNumbersRotation = 0;
+            this.rpmGauge.ScaleNumbersStartScaleLine = 0;
+            this.rpmGauge.ScaleNumbersStepScaleLines = 1;
+            this.rpmGauge.Size = new System.Drawing.Size(300, 282);
+            this.rpmGauge.TabIndex = 25;
+            this.rpmGauge.Text = "rpmGauge";
+            this.rpmGauge.Value = 15F;
             // 
             // dashBoard
             // 
@@ -326,90 +410,6 @@
             this.dashBoard.TabIndex = 24;
             this.dashBoard.TabStop = false;
             this.dashBoard.Click += new System.EventHandler(this.dashBoard_Click);
-            // 
-            // aGauge1
-            // 
-            this.aGauge1.BaseArcColor = System.Drawing.Color.Gray;
-            this.aGauge1.BaseArcRadius = 80;
-            this.aGauge1.BaseArcStart = 135;
-            this.aGauge1.BaseArcSweep = 270;
-            this.aGauge1.BaseArcWidth = 2;
-            this.aGauge1.Center = new System.Drawing.Point(100, 100);
-            this.aGauge1.Location = new System.Drawing.Point(249, 154);
-            this.aGauge1.MaxValue = 400F;
-            this.aGauge1.MinValue = -100F;
-            this.aGauge1.Name = "aGauge1";
-            this.aGauge1.NeedleColor1 = System.Windows.Forms.AGaugeNeedleColor.Red;
-            this.aGauge1.NeedleColor2 = System.Drawing.Color.DimGray;
-            this.aGauge1.NeedleRadius = 80;
-            this.aGauge1.NeedleType = System.Windows.Forms.NeedleType.Advance;
-            this.aGauge1.NeedleWidth = 2;
-            this.aGauge1.ScaleLinesInterColor = System.Drawing.Color.Black;
-            this.aGauge1.ScaleLinesInterInnerRadius = 73;
-            this.aGauge1.ScaleLinesInterOuterRadius = 80;
-            this.aGauge1.ScaleLinesInterWidth = 1;
-            this.aGauge1.ScaleLinesMajorColor = System.Drawing.Color.Black;
-            this.aGauge1.ScaleLinesMajorInnerRadius = 70;
-            this.aGauge1.ScaleLinesMajorOuterRadius = 80;
-            this.aGauge1.ScaleLinesMajorStepValue = 50F;
-            this.aGauge1.ScaleLinesMajorWidth = 2;
-            this.aGauge1.ScaleLinesMinorColor = System.Drawing.Color.Gray;
-            this.aGauge1.ScaleLinesMinorInnerRadius = 75;
-            this.aGauge1.ScaleLinesMinorOuterRadius = 80;
-            this.aGauge1.ScaleLinesMinorTicks = 9;
-            this.aGauge1.ScaleLinesMinorWidth = 1;
-            this.aGauge1.ScaleNumbersColor = System.Drawing.Color.Black;
-            this.aGauge1.ScaleNumbersFormat = null;
-            this.aGauge1.ScaleNumbersRadius = 95;
-            this.aGauge1.ScaleNumbersRotation = 0;
-            this.aGauge1.ScaleNumbersStartScaleLine = 0;
-            this.aGauge1.ScaleNumbersStepScaleLines = 1;
-            this.aGauge1.Size = new System.Drawing.Size(300, 282);
-            this.aGauge1.TabIndex = 25;
-            this.aGauge1.Text = "aGauge1";
-            this.aGauge1.Value = 0F;
-            // 
-            // aGauge2
-            // 
-            this.aGauge2.BaseArcColor = System.Drawing.Color.Gray;
-            this.aGauge2.BaseArcRadius = 80;
-            this.aGauge2.BaseArcStart = 135;
-            this.aGauge2.BaseArcSweep = 270;
-            this.aGauge2.BaseArcWidth = 2;
-            this.aGauge2.Center = new System.Drawing.Point(100, 100);
-            this.aGauge2.Location = new System.Drawing.Point(659, 169);
-            this.aGauge2.MaxValue = 400F;
-            this.aGauge2.MinValue = -100F;
-            this.aGauge2.Name = "aGauge2";
-            this.aGauge2.NeedleColor1 = System.Windows.Forms.AGaugeNeedleColor.Gray;
-            this.aGauge2.NeedleColor2 = System.Drawing.Color.DimGray;
-            this.aGauge2.NeedleRadius = 80;
-            this.aGauge2.NeedleType = System.Windows.Forms.NeedleType.Advance;
-            this.aGauge2.NeedleWidth = 2;
-            this.aGauge2.ScaleLinesInterColor = System.Drawing.Color.Black;
-            this.aGauge2.ScaleLinesInterInnerRadius = 73;
-            this.aGauge2.ScaleLinesInterOuterRadius = 80;
-            this.aGauge2.ScaleLinesInterWidth = 1;
-            this.aGauge2.ScaleLinesMajorColor = System.Drawing.Color.Black;
-            this.aGauge2.ScaleLinesMajorInnerRadius = 70;
-            this.aGauge2.ScaleLinesMajorOuterRadius = 80;
-            this.aGauge2.ScaleLinesMajorStepValue = 50F;
-            this.aGauge2.ScaleLinesMajorWidth = 2;
-            this.aGauge2.ScaleLinesMinorColor = System.Drawing.Color.Gray;
-            this.aGauge2.ScaleLinesMinorInnerRadius = 75;
-            this.aGauge2.ScaleLinesMinorOuterRadius = 80;
-            this.aGauge2.ScaleLinesMinorTicks = 9;
-            this.aGauge2.ScaleLinesMinorWidth = 1;
-            this.aGauge2.ScaleNumbersColor = System.Drawing.Color.Black;
-            this.aGauge2.ScaleNumbersFormat = null;
-            this.aGauge2.ScaleNumbersRadius = 95;
-            this.aGauge2.ScaleNumbersRotation = 0;
-            this.aGauge2.ScaleNumbersStartScaleLine = 0;
-            this.aGauge2.ScaleNumbersStepScaleLines = 1;
-            this.aGauge2.Size = new System.Drawing.Size(330, 299);
-            this.aGauge2.TabIndex = 26;
-            this.aGauge2.Text = "aGauge2";
-            this.aGauge2.Value = 0F;
             // 
             // UofUOBD2Utility
             // 
@@ -467,7 +467,7 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.PictureBox dashBoard;
-        private System.Windows.Forms.AGauge aGauge2;
-        private System.Windows.Forms.AGauge aGauge1;
+        private System.Windows.Forms.AGauge speedGauge;
+        private System.Windows.Forms.AGauge rpmGauge;
     }
 }
