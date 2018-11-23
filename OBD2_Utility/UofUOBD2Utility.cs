@@ -20,6 +20,10 @@ namespace OBD2_Utility
     public partial class UofUOBD2Utility : Form
     {
 
+        System.Drawing.Color penColor = System.Drawing.Color.Red;
+        Brush brushColor = Brushes.Red;
+        Brush secondBrushColor = Brushes.Red;
+
         bool graphOneSelected;
         bool graphTwoSelected;
         bool graphThreeSelected;
@@ -98,9 +102,9 @@ namespace OBD2_Utility
             bg.DoWork += Bg_DoWork;
 
             dashboardTimer = new System.Windows.Forms.Timer();
-            time.Interval = 1500;
-            time.Tick += Time_Tick2;
-            time.Start();
+            dashboardTimer.Interval = 1500;
+            dashboardTimer.Tick += Time_Tick2;
+            dashboardTimer.Start();
 
             dashboard = true;
             graphing = false;
@@ -1527,7 +1531,7 @@ namespace OBD2_Utility
             using (Font myFont = new Font("Arial", 20))
             {
  
-                e.Graphics.DrawString("See You Space Cowboy...", myFont, Brushes.Red, 350, 40);
+                e.Graphics.DrawString("See You Space Cowboy...", myFont, secondBrushColor, 350, 40);
 
             }
 
@@ -1860,7 +1864,7 @@ namespace OBD2_Utility
                             {
                                 rect = new Rectangle(currXPixel + ((graphData.xInterval / 2) - 2), graphDisplay.Height - 40, 2, 10);
                             }
-                            using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                            using (Pen pen = new Pen(penColor, 2))
                             {
                                 e.Graphics.DrawRectangle(pen, rect);
                             }
@@ -1882,7 +1886,7 @@ namespace OBD2_Utility
                                 {
                                     using (Font myFont = new Font("Arial", 9))
                                     {
-                                        e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 30, graphDisplay.Height - 25));
+                                        e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, secondBrushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 30, graphDisplay.Height - 25));
                                     }
                                 }
                                 else
@@ -1892,19 +1896,19 @@ namespace OBD2_Utility
                                     {
                                         if (graphData.timeInterval.Equals("seconds"))
                                         {
-                                            e.Graphics.DrawString(currentSecondIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                            e.Graphics.DrawString(currentSecondIndex.ToString(), myFont, brushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
                                         }
                                         else if (graphData.timeInterval.Equals("minutes"))
                                         {
-                                            e.Graphics.DrawString(currentMinuteIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                            e.Graphics.DrawString(currentMinuteIndex.ToString(), myFont, brushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
                                         }
                                         else if (graphData.timeInterval.Equals("hours"))
                                         {
-                                            e.Graphics.DrawString(currentHourIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                            e.Graphics.DrawString(currentHourIndex.ToString(), myFont, brushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
                                         }
                                         else if (graphData.timeInterval.Equals("days"))
                                         {
-                                            e.Graphics.DrawString(currentDayIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                            e.Graphics.DrawString(currentDayIndex.ToString(), myFont, brushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
                                         }
                                     }
                                 }
@@ -1931,7 +1935,7 @@ namespace OBD2_Utility
             {
                 rect = new Rectangle(currXPixel, ((graphDisplay.Height - 30) - ((dp.yValue * yMultiplier)) / yPixelScale), (graphData.xInterval - 2), ((dp.yValue * yMultiplier) / yPixelScale - 2));
             }
-            using (SolidBrush brush = new SolidBrush(System.Drawing.Color.Red))
+            using (SolidBrush brush = new SolidBrush(penColor))
             {
                 e.Graphics.FillRectangle(brush, rect);
             }
@@ -1939,7 +1943,7 @@ namespace OBD2_Utility
 
         private bool drawDot(dataPoint dp, int currXPixel, PaintEventArgs e, bool firstPoint)
         {
-            using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+            using (Pen pen = new Pen(penColor, 2))
             {
                 Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 45) - (dp.yValue * yMultiplier) / yPixelScale) + 5);
                 e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 45) - (dp.yValue * yMultiplier) / yPixelScale), 10, 10);
@@ -1962,11 +1966,11 @@ namespace OBD2_Utility
             {
                 if (firstDataPoint)
                 {
-                    e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 10, (graphDisplay.Height - (dp.yValue * yMultiplier) / yPixelScale) - 65));
+                    e.Graphics.DrawString(dp.yValue.ToString(), myFont, secondBrushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 10, (graphDisplay.Height - (dp.yValue * yMultiplier) / yPixelScale) - 65));
                 }
                 else
                 {
-                    e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 15, (graphDisplay.Height - (dp.yValue * yMultiplier) / yPixelScale) - 65));
+                    e.Graphics.DrawString(dp.yValue.ToString(), myFont, secondBrushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 15, (graphDisplay.Height - (dp.yValue * yMultiplier) / yPixelScale) - 65));
                 }
             }
 
@@ -2132,6 +2136,35 @@ namespace OBD2_Utility
                 c.Value = value;
             }
 
+        }
+
+        private void menuSettings_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Default_Click(object sender, EventArgs e)
+        {
+            penColor = System.Drawing.Color.Red;
+            brushColor = Brushes.Red;
+            secondBrushColor = Brushes.Red;
+            graphDisplay.BackColor = System.Drawing.Color.White;
+        }
+
+        private void Dark_Click(object sender, EventArgs e)
+        {
+            penColor = System.Drawing.Color.White;
+            brushColor = Brushes.White;
+            secondBrushColor = Brushes.White;
+            graphDisplay.BackColor = System.Drawing.Color.Black;
+        }
+
+        private void Neon_Click(object sender, EventArgs e)
+        {
+            penColor = System.Drawing.Color.HotPink;
+            brushColor = Brushes.HotPink;
+            secondBrushColor = Brushes.LimeGreen;
+            graphDisplay.BackColor = System.Drawing.Color.Black;
         }
     }
 }

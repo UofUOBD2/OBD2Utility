@@ -56,6 +56,13 @@
             this.speedGauge = new System.Windows.Forms.AGauge();
             this.rpmGauge = new System.Windows.Forms.AGauge();
             this.dashBoard = new System.Windows.Forms.PictureBox();
+            this.settingsOne = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsTwo = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsThree = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingsFour = new System.Windows.Forms.ToolStripMenuItem();
+            this.Default = new System.Windows.Forms.ToolStripMenuItem();
+            this.Dark = new System.Windows.Forms.ToolStripMenuItem();
+            this.Neon = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -108,9 +115,15 @@
             // 
             // menuSettings
             // 
+            this.menuSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.settingsOne,
+            this.settingsTwo,
+            this.settingsThree,
+            this.settingsFour});
             this.menuSettings.Name = "menuSettings";
             this.menuSettings.Size = new System.Drawing.Size(61, 20);
             this.menuSettings.Text = "Settings";
+            this.menuSettings.Click += new System.EventHandler(this.menuSettings_Click);
             // 
             // menuHome
             // 
@@ -395,6 +408,55 @@
             this.dashBoard.TabStop = false;
             this.dashBoard.Click += new System.EventHandler(this.dashBoard_Click);
             // 
+            // settingsOne
+            // 
+            this.settingsOne.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Default,
+            this.Dark,
+            this.Neon});
+            this.settingsOne.Name = "settingsOne";
+            this.settingsOne.Size = new System.Drawing.Size(180, 22);
+            this.settingsOne.Text = "Colors";
+            // 
+            // settingsTwo
+            // 
+            this.settingsTwo.Name = "settingsTwo";
+            this.settingsTwo.Size = new System.Drawing.Size(180, 22);
+            this.settingsTwo.Text = "toolStripMenuItem2";
+            // 
+            // settingsThree
+            // 
+            this.settingsThree.Name = "settingsThree";
+            this.settingsThree.Size = new System.Drawing.Size(180, 22);
+            this.settingsThree.Text = "toolStripMenuItem3";
+            // 
+            // settingsFour
+            // 
+            this.settingsFour.Name = "settingsFour";
+            this.settingsFour.Size = new System.Drawing.Size(180, 22);
+            this.settingsFour.Text = "toolStripMenuItem4";
+            // 
+            // Default
+            // 
+            this.Default.Name = "Default";
+            this.Default.Size = new System.Drawing.Size(152, 22);
+            this.Default.Text = "Red/White";
+            this.Default.Click += new System.EventHandler(this.Default_Click);
+            // 
+            // Dark
+            // 
+            this.Dark.Name = "Dark";
+            this.Dark.Size = new System.Drawing.Size(152, 22);
+            this.Dark.Text = "White/Black";
+            this.Dark.Click += new System.EventHandler(this.Dark_Click);
+            // 
+            // Neon
+            // 
+            this.Neon.Name = "Neon";
+            this.Neon.Size = new System.Drawing.Size(152, 22);
+            this.Neon.Text = "Neon";
+            this.Neon.Click += new System.EventHandler(this.Neon_Click);
+            // 
             // UofUOBD2Utility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -452,5 +514,12 @@
         private System.Windows.Forms.PictureBox dashBoard;
         private System.Windows.Forms.AGauge speedGauge;
         private System.Windows.Forms.AGauge rpmGauge;
+        private System.Windows.Forms.ToolStripMenuItem settingsOne;
+        private System.Windows.Forms.ToolStripMenuItem settingsTwo;
+        private System.Windows.Forms.ToolStripMenuItem settingsThree;
+        private System.Windows.Forms.ToolStripMenuItem settingsFour;
+        private System.Windows.Forms.ToolStripMenuItem Default;
+        private System.Windows.Forms.ToolStripMenuItem Dark;
+        private System.Windows.Forms.ToolStripMenuItem Neon;
     }
 }
