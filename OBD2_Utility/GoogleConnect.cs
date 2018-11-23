@@ -104,6 +104,39 @@ namespace OBD2_Utility
 
         }
 
+        public static String[] retreiveMostRecentData(String rng, String dataType, String spreadSheet, SheetsService service)
+        {
+            String range = "Sheet1!" + rng;
+            SpreadsheetsResource.ValuesResource.GetRequest getRequest = service.Spreadsheets.Values.Get(spreadSheet, range);
+            ValueRange response = getRequest.Execute();
+            IList<IList<Object>> values = response.Values;
+
+            List<List<Object>> results = new List<List<Object>>();
+
+            String[] splitData;
+
+            foreach (List<Object> list in values.Reverse<IList<Object>>())
+            {
+
+                    String data = (String)list[1];
+                    splitData = data.Split('-');
+
+                    if (validResult(splitData, dataType))
+                    {
+                        return splitData;
+                    }
+
+                   
+                
+            }
+
+            splitData = null;
+            return splitData;
+                
+                
+
+        }
+
         public static List<List<Object>> retrieveLoginData(String rng, String spreadSheet, SheetsService service)
         {
             String range = "Sheet1!" + rng;
@@ -127,6 +160,8 @@ namespace OBD2_Utility
 
             return results;
         }
+
+        
 
         public static void addUser(String rng, String spreadSheet, SheetsService service)
         {

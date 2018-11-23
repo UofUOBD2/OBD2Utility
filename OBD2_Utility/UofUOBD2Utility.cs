@@ -36,6 +36,9 @@ namespace OBD2_Utility
         bool graphUpdateDone;
         bool firstTimeGraphing;
 
+        int value = 0;
+        int value2 = 20;
+
         int incramentValue;
         int yMultiplier;
         int yPixelScale;
@@ -48,6 +51,8 @@ namespace OBD2_Utility
         bool graphThreeLoaded = false;
 
         int currGraph = 0;
+
+        int mostRecentRpmValue = 0;
 
         // How quickly the graphs should animate;
         int updateScale = 10;
@@ -64,6 +69,8 @@ namespace OBD2_Utility
         Graph targetGraph;
 
         System.Windows.Forms.Timer time;
+        System.Windows.Forms.Timer dashboardTimer;
+
         PictureBox graphDisplay;
 
         GraphConfig graphOne;
@@ -88,6 +95,13 @@ namespace OBD2_Utility
             time.Tick += Time_Tick;
             time.Start();
 
+            bg.DoWork += Bg_DoWork;
+
+            dashboardTimer = new System.Windows.Forms.Timer();
+            time.Interval = 1500;
+            time.Tick += Time_Tick2;
+            time.Start();
+
             dashboard = true;
             graphing = false;
 
@@ -106,6 +120,14 @@ namespace OBD2_Utility
 
             graphGraphButton.Enabled = false;
 
+        }
+
+        private void Time_Tick2(object sender, EventArgs e)
+        {
+            if(dashboard)
+            {
+                dashBoard.Invalidate();
+            }
         }
 
         private void DashBoard_Paint(object sender, PaintEventArgs e)
@@ -1401,6 +1423,21 @@ namespace OBD2_Utility
             return results;
         }
 
+        private int decodeData(String[] dataList, String dataType)
+        {
+            int value = 0;
+
+            if (dataType.Equals("RPM"))
+            {
+                int A = int.Parse(dataList[5], System.Globalization.NumberStyles.HexNumber);
+                int B = int.Parse(dataList[6], System.Globalization.NumberStyles.HexNumber);
+
+                value = ((256 * A) + B) / 4;
+            }
+
+            return value;
+        }
+
         // 8. THE PICTURE BOX HAS BEEN INVALIDATED
         private void GraphDisplay_Paint(object sender, PaintEventArgs e)
         {
@@ -1484,30 +1521,44 @@ namespace OBD2_Utility
 
         private void drawDashBoard(PaintEventArgs e)
         {
-            Rectangle rect = new Rectangle();
 
 
-            //rect = new Rectangle(200, 200, 200, 200);
 
             using (Font myFont = new Font("Arial", 20))
             {
  
-                e.Graphics.DrawString("Howdy Partner", myFont, Brushes.Red, 350, 40);
+                e.Graphics.DrawString("See You Space Cowboy...", myFont, Brushes.Red, 350, 40);
 
             }
 
-            if(ReferenceEquals(null, google_results))
+            // Retrieve New Google Data
+
+            if(!bg.IsBusy)
             {
-                setGaugeValue("rpmGauge", 0);
-                setGaugeValue("speedGauge", 0);
+                bg.RunWorkerAsync();
             }
-            else
-            {
-                setGaugeValue("rpmGauge", 50);
-                setGaugeValue("speedGauge", 50);
-            }
+            
 
+            //lock((Object)mostRecentRpmValue)
+            //{
+             setGaugeValue("rpmGauge", mostRecentRpmValue);
+           // }
+             
+             setGaugeValue("speedGauge", value2);
+           
 
+            value += 1;
+            value2 += 1;
+        }
+
+        private void Bg_DoWork(object sender, DoWorkEventArgs e)
+        {
+            //lock ((object)mostRecentRpmValue)
+            //{
+                String spreadsheetId = "1buoculiAlX_jz9m9Tt8Y9YYF6LPOPOLEGSVmbB5bSHU";
+                SheetsService service = GoogleConnect.connectToGoogle();
+                mostRecentRpmValue = decodeData(GoogleConnect.retreiveMostRecentData("A:H", "RPM", spreadsheetId, service), "RPM");
+            //}
         }
 
         // 9. DRAW THE GRAPH BEING STORED IN GLOBAL GRAPH OBJECT
@@ -1922,9 +1973,7 @@ namespace OBD2_Utility
             return false;
         }
 
-        private void Bg_DoWork(object sender, DoWorkEventArgs e)
-        {
-        }
+
 
         // USED TO TAKE A LIST OF DATAPOINTS AND MAKE ALL Y VALUES = 0
         private List<dataPoint> zeroOut(List<dataPoint> dp)
