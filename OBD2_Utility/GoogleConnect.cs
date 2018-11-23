@@ -82,9 +82,9 @@ namespace OBD2_Utility
                     }
 
                     String data = (String)list[1];
-                    String requestedData = "OBD2-" + dataType + "-";
+                    String[] splitData = data.Split('-');
 
-                    if (data.Contains(requestedData))
+                    if (validResult(splitData, dataType))
                     {
                         results.Add(list);
                     }
@@ -162,6 +162,52 @@ namespace OBD2_Utility
                 UpdateValuesResponse result = updateRequest.Execute();
             }
 
+        }
+
+        public static bool validResult(String[] result, String dataType)
+        {
+            if (dataType.Equals("RPM"))
+            {
+                if (result.Length == 10)
+                {
+                    if (result[4].Equals(convertToPid(dataType)))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static String convertToPid(String dataType)
+        {
+            if(dataType == "RPM")
+            {
+                return "c";
+            }
+
+            else if(dataType == "SPEED")
+            {
+                return "d";
+            }
+
+            else if(dataType == "OIL TEMP")
+            {
+                return "5c";
+            }
+
+            else if(dataType == "FUEL")
+            {
+                return "2f";
+            }
+
+            else if(dataType == "ODOMETER")
+            {
+                return "a5";
+            }
+
+            return "";
         }
     }
 }
