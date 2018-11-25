@@ -579,9 +579,9 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(421, 120);
+            this.pictureBox2.Location = new System.Drawing.Point(462, 181);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(103, 82);
+            this.pictureBox2.Size = new System.Drawing.Size(38, 31);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox2.TabIndex = 31;
             this.pictureBox2.TabStop = false;
@@ -642,20 +642,19 @@
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Black;
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(133, 320);
+            this.pictureBox1.Location = new System.Drawing.Point(92, 329);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(97, 93);
+            this.pictureBox1.Size = new System.Drawing.Size(39, 33);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox1.TabIndex = 36;
             this.pictureBox1.TabStop = false;
             // 
             // pictureBox3
             // 
-            this.pictureBox3.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox3.BackgroundImage")));
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(741, 320);
+            this.pictureBox3.Location = new System.Drawing.Point(848, 329);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(89, 93);
+            this.pictureBox3.Size = new System.Drawing.Size(29, 33);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pictureBox3.TabIndex = 37;
             this.pictureBox3.TabStop = false;
@@ -683,7 +682,7 @@
             this.dashBoardTitle.BackColor = System.Drawing.Color.Black;
             this.dashBoardTitle.Font = new System.Drawing.Font("Impact", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dashBoardTitle.ForeColor = System.Drawing.Color.White;
-            this.dashBoardTitle.Location = new System.Drawing.Point(313, 37);
+            this.dashBoardTitle.Location = new System.Drawing.Point(313, 69);
             this.dashBoardTitle.Name = "dashBoardTitle";
             this.dashBoardTitle.Size = new System.Drawing.Size(319, 80);
             this.dashBoardTitle.TabIndex = 40;
