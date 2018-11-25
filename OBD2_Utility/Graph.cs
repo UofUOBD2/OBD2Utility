@@ -20,6 +20,7 @@ namespace OBD2_Utility
         public List<DateTime> dates;
         public String timeInterval;
 
+
         public List<dataPoint> dataEntries; 
 
         // Default Constructor

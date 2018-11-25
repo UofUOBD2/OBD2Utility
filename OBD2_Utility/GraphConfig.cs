@@ -32,6 +32,11 @@ namespace OBD2_Utility
         public List<List<Object>> google_results;
         public Point lastPoint;
 
+        public List<Object> dataOptionsOne;
+        public List<Object> dataOptionsTwo;
+        public int dataOptionIndexOne;
+        public int dataOptionIndexTwo;
+
         public Graph graphData;
         public Graph targetGraph;
 
@@ -59,6 +64,12 @@ namespace OBD2_Utility
             graphDisplay.Width = graphFlowPanelWidth - 20;
             graphDisplay.SizeMode = PictureBoxSizeMode.StretchImage;
             graphDisplay.BackColor = System.Drawing.Color.White;
+            
+
+            dataOptionsOne = new List<Object>();
+            dataOptionsTwo = new List<Object>();
+            dataOptionIndexOne = 0;
+            dataOptionIndexTwo = 0;
 
             OGgraphDisplayWidth = graphDisplay.Width;
 

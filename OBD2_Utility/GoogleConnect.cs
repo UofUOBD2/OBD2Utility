@@ -82,9 +82,9 @@ namespace OBD2_Utility
                     }
 
                     String data = (String)list[1];
-                    String requestedData = "OBD2-" + dataType + "-";
+                    String[] splitData = data.Split('-');
 
-                    if (data.Contains(requestedData))
+                    if (validResult(splitData, dataType))
                     {
                         results.Add(list);
                     }
@@ -101,6 +101,39 @@ namespace OBD2_Utility
 
             massUpdateData("X", cells_to_update, spreadSheet, service);
             return results;
+
+        }
+
+        public static String[] retreiveMostRecentData(String rng, String dataType, String spreadSheet, SheetsService service)
+        {
+            String range = "Sheet1!" + rng;
+            SpreadsheetsResource.ValuesResource.GetRequest getRequest = service.Spreadsheets.Values.Get(spreadSheet, range);
+            ValueRange response = getRequest.Execute();
+            IList<IList<Object>> values = response.Values;
+
+            List<List<Object>> results = new List<List<Object>>();
+
+            String[] splitData;
+
+            foreach (List<Object> list in values.Reverse<IList<Object>>())
+            {
+
+                    String data = (String)list[1];
+                    splitData = data.Split('-');
+
+                    if (validResult(splitData, dataType))
+                    {
+                        return splitData;
+                    }
+
+                   
+                
+            }
+
+            splitData = null;
+            return splitData;
+                
+                
 
         }
 
@@ -127,6 +160,8 @@ namespace OBD2_Utility
 
             return results;
         }
+
+        
 
         public static void addUser(String rng, String spreadSheet, SheetsService service)
         {
@@ -162,6 +197,52 @@ namespace OBD2_Utility
                 UpdateValuesResponse result = updateRequest.Execute();
             }
 
+        }
+
+        public static bool validResult(String[] result, String dataType)
+        {
+            if (dataType.Equals("RPM"))
+            {
+                if (result.Length == 10)
+                {
+                    if (result[4].Equals(convertToPid(dataType)))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public static String convertToPid(String dataType)
+        {
+            if(dataType == "RPM")
+            {
+                return "c";
+            }
+
+            else if(dataType == "SPEED")
+            {
+                return "d";
+            }
+
+            else if(dataType == "OIL TEMP")
+            {
+                return "5c";
+            }
+
+            else if(dataType == "FUEL")
+            {
+                return "2f";
+            }
+
+            else if(dataType == "ODOMETER")
+            {
+                return "a5";
+            }
+
+            return "";
         }
     }
 }

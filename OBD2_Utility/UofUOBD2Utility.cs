@@ -20,9 +20,18 @@ namespace OBD2_Utility
     public partial class UofUOBD2Utility : Form
     {
 
+        System.Drawing.Color penColor = System.Drawing.Color.Red;
+        Brush brushColor = Brushes.Red;
+        Brush secondBrushColor = Brushes.Red;
+
+        Brush whiteBrush = Brushes.White;
+
         bool graphOneSelected;
         bool graphTwoSelected;
         bool graphThreeSelected;
+
+        bool graphing;
+        bool dashboard;
 
         bool first_time = true;
 
@@ -33,6 +42,9 @@ namespace OBD2_Utility
         bool graphUpdateDone;
         bool firstTimeGraphing;
 
+        int value = 0;
+        int value2 = 20;
+
         int incramentValue;
         int yMultiplier;
         int yPixelScale;
@@ -40,16 +52,31 @@ namespace OBD2_Utility
         int zoomLevel;
         int MAXZOOMLEVEL;
 
+        bool graphOneLoaded = false;
+        bool graphTwoLoaded = false;
+        bool graphThreeLoaded = false;
+
+        int currGraph = 0;
+
+        int mostRecentRpmValue = 0;
+
+        // How quickly the graphs should animate;
+        int updateScale = 10;
+
         List<dataPoint> decodedData;
         List<String> firstDates;
         List<String> secondDates;
         List<List<Object>> google_results;
         Point lastPoint;
 
+
+
         Graph graphData;
         Graph targetGraph;
 
         System.Windows.Forms.Timer time;
+        System.Windows.Forms.Timer dashboardTimer;
+
         PictureBox graphDisplay;
 
         GraphConfig graphOne;
@@ -74,18 +101,39 @@ namespace OBD2_Utility
             time.Tick += Time_Tick;
             time.Start();
 
-            graphDisplay.Paint += GraphDisplay_Paint;
+            bg.DoWork += Bg_DoWork;
 
+            dashboardTimer = new System.Windows.Forms.Timer();
+            dashboardTimer.Interval = 1500;
+            dashboardTimer.Tick += Time_Tick2;
+            dashboardTimer.Start();
+
+            dashboard = true;
+            graphing = false;
+
+            tabControl1.TabPages.Remove(tabPage1);
+            //tabControl1.TabPages.Remove(tabPage2);
+
+
+            graphDisplay.Paint += GraphDisplay_Paint;
             dashBoard.Paint += DashBoard_Paint;
 
             OGgraphDisplayWidth = graphDisplay.Width;
 
             menuStatusBar.Enabled = false;
 
-            Controls.Add(dashBoard);
-
             this.graphFlowPanel.MouseWheel += GraphFlowPanel_MouseWheel;
 
+            graphGraphButton.Enabled = false;
+
+        }
+
+        private void Time_Tick2(object sender, EventArgs e)
+        {
+            if(dashboard)
+            {
+                dashBoard.Invalidate();
+            }
         }
 
         private void DashBoard_Paint(object sender, PaintEventArgs e)
@@ -99,7 +147,7 @@ namespace OBD2_Utility
 
             foreach (Control c in this.Controls)
             {
-                if (c.Name.Contains(option))
+                if (c.Name.Contains(option) || c.Name.Contains("tab"))
                 {
                     c.Show();
                 }
@@ -118,7 +166,14 @@ namespace OBD2_Utility
 
         private void menuHome_Click(object sender, EventArgs e)
         {
-            setUpNextOption("dashBoard");
+            if (!dashboard)
+            {
+                tabControl1.TabPages.Remove(tabPage1);
+                tabControl1.TabPages.Add(tabPage2);
+                graphing = false;
+                dashboard = true;
+            }
+            //setUpNextOption("dashBoard");
         }
 
         private void GraphFlowPanel_MouseWheel(object sender, MouseEventArgs e)
@@ -168,6 +223,18 @@ namespace OBD2_Utility
         // 1. CLICKING THE GRAPH OPTION
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            
+
+            if(!graphing)
+            {
+                tabControl1.TabPages.Remove(tabPage2);
+                tabControl1.TabPages.Add(tabPage1);
+                graphing = true;
+                dashboard = false;
+            } 
+            
+            
+
             if (!first_time)
             {
                 if (graphThreeSelected)
@@ -189,10 +256,22 @@ namespace OBD2_Utility
             graphTwoSelected = false;
             graphOneSelected = true;
 
+            currGraph = 1;
+
+            if(graphOneLoaded != true)
+            {
+                graphGraphButton.Enabled = false;
+            } else
+            {
+                graphGraphButton.Enabled = true;
+            }
+
             setUpNextOption("graph");
 
-            List<String> xOptions = new List<string>(new String[] { "1", "2", "3" });
-            List<String> yOptions = new List<string>(new String[] { "Time", "Option 2", "Option 3" });
+            List<String> xOptions = new List<string>(new String[] { "RPM", "SPEED", "OIL TEMP", "FUEL", "ODOMETER" });
+            List<String> yOptions = new List<string>(new String[] { "Time" });
+
+            
 
             graphConfigured = graphOne.graphConfigured;
             takingDown = graphOne.takingDown;
@@ -222,6 +301,30 @@ namespace OBD2_Utility
             graphFlowPanel.Controls.Add(graphDisplay);
             graphDisplay.Paint += GraphDisplay_Paint;
 
+            graphOption1Select.DataSource = graphOne.dataOptionsOne;
+            graphOption2Select.DataSource = graphOne.dataOptionsTwo;
+
+
+            try
+            {
+                if (graphOption1Select.SelectedIndex != -1)
+                {
+                    graphOption1Select.SelectedIndex = graphOne.dataOptionIndexOne;
+                }
+                if (graphOption2Select.SelectedIndex != -1)
+                {
+                    graphOption2Select.SelectedIndex = graphOne.dataOptionIndexTwo;
+                }
+            } catch
+            {
+                graphOption1Select.SelectedIndex = 0;
+                graphOption2Select.SelectedIndex = 0;
+            }
+            
+
+            
+
+
             graphDisplay.Invalidate();
 
             configureOptionBox(xOptions, yOptions);
@@ -229,6 +332,14 @@ namespace OBD2_Utility
 
         private void menuGraph2_Click(object sender, EventArgs e)
         {
+            if (!graphing)
+            {
+                tabControl1.TabPages.Remove(tabPage2);
+                tabControl1.TabPages.Add(tabPage1);
+                graphing = true;
+                dashboard = false;
+            }
+
             if (!first_time)
             {
                 if (graphThreeSelected)
@@ -244,14 +355,25 @@ namespace OBD2_Utility
                 first_time = false;
             }
 
+            currGraph = 2;
+
             graphThreeSelected = false;
             graphTwoSelected = true;
             graphOneSelected = false;
 
+            if (graphTwoLoaded != true)
+            {
+                graphGraphButton.Enabled = false;
+            }
+            else
+            {
+                graphGraphButton.Enabled = true;
+            }
+
             setUpNextOption("graph");
 
-            List<String> xOptions = new List<string>(new String[] { "1", "2", "3" });
-            List<String> yOptions = new List<string>(new String[] { "Time", "Option 2", "Option 3" });
+            List<String> xOptions = new List<string>(new String[] { "RPM", "SPEED", "OIL TEMP", "FUEL", "ODOMETER"});
+            List<String> yOptions = new List<string>(new String[] { "Time"});
 
             graphConfigured = graphTwo.graphConfigured;
             takingDown = graphTwo.takingDown;
@@ -281,12 +403,39 @@ namespace OBD2_Utility
             graphFlowPanel.Controls.Add(graphDisplay);
             graphDisplay.Paint += GraphDisplay_Paint;
 
+            graphOption1Select.DataSource = graphTwo.dataOptionsOne;
+            graphOption2Select.DataSource = graphTwo.dataOptionsTwo;
+
+            try
+            {
+                if (graphOption1Select.SelectedIndex != -1)
+                {
+                    graphOption1Select.SelectedIndex = graphTwo.dataOptionIndexOne;
+                }
+                if (graphOption2Select.SelectedIndex != -1)
+                {
+                    graphOption2Select.SelectedIndex = graphTwo.dataOptionIndexTwo;
+                }
+            } catch
+            {
+                graphOption1Select.SelectedIndex = 0;
+                graphOption2Select.SelectedIndex = 0;
+            }
+
 
             configureOptionBox(xOptions, yOptions);
         }
 
         private void menuGraph3_Click(object sender, EventArgs e)
         {
+            if (!graphing)
+            {
+                tabControl1.TabPages.Remove(tabPage2);
+                tabControl1.TabPages.Add(tabPage1);
+                graphing = true;
+                dashboard = false;
+            }
+
             if (!first_time)
             {
                 if (graphOneSelected)
@@ -303,15 +452,24 @@ namespace OBD2_Utility
                 first_time = false;
             }
 
-
+            currGraph = 3;
             graphThreeSelected = true;
             graphTwoSelected = false;
             graphOneSelected = false;
 
+            if (graphThreeLoaded != true)
+            {
+                graphGraphButton.Enabled = false;
+            }
+            else
+            {
+                graphGraphButton.Enabled = true;
+            }
+
             setUpNextOption("graph");
 
-            List<String> xOptions = new List<string>(new String[] { "1", "2", "3" });
-            List<String> yOptions = new List<string>(new String[] { "Time", "Option 2", "Option 3" });
+            List<String> xOptions = new List<string>(new String[] { "RPM", "SPEED", "OIL TEMP", "FUEL", "ODOMETER" });
+            List<String> yOptions = new List<string>(new String[] { "Time" });
 
             graphConfigured = graphThree.graphConfigured;
             takingDown = graphThree.takingDown;
@@ -341,6 +499,27 @@ namespace OBD2_Utility
             graphFlowPanel.Controls.Add(graphDisplay);
             graphDisplay.Paint += GraphDisplay_Paint;
 
+            graphOption1Select.DataSource = graphThree.dataOptionsOne;
+            graphOption2Select.DataSource = graphThree.dataOptionsTwo;
+
+            try
+            {
+                if (graphOption1Select.SelectedIndex != -1)
+                {
+                    graphOption1Select.SelectedIndex = graphThree.dataOptionIndexOne;
+                }
+                if (graphOption2Select.SelectedIndex != -1)
+                {
+                    graphOption2Select.SelectedIndex = graphThree.dataOptionIndexTwo;
+                }
+            }
+             catch
+            {
+                graphOption1Select.SelectedIndex = 0;
+                graphOption2Select.SelectedIndex = 0;
+            }
+
+
             configureOptionBox(xOptions, yOptions);
 
         }
@@ -357,7 +536,19 @@ namespace OBD2_Utility
         // 3. WHEN THE USER SELECTS THE "LOAD DATA" BUTTON (PULL DATA FROM GOOGLE)
         private void graphGenerateButton_Click(object sender, EventArgs e)
         {
+            if(currGraph == 1)
+            {
+                graphOneLoaded = true;
+            } else if (currGraph == 2)
+            {
+                graphTwoLoaded = true;
+                
+            } else if (currGraph == 3)
+            {
+                graphThreeLoaded = true;
+            }
 
+            graphGraphButton.Enabled = true;
             graphDisplay.Image = null;
             firstDates = new List<string>();
             secondDates.Clear();
@@ -595,7 +786,7 @@ namespace OBD2_Utility
 
             }
 
-            decodedData = decodeData(narrowedData);
+            decodedData = decodeData(narrowedData, (String)graphXAxisSelect.SelectedValue);
 
             // Configure Y Pixels
             configureYData(decodedData);
@@ -1070,7 +1261,7 @@ namespace OBD2_Utility
             }
 
             // Add some head room
-            double amountToAdd = largestYValue * .20;
+            double amountToAdd = largestYValue * .25;
             largestYValue += Convert.ToInt32(Math.Round(amountToAdd));
 
 
@@ -1089,12 +1280,15 @@ namespace OBD2_Utility
             {
                 yPixelScale = 1;
 
+                double pixelScale = 1;
+
                 while (largestYValue > numPixels)
                 {
-                    yPixelScale = yPixelScale * 10;
-                    largestYValue = largestYValue / 10;
+                    pixelScale = pixelScale * (10.0/9);
+                    largestYValue = Convert.ToInt32(largestYValue * .9);
                 }
 
+                yPixelScale = Convert.ToInt32(pixelScale);
             }
             else
             {
@@ -1200,30 +1394,9 @@ namespace OBD2_Utility
 
         }
 
-        // 7. TAKE THE GOOGLE DATA AND EXTRACT THE INFORMATION NECESSARY
-        private List<dataPoint> decodeData(List<List<Object>> dataList)
-        {
-            int value;
-            int i = 0;
 
-            dataPoint dp;
-            List<dataPoint> results = new List<dataPoint>();
 
-            // THIS FUNCTION WILL NEED TO CHANGE ALOT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            foreach (List<object> data in dataList)
-            {
-                String fullDataValue = (String)data[1];
-                String condensedData = fullDataValue.Substring(fullDataValue.LastIndexOf('-') + 1);
-
-                value = Convert.ToInt32(condensedData);
-                dp = new dataPoint("Name", "Red", value, i);
-                results.Add(dp);
-
-                i++;
-            }
-
-            return results;
-        }
+        
 
         // 8. THE PICTURE BOX HAS BEEN INVALIDATED
         private void GraphDisplay_Paint(object sender, PaintEventArgs e)
@@ -1235,7 +1408,7 @@ namespace OBD2_Utility
         private void updateGraph()
         {
             List<dataPoint> temp = new List<dataPoint>();
-
+            int updateValue = incramentValue * updateScale;
             if (!graphUpdateDone)
             {
                 if (takingDown)
@@ -1246,13 +1419,13 @@ namespace OBD2_Utility
                     {
                         if (dp.yValue != 0)
                         {
-                            if ((dp.yValue - incramentValue) < 0)
+                            if ((dp.yValue - (updateValue)) < 0)
                             {
                                 dp.yValue--;
                             }
                             else
                             {
-                                dp.yValue -= incramentValue;
+                                dp.yValue -= updateValue;
                             }
                             needToKeepGoing = true;
                         }
@@ -1284,13 +1457,13 @@ namespace OBD2_Utility
                     {
                         if (graphData.dataEntries[i].yValue != targetGraph.dataEntries[i].yValue)
                         {
-                            if (graphData.dataEntries[i].yValue + incramentValue > targetGraph.dataEntries[i].yValue)
+                            if (graphData.dataEntries[i].yValue + updateValue > targetGraph.dataEntries[i].yValue)
                             {
                                 graphData.dataEntries[i].yValue++;
                             }
                             else
                             {
-                                graphData.dataEntries[i].yValue += incramentValue;
+                                graphData.dataEntries[i].yValue += updateValue;
                             }
 
                             needToKeepGoing = true;
@@ -1306,17 +1479,82 @@ namespace OBD2_Utility
             }
         }
 
+        private void drawOdometer(PaintEventArgs e, int x, int y, int value)
+        {
+
+            int intermValue = 0;
+            int scale = 0;
+
+            using (Font myFont = new Font("Arial", 20))
+            {
+                using (Pen pen = new Pen(whiteBrush))
+                {
+                    Rectangle rect = new Rectangle();
+
+                    for (int i = 1; i < 6; i++)
+                    {
+                        rect = new Rectangle(x+(i*25), y, 25, 35);
+                        e.Graphics.DrawRectangle(pen, rect);
+
+                        
+
+                        scale = (int)(Math.Pow(10, (6-i)));
+                        intermValue = (value / scale);
+                        value -= (intermValue * scale);
+
+                        e.Graphics.DrawString(intermValue.ToString(), myFont, whiteBrush, x + (i*25), y);
+
+                        
+                    }
+
+                    rect = new Rectangle(x+(6*25), y, 25, 35);
+                    e.Graphics.DrawRectangle(pen, rect);
+                    e.Graphics.DrawString(value.ToString(), myFont, whiteBrush, x+ (6 * 25), y);
+
+
+
+                }
+
+            }
+
+
+        }
+
         private void drawDashBoard(PaintEventArgs e)
         {
-            Rectangle rect = new Rectangle();
 
 
-            rect = new Rectangle(200, 200, 200, 200);
-   
-            using (SolidBrush brush = new SolidBrush(System.Drawing.Color.Red))
+
+            drawOdometer(e, 375, 375, 123456);
+
+            // Retrieve New Google Data
+
+            if(!bg.IsBusy)
             {
-                e.Graphics.FillRectangle(brush, rect);
+                bg.RunWorkerAsync();
             }
+            
+
+            //lock((Object)mostRecentRpmValue)
+            //{
+             setGaugeValue("rpmGauge", mostRecentRpmValue);
+           // }
+             
+             setGaugeValue("speedGauge", value2);
+           
+
+            value += 5;
+            value2 += 5;
+        }
+
+        private void Bg_DoWork(object sender, DoWorkEventArgs e)
+        {
+            //lock ((object)mostRecentRpmValue)
+            //{
+                String spreadsheetId = "1buoculiAlX_jz9m9Tt8Y9YYF6LPOPOLEGSVmbB5bSHU";
+                SheetsService service = GoogleConnect.connectToGoogle();
+                mostRecentRpmValue = decodeData(GoogleConnect.retreiveMostRecentData("A:H", "RPM", spreadsheetId, service), "RPM");
+            //}
         }
 
         // 9. DRAW THE GRAPH BEING STORED IN GLOBAL GRAPH OBJECT
@@ -1618,7 +1856,7 @@ namespace OBD2_Utility
                             {
                                 rect = new Rectangle(currXPixel + ((graphData.xInterval / 2) - 2), graphDisplay.Height - 40, 2, 10);
                             }
-                            using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+                            using (Pen pen = new Pen(penColor, 2))
                             {
                                 e.Graphics.DrawRectangle(pen, rect);
                             }
@@ -1640,7 +1878,7 @@ namespace OBD2_Utility
                                 {
                                     using (Font myFont = new Font("Arial", 9))
                                     {
-                                        e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 30, graphDisplay.Height - 25));
+                                        e.Graphics.DrawString(currentDayIndex + ":" + currentHourIndex + ":" + currentMinuteIndex + ":" + currentSecondIndex, myFont, secondBrushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 30, graphDisplay.Height - 25));
                                     }
                                 }
                                 else
@@ -1650,19 +1888,19 @@ namespace OBD2_Utility
                                     {
                                         if (graphData.timeInterval.Equals("seconds"))
                                         {
-                                            e.Graphics.DrawString(currentSecondIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                            e.Graphics.DrawString(currentSecondIndex.ToString(), myFont, brushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
                                         }
                                         else if (graphData.timeInterval.Equals("minutes"))
                                         {
-                                            e.Graphics.DrawString(currentMinuteIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                            e.Graphics.DrawString(currentMinuteIndex.ToString(), myFont, brushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
                                         }
                                         else if (graphData.timeInterval.Equals("hours"))
                                         {
-                                            e.Graphics.DrawString(currentHourIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                            e.Graphics.DrawString(currentHourIndex.ToString(), myFont, brushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
                                         }
                                         else if (graphData.timeInterval.Equals("days"))
                                         {
-                                            e.Graphics.DrawString(currentDayIndex.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
+                                            e.Graphics.DrawString(currentDayIndex.ToString(), myFont, brushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 5, graphDisplay.Height - 25));
                                         }
                                     }
                                 }
@@ -1689,7 +1927,7 @@ namespace OBD2_Utility
             {
                 rect = new Rectangle(currXPixel, ((graphDisplay.Height - 30) - ((dp.yValue * yMultiplier)) / yPixelScale), (graphData.xInterval - 2), ((dp.yValue * yMultiplier) / yPixelScale - 2));
             }
-            using (SolidBrush brush = new SolidBrush(System.Drawing.Color.Red))
+            using (SolidBrush brush = new SolidBrush(penColor))
             {
                 e.Graphics.FillRectangle(brush, rect);
             }
@@ -1697,11 +1935,15 @@ namespace OBD2_Utility
 
         private bool drawDot(dataPoint dp, int currXPixel, PaintEventArgs e, bool firstPoint)
         {
-            using (Pen pen = new Pen(System.Drawing.Color.Red, 2))
+            using (Pen pen = new Pen(penColor, 2))
             {
                 Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 45) - (dp.yValue * yMultiplier) / yPixelScale) + 5);
-                e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 45) - (dp.yValue * yMultiplier) / yPixelScale), 10, 10);
 
+                using (Brush br = new SolidBrush(penColor))
+                {
+                    e.Graphics.FillEllipse(br, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 45) - (dp.yValue * yMultiplier) / yPixelScale), 10, 10);
+                }
+                
                 if (!firstPoint)
                 {
                     e.Graphics.DrawLine(pen, lastPoint, p);
@@ -1720,19 +1962,15 @@ namespace OBD2_Utility
             {
                 if (firstDataPoint)
                 {
-                    e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 10, (graphDisplay.Height - (dp.yValue * yMultiplier) / yPixelScale) - 65));
+                    e.Graphics.DrawString(dp.yValue.ToString(), myFont, secondBrushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 10, (graphDisplay.Height - (dp.yValue * yMultiplier) / yPixelScale) - 65));
                 }
                 else
                 {
-                    e.Graphics.DrawString(dp.yValue.ToString(), myFont, Brushes.Red, new Point((currXPixel + ((graphData.xInterval / 2))) - 15, (graphDisplay.Height - (dp.yValue * yMultiplier) / yPixelScale) - 65));
+                    e.Graphics.DrawString(dp.yValue.ToString(), myFont, secondBrushColor, new Point((currXPixel + ((graphData.xInterval / 2))) - 15, (graphDisplay.Height - (dp.yValue * yMultiplier) / yPixelScale) - 65));
                 }
             }
 
             return false;
-        }
-
-        private void Bg_DoWork(object sender, DoWorkEventArgs e)
-        {
         }
 
         // USED TO TAKE A LIST OF DATAPOINTS AND MAKE ALL Y VALUES = 0
@@ -1776,6 +2014,18 @@ namespace OBD2_Utility
                 graphOne.graphData = graphData;
                 graphOne.targetGraph = targetGraph;
 
+                Object[] objArray = new Object[graphOption1Select.Items.Count];
+                graphOption1Select.Items.CopyTo(objArray, 0);
+
+                objArray = new Object[graphOption2Select.Items.Count];
+                graphOption2Select.Items.CopyTo(objArray, 0);
+
+                graphOne.dataOptionsOne = objArray.ToList<Object>();
+                graphOne.dataOptionsTwo = objArray.ToList<Object>();
+
+                graphOne.dataOptionIndexOne = graphOption1Select.SelectedIndex;
+                graphOne.dataOptionIndexTwo = graphOption2Select.SelectedIndex;
+
                 graphOne.graphDisplay = graphDisplay;
 
             } else if(num == 2)
@@ -1801,6 +2051,18 @@ namespace OBD2_Utility
 
                 graphTwo.graphData = graphData;
                 graphTwo.targetGraph = targetGraph;
+
+                Object[] objArray = new Object[graphOption1Select.Items.Count];
+                graphOption1Select.Items.CopyTo(objArray, 0);
+
+                objArray = new Object[graphOption2Select.Items.Count];
+                graphOption2Select.Items.CopyTo(objArray, 0);
+
+                graphTwo.dataOptionsOne = objArray.ToList<Object>();
+                graphTwo.dataOptionsTwo = objArray.ToList<Object>();
+
+                graphTwo.dataOptionIndexOne = graphOption1Select.SelectedIndex;
+                graphTwo.dataOptionIndexTwo = graphOption2Select.SelectedIndex;
 
                 graphTwo.graphDisplay = graphDisplay;
 
@@ -1828,9 +2090,131 @@ namespace OBD2_Utility
                 graphThree.graphData = graphData;
                 graphThree.targetGraph = targetGraph;
 
+                Object[] objArray = new Object[graphOption1Select.Items.Count];
+                graphOption1Select.Items.CopyTo(objArray, 0);
+
+                objArray = new Object[graphOption2Select.Items.Count];
+                graphOption2Select.Items.CopyTo(objArray, 0);
+
+                graphThree.dataOptionsOne = objArray.ToList<Object>();
+                graphThree.dataOptionsTwo = objArray.ToList<Object>();
+
+                graphThree.dataOptionIndexOne = graphOption1Select.SelectedIndex;
+                graphThree.dataOptionIndexTwo = graphOption2Select.SelectedIndex;
+
                 graphThree.graphDisplay = graphDisplay;
             }
         }
 
+        private void dashBoard_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void graphOption2Select_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        // HELPER FUNCTIONS FOR GAUGES
+
+        private void setGaugeValue(String name, int value)
+        {
+            var control = this.Controls.Find(name, true);
+
+            foreach (AGauge c in control)
+            {
+                c.Value = value;
+            }
+
+        }
+
+        private void menuSettings_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Default_Click(object sender, EventArgs e)
+        {
+            penColor = System.Drawing.Color.Red;
+            brushColor = Brushes.Red;
+            secondBrushColor = Brushes.Red;
+            graphDisplay.BackColor = System.Drawing.Color.White;
+            graphOne.graphDisplay.BackColor = System.Drawing.Color.White;
+            graphTwo.graphDisplay.BackColor = System.Drawing.Color.White;
+            graphThree.graphDisplay.BackColor = System.Drawing.Color.White;
+        }
+
+        private void Dark_Click(object sender, EventArgs e)
+        {
+            penColor = System.Drawing.Color.White;
+            brushColor = Brushes.White;
+            secondBrushColor = Brushes.White;
+            graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphOne.graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphTwo.graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphThree.graphDisplay.BackColor = System.Drawing.Color.Black;
+        }
+
+        private void Neon_Click(object sender, EventArgs e)
+        {
+            penColor = System.Drawing.Color.HotPink;
+            brushColor = Brushes.HotPink;
+            secondBrushColor = Brushes.LimeGreen;
+            graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphOne.graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphTwo.graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphThree.graphDisplay.BackColor = System.Drawing.Color.Black;
+        }
+
+        private int decodeData(String[] dataList, String dataType)
+        {
+            int value = 0;
+
+            if (dataType.Equals("RPM"))
+            {
+                int A = int.Parse(dataList[5], System.Globalization.NumberStyles.HexNumber);
+                int B = int.Parse(dataList[6], System.Globalization.NumberStyles.HexNumber);
+
+                value = ((256 * A) + B) / 4;
+            }
+
+            return value;
+        }
+
+        // 7. TAKE THE GOOGLE DATA AND EXTRACT THE INFORMATION NECESSARY
+        private List<dataPoint> decodeData(List<List<Object>> dataList, String dataType)
+        {
+            int value = 0;
+            int i = 0;
+
+            dataPoint dp;
+            List<dataPoint> results = new List<dataPoint>();
+
+            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            foreach (List<object> data in dataList)
+            {
+                String[] dataValues = ((String)data[1]).Split('-');
+
+
+                if (dataType.Equals("RPM"))
+                {
+                    int A = int.Parse(dataValues[5], System.Globalization.NumberStyles.HexNumber);
+                    int B = int.Parse(dataValues[6], System.Globalization.NumberStyles.HexNumber);
+
+                    value = ((256 * A) + B) / 4;
+                }
+
+                // Add other PID equations
+
+
+                dp = new dataPoint("Name", "Red", value, i);
+                results.Add(dp);
+
+                i++;
+            }
+
+            return results;
+        }
     }
 }
