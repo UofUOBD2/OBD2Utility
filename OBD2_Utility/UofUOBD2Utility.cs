@@ -24,6 +24,8 @@ namespace OBD2_Utility
         Brush brushColor = Brushes.Red;
         Brush secondBrushColor = Brushes.Red;
 
+        Brush whiteBrush = Brushes.White;
+
         bool graphOneSelected;
         bool graphTwoSelected;
         bool graphThreeSelected;
@@ -1392,55 +1394,9 @@ namespace OBD2_Utility
 
         }
 
-        // 7. TAKE THE GOOGLE DATA AND EXTRACT THE INFORMATION NECESSARY
-        private List<dataPoint> decodeData(List<List<Object>> dataList, String dataType)
-        {
-            int value = 0;
-            int i = 0;
 
-            dataPoint dp;
-            List<dataPoint> results = new List<dataPoint>();
 
-            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            foreach (List<object> data in dataList)
-            {
-                String[] dataValues = ((String)data[1]).Split('-');
-                
-            
-                if(dataType.Equals("RPM"))
-                {
-                    int A = int.Parse(dataValues[5], System.Globalization.NumberStyles.HexNumber);
-                    int B = int.Parse(dataValues[6], System.Globalization.NumberStyles.HexNumber);
-
-                    value = ((256 * A) + B) / 4;
-                }
-
-                // Add other PID equations
-                
-
-                dp = new dataPoint("Name", "Red", value, i);
-                results.Add(dp);
-
-                i++;
-            }
-
-            return results;
-        }
-
-        private int decodeData(String[] dataList, String dataType)
-        {
-            int value = 0;
-
-            if (dataType.Equals("RPM"))
-            {
-                int A = int.Parse(dataList[5], System.Globalization.NumberStyles.HexNumber);
-                int B = int.Parse(dataList[6], System.Globalization.NumberStyles.HexNumber);
-
-                value = ((256 * A) + B) / 4;
-            }
-
-            return value;
-        }
+        
 
         // 8. THE PICTURE BOX HAS BEEN INVALIDATED
         private void GraphDisplay_Paint(object sender, PaintEventArgs e)
@@ -1523,17 +1479,53 @@ namespace OBD2_Utility
             }
         }
 
+        private void drawOdometer(PaintEventArgs e, int x, int y, int value)
+        {
+
+            int intermValue = 0;
+            int scale = 0;
+
+            using (Font myFont = new Font("Arial", 20))
+            {
+                using (Pen pen = new Pen(whiteBrush))
+                {
+                    Rectangle rect = new Rectangle();
+
+                    for (int i = 1; i < 6; i++)
+                    {
+                        rect = new Rectangle(x+(i*25), y, 25, 35);
+                        e.Graphics.DrawRectangle(pen, rect);
+
+                        
+
+                        scale = (int)(Math.Pow(10, (6-i)));
+                        intermValue = (value / scale);
+                        value -= (intermValue * scale);
+
+                        e.Graphics.DrawString(intermValue.ToString(), myFont, whiteBrush, x + (i*25), y);
+
+                        
+                    }
+
+                    rect = new Rectangle(x+(6*25), y, 25, 35);
+                    e.Graphics.DrawRectangle(pen, rect);
+                    e.Graphics.DrawString(value.ToString(), myFont, whiteBrush, x+ (6 * 25), y);
+
+
+
+                }
+
+            }
+
+
+        }
+
         private void drawDashBoard(PaintEventArgs e)
         {
 
 
 
-            using (Font myFont = new Font("Arial", 20))
-            {
- 
-                e.Graphics.DrawString("See You Space Cowboy...", myFont, secondBrushColor, 350, 40);
-
-            }
+            drawOdometer(e, 375, 375, 123456);
 
             // Retrieve New Google Data
 
@@ -1551,8 +1543,8 @@ namespace OBD2_Utility
              setGaugeValue("speedGauge", value2);
            
 
-            value += 1;
-            value2 += 1;
+            value += 5;
+            value2 += 5;
         }
 
         private void Bg_DoWork(object sender, DoWorkEventArgs e)
@@ -1946,8 +1938,12 @@ namespace OBD2_Utility
             using (Pen pen = new Pen(penColor, 2))
             {
                 Point p = new Point(currXPixel + ((graphData.xInterval / 2) - 2), ((graphDisplay.Height - 45) - (dp.yValue * yMultiplier) / yPixelScale) + 5);
-                e.Graphics.DrawEllipse(pen, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 45) - (dp.yValue * yMultiplier) / yPixelScale), 10, 10);
 
+                using (Brush br = new SolidBrush(penColor))
+                {
+                    e.Graphics.FillEllipse(br, currXPixel + ((graphData.xInterval / 2) - 2) - 5, ((graphDisplay.Height - 45) - (dp.yValue * yMultiplier) / yPixelScale), 10, 10);
+                }
+                
                 if (!firstPoint)
                 {
                     e.Graphics.DrawLine(pen, lastPoint, p);
@@ -1976,8 +1972,6 @@ namespace OBD2_Utility
 
             return false;
         }
-
-
 
         // USED TO TAKE A LIST OF DATAPOINTS AND MAKE ALL Y VALUES = 0
         private List<dataPoint> zeroOut(List<dataPoint> dp)
@@ -2122,9 +2116,6 @@ namespace OBD2_Utility
 
         }
 
-
-
-
         // HELPER FUNCTIONS FOR GAUGES
 
         private void setGaugeValue(String name, int value)
@@ -2149,6 +2140,9 @@ namespace OBD2_Utility
             brushColor = Brushes.Red;
             secondBrushColor = Brushes.Red;
             graphDisplay.BackColor = System.Drawing.Color.White;
+            graphOne.graphDisplay.BackColor = System.Drawing.Color.White;
+            graphTwo.graphDisplay.BackColor = System.Drawing.Color.White;
+            graphThree.graphDisplay.BackColor = System.Drawing.Color.White;
         }
 
         private void Dark_Click(object sender, EventArgs e)
@@ -2157,6 +2151,9 @@ namespace OBD2_Utility
             brushColor = Brushes.White;
             secondBrushColor = Brushes.White;
             graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphOne.graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphTwo.graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphThree.graphDisplay.BackColor = System.Drawing.Color.Black;
         }
 
         private void Neon_Click(object sender, EventArgs e)
@@ -2165,6 +2162,59 @@ namespace OBD2_Utility
             brushColor = Brushes.HotPink;
             secondBrushColor = Brushes.LimeGreen;
             graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphOne.graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphTwo.graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphThree.graphDisplay.BackColor = System.Drawing.Color.Black;
+        }
+
+        private int decodeData(String[] dataList, String dataType)
+        {
+            int value = 0;
+
+            if (dataType.Equals("RPM"))
+            {
+                int A = int.Parse(dataList[5], System.Globalization.NumberStyles.HexNumber);
+                int B = int.Parse(dataList[6], System.Globalization.NumberStyles.HexNumber);
+
+                value = ((256 * A) + B) / 4;
+            }
+
+            return value;
+        }
+
+        // 7. TAKE THE GOOGLE DATA AND EXTRACT THE INFORMATION NECESSARY
+        private List<dataPoint> decodeData(List<List<Object>> dataList, String dataType)
+        {
+            int value = 0;
+            int i = 0;
+
+            dataPoint dp;
+            List<dataPoint> results = new List<dataPoint>();
+
+            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            foreach (List<object> data in dataList)
+            {
+                String[] dataValues = ((String)data[1]).Split('-');
+
+
+                if (dataType.Equals("RPM"))
+                {
+                    int A = int.Parse(dataValues[5], System.Globalization.NumberStyles.HexNumber);
+                    int B = int.Parse(dataValues[6], System.Globalization.NumberStyles.HexNumber);
+
+                    value = ((256 * A) + B) / 4;
+                }
+
+                // Add other PID equations
+
+
+                dp = new dataPoint("Name", "Red", value, i);
+                results.Add(dp);
+
+                i++;
+            }
+
+            return results;
         }
     }
 }
