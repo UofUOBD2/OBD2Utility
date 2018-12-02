@@ -59,6 +59,20 @@ namespace OBD2_Utility
         int currGraph = 0;
 
         int mostRecentRpmValue = 0;
+        int mostRecentSpeedValue = 0;
+        int mostRecentFuelValue = 0;
+        int mostRecentTempValue = 0;
+
+        int targetRpmValue = 0;
+        int targetSpeedValue = 0;
+        int targetFuelValue = 0;
+        int targetTempValue = 0;
+
+        bool dashUpToDate;
+        bool updatingDash;
+
+        bool lookingAtGraph;
+        bool lookingAtDash;
 
         // How quickly the graphs should animate;
         int updateScale = 10;
@@ -126,13 +140,19 @@ namespace OBD2_Utility
 
             graphGraphButton.Enabled = false;
 
+            lookingAtDash = true;
+            lookingAtGraph = false;
+
         }
 
         private void Time_Tick2(object sender, EventArgs e)
         {
             if(dashboard)
             {
-                dashBoard.Invalidate();
+                if (!bg.IsBusy)
+                {
+                    bg.RunWorkerAsync();
+                }
             }
         }
 
@@ -210,8 +230,17 @@ namespace OBD2_Utility
 
         private void Time_Tick(object sender, EventArgs e)
         {
-            updateGraph();
-            graphDisplay.Invalidate();
+            if(dashboard)
+            {
+                updateDashboard();
+                dashBoard.Invalidate();
+            } 
+            else 
+            {
+                updateGraph();
+                graphDisplay.Invalidate();
+            }
+            
         }
 
         private double MonthDifference(DateTime lValue, DateTime rValue)
@@ -523,7 +552,6 @@ namespace OBD2_Utility
             configureOptionBox(xOptions, yOptions);
 
         }
-
 
         // 2. SET UP THE OPTION BOX FOR THE USER
         private void configureOptionBox(List<String> xOptions, List<String> yOptions)
@@ -1394,10 +1422,6 @@ namespace OBD2_Utility
 
         }
 
-
-
-        
-
         // 8. THE PICTURE BOX HAS BEEN INVALIDATED
         private void GraphDisplay_Paint(object sender, PaintEventArgs e)
         {
@@ -1522,39 +1546,127 @@ namespace OBD2_Utility
 
         private void drawDashBoard(PaintEventArgs e)
         {
-
-
-
             drawOdometer(e, 375, 375, 123456);
 
-            // Retrieve New Google Data
+            setGaugeValue("rpmGauge", mostRecentRpmValue);
+            setGaugeValue("speedGauge", mostRecentSpeedValue);
+            setGaugeValue("fuelGauge", mostRecentFuelValue);
+            setGaugeValue("tempGauge", mostRecentTempValue);
+         
+           
+        }
 
-            if(!bg.IsBusy)
+        private void updateDashboard()
+        {
+
+            if(mostRecentRpmValue != targetRpmValue)
             {
-                bg.RunWorkerAsync();
+                if (mostRecentRpmValue < targetRpmValue)
+                {
+
+
+                    if (targetRpmValue - mostRecentRpmValue >= 10)
+                    {
+                        mostRecentRpmValue += 10;
+                    }
+                    else
+                    {
+                        mostRecentRpmValue++;
+                    }
+                }
+
+                else if (mostRecentRpmValue > targetRpmValue)
+                {
+                    if (mostRecentRpmValue - targetRpmValue >= 10)
+                    {
+                        mostRecentRpmValue -= 10;
+                    }
+                    else
+                    {
+                        mostRecentRpmValue--;
+                    }
+                }
+
+                dashUpToDate = false;
+                updatingDash = true;
+            }
+
+            if (mostRecentSpeedValue != targetSpeedValue)
+            {
+                if (mostRecentSpeedValue < targetSpeedValue)
+                    mostRecentSpeedValue++;
+
+                else if (mostRecentSpeedValue > targetSpeedValue)
+                    mostRecentSpeedValue--;
+
+                dashUpToDate = false;
+                updatingDash = true;
+            }
+
+            if (mostRecentFuelValue != targetFuelValue)
+            {
+                if (mostRecentFuelValue < targetFuelValue)
+                    mostRecentFuelValue++;
+
+                else if (mostRecentFuelValue > targetFuelValue)
+                    mostRecentFuelValue--;
+
+                dashUpToDate = false;
+                updatingDash = true;
+            }
+
+            if (mostRecentTempValue != targetTempValue)
+            {
+                if (mostRecentTempValue < targetTempValue)
+                    mostRecentTempValue++;
+
+                else if (mostRecentTempValue > targetTempValue)
+                    mostRecentTempValue--;
+
+                dashUpToDate = false;
+                updatingDash = true;
+            }
+
+            if(mostRecentRpmValue == targetRpmValue && mostRecentSpeedValue == targetSpeedValue &&
+               mostRecentFuelValue == targetFuelValue && mostRecentTempValue == targetTempValue)
+            {
+                dashUpToDate = true;
+                updatingDash = false;
             }
             
-
-            //lock((Object)mostRecentRpmValue)
-            //{
-             setGaugeValue("rpmGauge", mostRecentRpmValue);
-           // }
-             
-             setGaugeValue("speedGauge", value2);
-           
-
-            value += 5;
-            value2 += 5;
         }
 
         private void Bg_DoWork(object sender, DoWorkEventArgs e)
         {
-            //lock ((object)mostRecentRpmValue)
-            //{
+            if (!updatingDash)
+            {
                 String spreadsheetId = "1buoculiAlX_jz9m9Tt8Y9YYF6LPOPOLEGSVmbB5bSHU";
                 SheetsService service = GoogleConnect.connectToGoogle();
-                mostRecentRpmValue = decodeData(GoogleConnect.retreiveMostRecentData("A:H", "RPM", spreadsheetId, service), "RPM");
-            //}
+                setMostRecentData(GoogleConnect.retreiveMostRecentData("A:H", spreadsheetId, service));
+            }
+
+        }
+
+        private void setMostRecentData(String[] dataList)
+        {
+            // RPM
+            int A = int.Parse(dataList[1], System.Globalization.NumberStyles.HexNumber);
+            int B = int.Parse(dataList[2], System.Globalization.NumberStyles.HexNumber);
+            targetRpmValue = ((256 * A) + B) / 4;
+
+
+            // SPEED
+            A = int.Parse(dataList[3], System.Globalization.NumberStyles.HexNumber);
+            targetSpeedValue = (A);
+
+            // TEMP
+            A = int.Parse(dataList[5], System.Globalization.NumberStyles.HexNumber);
+            targetTempValue = (A - 40);
+
+            // FUEL
+            A = int.Parse(dataList[7], System.Globalization.NumberStyles.HexNumber);
+            double val = 100.0 / 255.0;
+            targetFuelValue = (int)(val * A);
         }
 
         // 9. DRAW THE GRAPH BEING STORED IN GLOBAL GRAPH OBJECT
