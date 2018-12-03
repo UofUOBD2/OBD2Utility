@@ -62,10 +62,9 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.dashBoardTitle = new System.Windows.Forms.Label();
-            this.listView1 = new System.Windows.Forms.ListView();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.fuelPic = new System.Windows.Forms.PictureBox();
+            this.tempPic = new System.Windows.Forms.PictureBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -76,15 +75,17 @@
             this.rpmGauge = new System.Windows.Forms.AGauge();
             this.speedGauge = new System.Windows.Forms.AGauge();
             this.dashBoard = new System.Windows.Forms.PictureBox();
+            this.messageBubble = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fuelPic)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tempPic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dashBoard)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.messageBubble)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -100,7 +101,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1344, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1382, 28);
             this.menuStrip1.TabIndex = 3;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -213,7 +214,7 @@
             // graphGenerateButton
             // 
             this.graphGenerateButton.Location = new System.Drawing.Point(1144, 193);
-            this.graphGenerateButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphGenerateButton.Margin = new System.Windows.Forms.Padding(4);
             this.graphGenerateButton.Name = "graphGenerateButton";
             this.graphGenerateButton.Size = new System.Drawing.Size(172, 71);
             this.graphGenerateButton.TabIndex = 9;
@@ -226,7 +227,7 @@
             this.graphYAxisSelect.FormattingEnabled = true;
             this.graphYAxisSelect.ItemHeight = 16;
             this.graphYAxisSelect.Location = new System.Drawing.Point(1141, 137);
-            this.graphYAxisSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphYAxisSelect.Margin = new System.Windows.Forms.Padding(4);
             this.graphYAxisSelect.Name = "graphYAxisSelect";
             this.graphYAxisSelect.Size = new System.Drawing.Size(173, 20);
             this.graphYAxisSelect.TabIndex = 10;
@@ -236,16 +237,17 @@
             this.graphXAxisSelect.FormattingEnabled = true;
             this.graphXAxisSelect.ItemHeight = 16;
             this.graphXAxisSelect.Location = new System.Drawing.Point(1141, 108);
-            this.graphXAxisSelect.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphXAxisSelect.Margin = new System.Windows.Forms.Padding(4);
             this.graphXAxisSelect.Name = "graphXAxisSelect";
             this.graphXAxisSelect.Size = new System.Drawing.Size(173, 20);
             this.graphXAxisSelect.TabIndex = 11;
+            this.graphXAxisSelect.SelectedIndexChanged += new System.EventHandler(this.graphXAxisSelect_SelectedIndexChanged);
             // 
             // graphBarBox
             // 
             this.graphBarBox.AutoSize = true;
             this.graphBarBox.Location = new System.Drawing.Point(1144, 165);
-            this.graphBarBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphBarBox.Margin = new System.Windows.Forms.Padding(4);
             this.graphBarBox.Name = "graphBarBox";
             this.graphBarBox.Size = new System.Drawing.Size(52, 21);
             this.graphBarBox.TabIndex = 12;
@@ -256,7 +258,7 @@
             // 
             this.graphLineBox.AutoSize = true;
             this.graphLineBox.Location = new System.Drawing.Point(1255, 165);
-            this.graphLineBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphLineBox.Margin = new System.Windows.Forms.Padding(4);
             this.graphLineBox.Name = "graphLineBox";
             this.graphLineBox.Size = new System.Drawing.Size(57, 21);
             this.graphLineBox.TabIndex = 13;
@@ -268,7 +270,7 @@
             this.graphOption1Select.FormattingEnabled = true;
             this.graphOption1Select.ItemHeight = 16;
             this.graphOption1Select.Location = new System.Drawing.Point(1147, 288);
-            this.graphOption1Select.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphOption1Select.Margin = new System.Windows.Forms.Padding(4);
             this.graphOption1Select.Name = "graphOption1Select";
             this.graphOption1Select.Size = new System.Drawing.Size(171, 196);
             this.graphOption1Select.TabIndex = 15;
@@ -279,7 +281,7 @@
             this.graphOption2Select.FormattingEnabled = true;
             this.graphOption2Select.ItemHeight = 16;
             this.graphOption2Select.Location = new System.Drawing.Point(1144, 508);
-            this.graphOption2Select.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphOption2Select.Margin = new System.Windows.Forms.Padding(4);
             this.graphOption2Select.Name = "graphOption2Select";
             this.graphOption2Select.Size = new System.Drawing.Size(171, 196);
             this.graphOption2Select.TabIndex = 16;
@@ -290,7 +292,7 @@
             this.graphOption3Select.FormattingEnabled = true;
             this.graphOption3Select.ItemHeight = 16;
             this.graphOption3Select.Location = new System.Drawing.Point(1144, 713);
-            this.graphOption3Select.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphOption3Select.Margin = new System.Windows.Forms.Padding(4);
             this.graphOption3Select.Name = "graphOption3Select";
             this.graphOption3Select.Size = new System.Drawing.Size(171, 20);
             this.graphOption3Select.TabIndex = 17;
@@ -299,7 +301,7 @@
             // graphGraphButton
             // 
             this.graphGraphButton.Location = new System.Drawing.Point(1144, 741);
-            this.graphGraphButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphGraphButton.Margin = new System.Windows.Forms.Padding(4);
             this.graphGraphButton.Name = "graphGraphButton";
             this.graphGraphButton.Size = new System.Drawing.Size(172, 103);
             this.graphGraphButton.TabIndex = 18;
@@ -310,7 +312,7 @@
             // menuStatusBar
             // 
             this.menuStatusBar.Location = new System.Drawing.Point(633, 5);
-            this.menuStatusBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.menuStatusBar.Margin = new System.Windows.Forms.Padding(4);
             this.menuStatusBar.Name = "menuStatusBar";
             this.menuStatusBar.Size = new System.Drawing.Size(687, 22);
             this.menuStatusBar.TabIndex = 19;
@@ -319,7 +321,7 @@
             // 
             this.graphFlowPanel.AutoScroll = true;
             this.graphFlowPanel.Location = new System.Drawing.Point(7, 7);
-            this.graphFlowPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.graphFlowPanel.Margin = new System.Windows.Forms.Padding(4);
             this.graphFlowPanel.Name = "graphFlowPanel";
             this.graphFlowPanel.Size = new System.Drawing.Size(1129, 837);
             this.graphFlowPanel.TabIndex = 21;
@@ -386,11 +388,11 @@
             // tabPage2
             // 
             this.tabPage2.BackColor = System.Drawing.Color.White;
+            this.tabPage2.Controls.Add(this.messageBubble);
             this.tabPage2.Controls.Add(this.dashBoardTitle);
-            this.tabPage2.Controls.Add(this.listView1);
             this.tabPage2.Controls.Add(this.pictureBox4);
-            this.tabPage2.Controls.Add(this.pictureBox3);
-            this.tabPage2.Controls.Add(this.pictureBox1);
+            this.tabPage2.Controls.Add(this.fuelPic);
+            this.tabPage2.Controls.Add(this.tempPic);
             this.tabPage2.Controls.Add(this.label4);
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Controls.Add(this.label2);
@@ -422,47 +424,38 @@
             this.dashBoardTitle.TabIndex = 40;
             this.dashBoardTitle.Text = "Dashboard";
             // 
-            // listView1
-            // 
-            this.listView1.Location = new System.Drawing.Point(16, 537);
-            this.listView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(940, 288);
-            this.listView1.TabIndex = 39;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            // 
             // pictureBox4
             // 
             this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(988, 537);
-            this.pictureBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox4.Location = new System.Drawing.Point(943, 513);
+            this.pictureBox4.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(261, 289);
+            this.pictureBox4.Size = new System.Drawing.Size(267, 296);
             this.pictureBox4.TabIndex = 38;
             this.pictureBox4.TabStop = false;
             // 
-            // pictureBox3
+            // fuelPic
             // 
-            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(1059, 396);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(39, 41);
-            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox3.TabIndex = 37;
-            this.pictureBox3.TabStop = false;
+            this.fuelPic.Image = ((System.Drawing.Image)(resources.GetObject("fuelPic.Image")));
+            this.fuelPic.Location = new System.Drawing.Point(1059, 396);
+            this.fuelPic.Margin = new System.Windows.Forms.Padding(4);
+            this.fuelPic.Name = "fuelPic";
+            this.fuelPic.Size = new System.Drawing.Size(39, 41);
+            this.fuelPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.fuelPic.TabIndex = 37;
+            this.fuelPic.TabStop = false;
             // 
-            // pictureBox1
+            // tempPic
             // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(177, 396);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(52, 41);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox1.TabIndex = 36;
-            this.pictureBox1.TabStop = false;
+            this.tempPic.BackColor = System.Drawing.Color.Black;
+            this.tempPic.Image = ((System.Drawing.Image)(resources.GetObject("tempPic.Image")));
+            this.tempPic.Location = new System.Drawing.Point(177, 396);
+            this.tempPic.Margin = new System.Windows.Forms.Padding(4);
+            this.tempPic.Name = "tempPic";
+            this.tempPic.Size = new System.Drawing.Size(52, 41);
+            this.tempPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.tempPic.TabIndex = 36;
+            this.tempPic.TabStop = false;
             // 
             // label4
             // 
@@ -499,7 +492,7 @@
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label2.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(777, 416);
+            this.label2.Location = new System.Drawing.Point(788, 418);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(56, 19);
@@ -513,7 +506,7 @@
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label1.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(436, 416);
+            this.label1.Location = new System.Drawing.Point(415, 418);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(40, 19);
@@ -524,7 +517,7 @@
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
             this.pictureBox2.Location = new System.Drawing.Point(616, 223);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(51, 38);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -627,10 +620,10 @@
             this.rpmGauge.BaseArcStart = 135;
             this.rpmGauge.BaseArcSweep = 270;
             this.rpmGauge.BaseArcWidth = 2;
-            this.rpmGauge.Center = new System.Drawing.Point(100, 100);
-            this.rpmGauge.Location = new System.Drawing.Point(328, 223);
+            this.rpmGauge.Center = new System.Drawing.Point(110, 100);
+            this.rpmGauge.Location = new System.Drawing.Point(294, 223);
             this.rpmGauge.Margin = new System.Windows.Forms.Padding(0);
-            this.rpmGauge.MaxValue = 2000F;
+            this.rpmGauge.MaxValue = 8000F;
             this.rpmGauge.MinValue = 0F;
             this.rpmGauge.Name = "rpmGauge";
             this.rpmGauge.NeedleColor1 = System.Windows.Forms.AGaugeNeedleColor.Red;
@@ -645,7 +638,7 @@
             this.rpmGauge.ScaleLinesMajorColor = System.Drawing.Color.Red;
             this.rpmGauge.ScaleLinesMajorInnerRadius = 70;
             this.rpmGauge.ScaleLinesMajorOuterRadius = 80;
-            this.rpmGauge.ScaleLinesMajorStepValue = 200F;
+            this.rpmGauge.ScaleLinesMajorStepValue = 1000F;
             this.rpmGauge.ScaleLinesMajorWidth = 3;
             this.rpmGauge.ScaleLinesMinorColor = System.Drawing.Color.White;
             this.rpmGauge.ScaleLinesMinorInnerRadius = 75;
@@ -671,7 +664,7 @@
             this.speedGauge.BaseArcStart = 135;
             this.speedGauge.BaseArcSweep = 270;
             this.speedGauge.BaseArcWidth = 2;
-            this.speedGauge.Center = new System.Drawing.Point(100, 100);
+            this.speedGauge.Center = new System.Drawing.Point(110, 100);
             this.speedGauge.Location = new System.Drawing.Point(673, 223);
             this.speedGauge.Margin = new System.Windows.Forms.Padding(0);
             this.speedGauge.MaxValue = 120F;
@@ -711,7 +704,7 @@
             // 
             this.dashBoard.BackColor = System.Drawing.Color.Black;
             this.dashBoard.Location = new System.Drawing.Point(7, 7);
-            this.dashBoard.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dashBoard.Margin = new System.Windows.Forms.Padding(4);
             this.dashBoard.Name = "dashBoard";
             this.dashBoard.Size = new System.Drawing.Size(1309, 839);
             this.dashBoard.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -719,22 +712,34 @@
             this.dashBoard.TabStop = false;
             this.dashBoard.Click += new System.EventHandler(this.dashBoard_Click);
             // 
+            // messageBubble
+            // 
+            this.messageBubble.Image = ((System.Drawing.Image)(resources.GetObject("messageBubble.Image")));
+            this.messageBubble.Location = new System.Drawing.Point(593, 513);
+            this.messageBubble.Margin = new System.Windows.Forms.Padding(4);
+            this.messageBubble.Name = "messageBubble";
+            this.messageBubble.Size = new System.Drawing.Size(342, 296);
+            this.messageBubble.TabIndex = 41;
+            this.messageBubble.TabStop = false;
+            // 
             // UofUOBD2Utility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(1344, 897);
+            this.ClientSize = new System.Drawing.Size(1382, 953);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStatusBar);
             this.Controls.Add(this.menuStrip1);
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.MinimumSize = new System.Drawing.Size(1359, 934);
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximumSize = new System.Drawing.Size(1400, 1000);
+            this.MinimumSize = new System.Drawing.Size(1400, 1000);
             this.Name = "UofUOBD2Utility";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "UofUOBD2Utility";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.UofUOBD2Utility_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -744,10 +749,11 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fuelPic)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tempPic)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dashBoard)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.messageBubble)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -792,14 +798,14 @@
         private System.Windows.Forms.AGauge fuelGauge;
         private System.Windows.Forms.AGauge rpmGauge;
         private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox fuelPic;
+        private System.Windows.Forms.PictureBox tempPic;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.Label dashBoardTitle;
+        private System.Windows.Forms.PictureBox messageBubble;
     }
 }

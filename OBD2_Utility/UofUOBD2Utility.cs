@@ -30,6 +30,13 @@ namespace OBD2_Utility
         bool graphTwoSelected;
         bool graphThreeSelected;
 
+        bool rpmMessage;
+        bool speedMessage;
+        bool tempMessage;
+        bool fuelMessage;
+
+        Queue<Tuple<String, String>> messageQ;
+
         bool graphing;
         bool dashboard;
 
@@ -42,8 +49,9 @@ namespace OBD2_Utility
         bool graphUpdateDone;
         bool firstTimeGraphing;
 
-        int value = 0;
-        int value2 = 20;
+        int graphOneDataType;
+        int graphTwoDataType;
+        int graphThreeDataType;
 
         int incramentValue;
         int yMultiplier;
@@ -63,16 +71,16 @@ namespace OBD2_Utility
         int mostRecentFuelValue = 0;
         int mostRecentTempValue = 0;
 
+
+
         int targetRpmValue = 0;
         int targetSpeedValue = 0;
         int targetFuelValue = 0;
         int targetTempValue = 0;
 
-        bool dashUpToDate;
         bool updatingDash;
 
-        bool lookingAtGraph;
-        bool lookingAtDash;
+        int messageCount;
 
         // How quickly the graphs should animate;
         int updateScale = 10;
@@ -82,8 +90,6 @@ namespace OBD2_Utility
         List<String> secondDates;
         List<List<Object>> google_results;
         Point lastPoint;
-
-
 
         Graph graphData;
         Graph targetGraph;
@@ -110,10 +116,19 @@ namespace OBD2_Utility
             graphDisplay = new PictureBox();
             graphFlowPanel.Controls.Add(graphDisplay);
 
+            messageQ = new Queue<Tuple<String,String>>();
+
+            graphOneDataType = 0;
+            graphTwoDataType = 0;
+            graphThreeDataType = 0;
+
             time = new System.Windows.Forms.Timer();
             time.Interval = 17;
             time.Tick += Time_Tick;
             time.Start();
+
+            fuelPic.Hide();
+            tempPic.Hide();
 
             bg.DoWork += Bg_DoWork;
 
@@ -122,12 +137,15 @@ namespace OBD2_Utility
             dashboardTimer.Tick += Time_Tick2;
             dashboardTimer.Start();
 
+            rpmMessage = false;
+            speedMessage = false;
+            fuelMessage = false;
+            tempMessage = false;
+
             dashboard = true;
             graphing = false;
 
             tabControl1.TabPages.Remove(tabPage1);
-            //tabControl1.TabPages.Remove(tabPage2);
-
 
             graphDisplay.Paint += GraphDisplay_Paint;
             dashBoard.Paint += DashBoard_Paint;
@@ -140,8 +158,7 @@ namespace OBD2_Utility
 
             graphGraphButton.Enabled = false;
 
-            lookingAtDash = true;
-            lookingAtGraph = false;
+            messageCount = 0;
 
         }
 
@@ -297,7 +314,7 @@ namespace OBD2_Utility
 
             setUpNextOption("graph");
 
-            List<String> xOptions = new List<string>(new String[] { "RPM", "SPEED", "OIL TEMP", "FUEL", "ODOMETER" });
+            List<String> xOptions = new List<string>(new String[] { "RPM", "SPEED", "TEMP", "FUEL" });
             List<String> yOptions = new List<string>(new String[] { "Time" });
 
             
@@ -333,7 +350,6 @@ namespace OBD2_Utility
             graphOption1Select.DataSource = graphOne.dataOptionsOne;
             graphOption2Select.DataSource = graphOne.dataOptionsTwo;
 
-
             try
             {
                 if (graphOption1Select.SelectedIndex != -1)
@@ -349,14 +365,11 @@ namespace OBD2_Utility
                 graphOption1Select.SelectedIndex = 0;
                 graphOption2Select.SelectedIndex = 0;
             }
-            
-
-            
-
 
             graphDisplay.Invalidate();
-
             configureOptionBox(xOptions, yOptions);
+
+            graphXAxisSelect.SelectedIndex = graphOneDataType;
         }
 
         private void menuGraph2_Click(object sender, EventArgs e)
@@ -401,7 +414,7 @@ namespace OBD2_Utility
 
             setUpNextOption("graph");
 
-            List<String> xOptions = new List<string>(new String[] { "RPM", "SPEED", "OIL TEMP", "FUEL", "ODOMETER"});
+            List<String> xOptions = new List<string>(new String[] { "RPM", "SPEED", "TEMP", "FUEL"});
             List<String> yOptions = new List<string>(new String[] { "Time"});
 
             graphConfigured = graphTwo.graphConfigured;
@@ -453,6 +466,7 @@ namespace OBD2_Utility
 
 
             configureOptionBox(xOptions, yOptions);
+            graphXAxisSelect.SelectedIndex = graphTwoDataType;
         }
 
         private void menuGraph3_Click(object sender, EventArgs e)
@@ -497,7 +511,7 @@ namespace OBD2_Utility
 
             setUpNextOption("graph");
 
-            List<String> xOptions = new List<string>(new String[] { "RPM", "SPEED", "OIL TEMP", "FUEL", "ODOMETER" });
+            List<String> xOptions = new List<string>(new String[] { "RPM", "SPEED", "TEMP", "FUEL"});
             List<String> yOptions = new List<string>(new String[] { "Time" });
 
             graphConfigured = graphThree.graphConfigured;
@@ -531,6 +545,8 @@ namespace OBD2_Utility
             graphOption1Select.DataSource = graphThree.dataOptionsOne;
             graphOption2Select.DataSource = graphThree.dataOptionsTwo;
 
+            
+
             try
             {
                 if (graphOption1Select.SelectedIndex != -1)
@@ -550,6 +566,7 @@ namespace OBD2_Utility
 
 
             configureOptionBox(xOptions, yOptions);
+            graphXAxisSelect.SelectedIndex = graphThreeDataType;
 
         }
 
@@ -1520,22 +1537,16 @@ namespace OBD2_Utility
                         rect = new Rectangle(x+(i*25), y, 25, 35);
                         e.Graphics.DrawRectangle(pen, rect);
 
-                        
-
                         scale = (int)(Math.Pow(10, (6-i)));
                         intermValue = (value / scale);
                         value -= (intermValue * scale);
 
                         e.Graphics.DrawString(intermValue.ToString(), myFont, whiteBrush, x + (i*25), y);
-
-                        
                     }
 
                     rect = new Rectangle(x+(6*25), y, 25, 35);
                     e.Graphics.DrawRectangle(pen, rect);
                     e.Graphics.DrawString(value.ToString(), myFont, whiteBrush, x+ (6 * 25), y);
-
-
 
                 }
 
@@ -1548,6 +1559,9 @@ namespace OBD2_Utility
         {
             drawOdometer(e, 375, 375, 123456);
 
+            drawMessages(e);
+
+
             setGaugeValue("rpmGauge", mostRecentRpmValue);
             setGaugeValue("speedGauge", mostRecentSpeedValue);
             setGaugeValue("fuelGauge", mostRecentFuelValue);
@@ -1556,18 +1570,60 @@ namespace OBD2_Utility
            
         }
 
+        private void drawMessages(PaintEventArgs e)
+        {
+            Graphics g = messageBubble.CreateGraphics();
+            Pen pen = new Pen(System.Drawing.Color.Red);
+            using (Font myFont = new Font("Arial", 13))
+            {
+                if (messageQ.Count > 0)
+                {
+                    Tuple<String,String> message = messageQ.Peek();
+                    g.DrawString(message.Item1, myFont, Brushes.Red, 35, 100);
+
+                    if(messageCount == 250)
+                    {
+
+                        if (message.Item2.Equals("RPM"))
+                            rpmMessage = false;
+                        else if (message.Item2.Equals("SPEED"))
+                            speedMessage = false;
+                        else if (message.Item2.Equals("FUEL"))
+                            fuelMessage = false;
+                        else if (message.Item2.Equals("TEMP"))
+                            tempMessage = false;
+
+
+                        g.FillRectangle(Brushes.White, 35, 100, 200, 50);
+                        messageCount = 0;
+                        messageQ.Dequeue();
+                    }
+                    else
+                    {
+                        messageCount++;
+                    }
+                }
+            }
+
+        }
+
         private void updateDashboard()
         {
 
             if(mostRecentRpmValue != targetRpmValue)
             {
+
+                if(mostRecentRpmValue > 6000 && rpmMessage == false)
+                {
+                    rpmMessage = true;
+                    messageQ.Enqueue(new Tuple<string, string>("Wow! Your making\nyour engine work hard!", "RPM"));
+                }
+
                 if (mostRecentRpmValue < targetRpmValue)
                 {
-
-
-                    if (targetRpmValue - mostRecentRpmValue >= 10)
+                    if (targetRpmValue - mostRecentRpmValue >= 100)
                     {
-                        mostRecentRpmValue += 10;
+                        mostRecentRpmValue += 100;
                     }
                     else
                     {
@@ -1577,29 +1633,32 @@ namespace OBD2_Utility
 
                 else if (mostRecentRpmValue > targetRpmValue)
                 {
-                    if (mostRecentRpmValue - targetRpmValue >= 10)
+                    if (mostRecentRpmValue - targetRpmValue >= 100)
                     {
-                        mostRecentRpmValue -= 10;
+                        mostRecentRpmValue -= 100;
                     }
                     else
                     {
                         mostRecentRpmValue--;
                     }
                 }
-
-                dashUpToDate = false;
                 updatingDash = true;
             }
 
             if (mostRecentSpeedValue != targetSpeedValue)
             {
+                if (mostRecentFuelValue > 80 && speedMessage == false)
+                {
+                    speedMessage = true;
+                    messageQ.Enqueue(new Tuple<string, string>("Woah, Slow down!.", "SPEED"));
+                }
+
                 if (mostRecentSpeedValue < targetSpeedValue)
                     mostRecentSpeedValue++;
 
                 else if (mostRecentSpeedValue > targetSpeedValue)
                     mostRecentSpeedValue--;
 
-                dashUpToDate = false;
                 updatingDash = true;
             }
 
@@ -1611,7 +1670,23 @@ namespace OBD2_Utility
                 else if (mostRecentFuelValue > targetFuelValue)
                     mostRecentFuelValue--;
 
-                dashUpToDate = false;
+                if (mostRecentFuelValue < 10 && fuelMessage == false)
+                {
+                    fuelMessage = true;
+                    messageQ.Enqueue(new Tuple<string, string>("Yo, your fuel is low.", "FUEL"));
+                    fuelPic.Show();
+                }
+                else if (mostRecentFuelValue > 90 && fuelMessage == false)
+                {
+                    fuelMessage = true;
+                    messageQ.Enqueue(new Tuple<string, string>("Good job! Your tank is full.", "FUEL"));
+                    fuelPic.Show();
+                }
+                else
+                { 
+                    fuelPic.Hide();
+                }
+
                 updatingDash = true;
             }
 
@@ -1623,14 +1698,22 @@ namespace OBD2_Utility
                 else if (mostRecentTempValue > targetTempValue)
                     mostRecentTempValue--;
 
-                dashUpToDate = false;
+                if (mostRecentTempValue > 250 && tempMessage == false)
+                {
+                    tempMessage = true;
+                    messageQ.Enqueue(new Tuple<string, string>("You could cook an egg\n on that thing...", "TEMP"));
+                    tempPic.Show();
+                } else
+                {
+                    tempPic.Hide();
+                }
+
                 updatingDash = true;
             }
 
             if(mostRecentRpmValue == targetRpmValue && mostRecentSpeedValue == targetSpeedValue &&
                mostRecentFuelValue == targetFuelValue && mostRecentTempValue == targetTempValue)
             {
-                dashUpToDate = true;
                 updatingDash = false;
             }
             
@@ -2251,10 +2334,10 @@ namespace OBD2_Utility
             penColor = System.Drawing.Color.Red;
             brushColor = Brushes.Red;
             secondBrushColor = Brushes.Red;
-            graphDisplay.BackColor = System.Drawing.Color.White;
-            graphOne.graphDisplay.BackColor = System.Drawing.Color.White;
-            graphTwo.graphDisplay.BackColor = System.Drawing.Color.White;
-            graphThree.graphDisplay.BackColor = System.Drawing.Color.White;
+            graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphOne.graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphTwo.graphDisplay.BackColor = System.Drawing.Color.Black;
+            graphThree.graphDisplay.BackColor = System.Drawing.Color.Black;
         }
 
         private void Dark_Click(object sender, EventArgs e)
@@ -2311,12 +2394,30 @@ namespace OBD2_Utility
 
                 if (dataType.Equals("RPM"))
                 {
-                    int A = int.Parse(dataValues[5], System.Globalization.NumberStyles.HexNumber);
-                    int B = int.Parse(dataValues[6], System.Globalization.NumberStyles.HexNumber);
+                    int A = int.Parse(dataValues[1], System.Globalization.NumberStyles.HexNumber);
+                    int B = int.Parse(dataValues[2], System.Globalization.NumberStyles.HexNumber);
 
                     value = ((256 * A) + B) / 4;
                 }
 
+                else if(dataType.Equals("SPEED"))
+                {
+                    int A = int.Parse(dataValues[3], System.Globalization.NumberStyles.HexNumber);
+                    value = A;
+                }
+
+                else if (dataType.Equals("TEMP"))
+                {
+                    int A = int.Parse(dataValues[5], System.Globalization.NumberStyles.HexNumber);
+                    value = A - 40;
+                }
+
+                else if (dataType.Equals("FUEL"))
+                {
+                    int A = int.Parse(dataValues[7], System.Globalization.NumberStyles.HexNumber);
+                    double val = 100.0 / 255.0;
+                    value = (int)(val * A);
+                }
                 // Add other PID equations
 
 
@@ -2327,6 +2428,20 @@ namespace OBD2_Utility
             }
 
             return results;
+        }
+
+        private void graphXAxisSelect_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(graphOneSelected)
+            {
+                graphOneDataType = graphXAxisSelect.SelectedIndex;
+            } else if (graphTwoSelected)
+            {
+                graphTwoDataType = graphXAxisSelect.SelectedIndex;
+            } else if (graphThreeSelected)
+            {
+                graphThreeDataType = graphXAxisSelect.SelectedIndex;
+            }
         }
     }
 }

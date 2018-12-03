@@ -63,7 +63,7 @@ namespace OBD2_Utility
             graphDisplay.Height = graphFlowPanelHeight - 20;
             graphDisplay.Width = graphFlowPanelWidth - 20;
             graphDisplay.SizeMode = PictureBoxSizeMode.StretchImage;
-            graphDisplay.BackColor = System.Drawing.Color.White;
+            graphDisplay.BackColor = System.Drawing.Color.Black;
             
 
             dataOptionsOne = new List<Object>();
