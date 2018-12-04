@@ -61,6 +61,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.messageBubble = new System.Windows.Forms.PictureBox();
             this.dashBoardTitle = new System.Windows.Forms.Label();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.fuelPic = new System.Windows.Forms.PictureBox();
@@ -75,17 +76,16 @@
             this.rpmGauge = new System.Windows.Forms.AGauge();
             this.speedGauge = new System.Windows.Forms.AGauge();
             this.dashBoard = new System.Windows.Forms.PictureBox();
-            this.messageBubble = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.messageBubble)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fuelPic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tempPic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dashBoard)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.messageBubble)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -411,6 +411,16 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "tabPage2";
             // 
+            // messageBubble
+            // 
+            this.messageBubble.Image = ((System.Drawing.Image)(resources.GetObject("messageBubble.Image")));
+            this.messageBubble.Location = new System.Drawing.Point(673, 513);
+            this.messageBubble.Margin = new System.Windows.Forms.Padding(4);
+            this.messageBubble.Name = "messageBubble";
+            this.messageBubble.Size = new System.Drawing.Size(342, 296);
+            this.messageBubble.TabIndex = 41;
+            this.messageBubble.TabStop = false;
+            // 
             // dashBoardTitle
             // 
             this.dashBoardTitle.AutoSize = true;
@@ -427,7 +437,7 @@
             // pictureBox4
             // 
             this.pictureBox4.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox4.Image")));
-            this.pictureBox4.Location = new System.Drawing.Point(943, 513);
+            this.pictureBox4.Location = new System.Drawing.Point(1011, 513);
             this.pictureBox4.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox4.Name = "pictureBox4";
             this.pictureBox4.Size = new System.Drawing.Size(267, 296);
@@ -437,10 +447,10 @@
             // fuelPic
             // 
             this.fuelPic.Image = ((System.Drawing.Image)(resources.GetObject("fuelPic.Image")));
-            this.fuelPic.Location = new System.Drawing.Point(1059, 396);
+            this.fuelPic.Location = new System.Drawing.Point(1059, 407);
             this.fuelPic.Margin = new System.Windows.Forms.Padding(4);
             this.fuelPic.Name = "fuelPic";
-            this.fuelPic.Size = new System.Drawing.Size(39, 41);
+            this.fuelPic.Size = new System.Drawing.Size(35, 30);
             this.fuelPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.fuelPic.TabIndex = 37;
             this.fuelPic.TabStop = false;
@@ -516,7 +526,7 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(616, 223);
+            this.pictureBox2.Location = new System.Drawing.Point(593, 223);
             this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(51, 38);
@@ -712,16 +722,6 @@
             this.dashBoard.TabStop = false;
             this.dashBoard.Click += new System.EventHandler(this.dashBoard_Click);
             // 
-            // messageBubble
-            // 
-            this.messageBubble.Image = ((System.Drawing.Image)(resources.GetObject("messageBubble.Image")));
-            this.messageBubble.Location = new System.Drawing.Point(593, 513);
-            this.messageBubble.Margin = new System.Windows.Forms.Padding(4);
-            this.messageBubble.Name = "messageBubble";
-            this.messageBubble.Size = new System.Drawing.Size(342, 296);
-            this.messageBubble.TabIndex = 41;
-            this.messageBubble.TabStop = false;
-            // 
             // UofUOBD2Utility
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -748,12 +748,12 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.messageBubble)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.fuelPic)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tempPic)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dashBoard)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.messageBubble)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

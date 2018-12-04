@@ -19,7 +19,6 @@ namespace OBD2_Utility
 {
     public partial class UofUOBD2Utility : Form
     {
-
         System.Drawing.Color penColor = System.Drawing.Color.Red;
         Brush brushColor = Brushes.Red;
         Brush secondBrushColor = Brushes.Red;
@@ -225,7 +224,6 @@ namespace OBD2_Utility
                 {
                     zoomLevel--;
                 }
-
             }
             else
             {
@@ -257,20 +255,17 @@ namespace OBD2_Utility
                 updateGraph();
                 graphDisplay.Invalidate();
             }
-            
         }
 
         private double MonthDifference(DateTime lValue, DateTime rValue)
         {
             return (lValue.Month - rValue.Month) + 12 * (lValue.Year - rValue.Year);
         }
-        //GRAPHING CODE -----------------------------------------------------------------------------------------------------------------------------------------------
 
+        //GRAPHING CODE -----------------------------------------------------------------------------------------------------------------------------------------------
         // 1. CLICKING THE GRAPH OPTION
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            
-
             if(!graphing)
             {
                 tabControl1.TabPages.Remove(tabPage2);
@@ -278,8 +273,6 @@ namespace OBD2_Utility
                 graphing = true;
                 dashboard = false;
             } 
-            
-            
 
             if (!first_time)
             {
@@ -1613,7 +1606,7 @@ namespace OBD2_Utility
             if(mostRecentRpmValue != targetRpmValue)
             {
 
-                if(mostRecentRpmValue > 6000 && rpmMessage == false)
+                if (mostRecentRpmValue > 6000 && rpmMessage == false && targetRpmValue > 6000) 
                 {
                     rpmMessage = true;
                     messageQ.Enqueue(new Tuple<string, string>("Wow! Your making\nyour engine work hard!", "RPM"));
@@ -1647,7 +1640,7 @@ namespace OBD2_Utility
 
             if (mostRecentSpeedValue != targetSpeedValue)
             {
-                if (mostRecentFuelValue > 80 && speedMessage == false)
+                if (mostRecentSpeedValue > 80 && speedMessage == false && targetSpeedValue > 80)
                 {
                     speedMessage = true;
                     messageQ.Enqueue(new Tuple<string, string>("Woah, Slow down!.", "SPEED"));
@@ -1670,16 +1663,20 @@ namespace OBD2_Utility
                 else if (mostRecentFuelValue > targetFuelValue)
                     mostRecentFuelValue--;
 
-                if (mostRecentFuelValue < 10 && fuelMessage == false)
+                if (mostRecentFuelValue < 10 && fuelMessage == false && targetFuelValue < 10)
                 {
                     fuelMessage = true;
                     messageQ.Enqueue(new Tuple<string, string>("Yo, your fuel is low.", "FUEL"));
-                    fuelPic.Show();
                 }
-                else if (mostRecentFuelValue > 90 && fuelMessage == false)
+                else if (mostRecentFuelValue > 90 && fuelMessage == false && targetFuelValue > 90)
                 {
                     fuelMessage = true;
                     messageQ.Enqueue(new Tuple<string, string>("Good job! Your tank is full.", "FUEL"));
+                }
+
+
+                if(mostRecentFuelValue < 10)
+                {
                     fuelPic.Show();
                 }
                 else
@@ -1693,18 +1690,34 @@ namespace OBD2_Utility
             if (mostRecentTempValue != targetTempValue)
             {
                 if (mostRecentTempValue < targetTempValue)
-                    mostRecentTempValue++;
+                {
+                    if (targetTempValue - mostRecentFuelValue > 10)
+                        mostRecentTempValue += 10;
+                    else
+                        mostRecentTempValue++;
+                }
 
                 else if (mostRecentTempValue > targetTempValue)
-                    mostRecentTempValue--;
+                {
+                    if (mostRecentFuelValue - targetTempValue > 10)
+                        mostRecentTempValue -= 10;
+                    else
+                        mostRecentTempValue--;
+                }
 
-                if (mostRecentTempValue > 250 && tempMessage == false)
+                if (mostRecentTempValue > 200 && tempMessage == false && targetTempValue > 200)
                 {
                     tempMessage = true;
                     messageQ.Enqueue(new Tuple<string, string>("You could cook an egg\n on that thing...", "TEMP"));
-                    tempPic.Show();
-                } else
+                }
+
+
+                if (mostRecentTempValue > 200)
                 {
+                    tempPic.Show();
+                }
+                else
+                { 
                     tempPic.Hide();
                 }
 
