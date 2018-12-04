@@ -427,12 +427,12 @@
             this.dashBoardTitle.BackColor = System.Drawing.Color.Black;
             this.dashBoardTitle.Font = new System.Drawing.Font("Impact", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dashBoardTitle.ForeColor = System.Drawing.Color.White;
-            this.dashBoardTitle.Location = new System.Drawing.Point(417, 85);
+            this.dashBoardTitle.Location = new System.Drawing.Point(339, 85);
             this.dashBoardTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.dashBoardTitle.Name = "dashBoardTitle";
-            this.dashBoardTitle.Size = new System.Drawing.Size(400, 98);
+            this.dashBoardTitle.Size = new System.Drawing.Size(592, 98);
             this.dashBoardTitle.TabIndex = 40;
-            this.dashBoardTitle.Text = "Dashboard";
+            this.dashBoardTitle.Text = "OBDII Dashboard";
             // 
             // pictureBox4
             // 
@@ -526,7 +526,7 @@
             // pictureBox2
             // 
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(593, 223);
+            this.pictureBox2.Location = new System.Drawing.Point(599, 223);
             this.pictureBox2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(51, 38);

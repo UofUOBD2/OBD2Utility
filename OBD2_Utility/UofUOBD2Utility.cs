@@ -1566,13 +1566,12 @@ namespace OBD2_Utility
         private void drawMessages(PaintEventArgs e)
         {
             Graphics g = messageBubble.CreateGraphics();
-            Pen pen = new Pen(System.Drawing.Color.Red);
-            using (Font myFont = new Font("Arial", 13))
+            using (Font myFont = new Font("Arial", 14))
             {
                 if (messageQ.Count > 0)
                 {
                     Tuple<String,String> message = messageQ.Peek();
-                    g.DrawString(message.Item1, myFont, Brushes.Red, 35, 100);
+                    g.DrawString(message.Item1, myFont, Brushes.Black, 35, 100);
 
                     if(messageCount == 250)
                     {
