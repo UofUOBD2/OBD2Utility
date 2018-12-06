@@ -64,23 +64,10 @@ namespace OBD2_Utility
 
             int index = 1;
 
-            List<String> cells_to_update = new List<String>();
-
             foreach (List<Object> list in values)
             {
-
                 if (index != 1)
                 {
-
-                    if (!(list.Count == 0))
-                    {
-                        if (!(list.Last<Object>().Equals("X")))
-                        {
-                            String cell = "H" + index;
-                            cells_to_update.Add(cell);
-                        }
-                    }
-
                     String data = (String)list[1];
                     String[] splitData = data.Split('-');
 
@@ -88,9 +75,7 @@ namespace OBD2_Utility
                     {
                         results.Add(list);
                     }
-
                     index++;
-
                 }
                 else
                 {
@@ -98,7 +83,6 @@ namespace OBD2_Utility
                 }
             }
 
-            massUpdateData("X", cells_to_update, spreadSheet, service);
             return results;
 
         }

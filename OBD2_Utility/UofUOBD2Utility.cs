@@ -1751,12 +1751,12 @@ namespace OBD2_Utility
 
 
             // SPEED
-            A = int.Parse(dataList[3], System.Globalization.NumberStyles.HexNumber);
-            targetSpeedValue = (A);
+            int A2 = int.Parse(dataList[3], System.Globalization.NumberStyles.HexNumber);
+            targetSpeedValue = (int)(A2 * 0.621271);
 
             // TEMP
             A = int.Parse(dataList[5], System.Globalization.NumberStyles.HexNumber);
-            targetTempValue = (A - 40);
+            targetTempValue = (int)(((A - 40) * (9.0/5.0)) + 32);
 
             // FUEL
             A = int.Parse(dataList[7], System.Globalization.NumberStyles.HexNumber);
@@ -1828,11 +1828,11 @@ namespace OBD2_Utility
                                         currentDayIndex = 0;
                                     }
 
-                                    if ((currentMonthIndex % 12) == 0)
-                                    {
-                                        currentYearIndex++;
-                                        currentMonthIndex = 0;
-                                    }
+                                    //if ((currentMonthIndex % 12) == 0)
+                                    //{
+                                    //    currentYearIndex++;
+                                    //    currentMonthIndex = 0;
+                                    //}
                                 }
                                 else if (graphData.timeInterval.Equals("minutes"))
                                 {
@@ -1850,11 +1850,11 @@ namespace OBD2_Utility
                                         currentDayIndex = 0;
                                     }
 
-                                    if ((currentMonthIndex % 12) == 0)
-                                    {
-                                        currentYearIndex++;
-                                        currentMonthIndex = 0;
-                                    }
+                                    //if ((currentMonthIndex % 12) == 0)
+                                    //{
+                                    //    currentYearIndex++;
+                                   //     currentMonthIndex = 0;
+                                   // }
                                 }
                             }
                             else if (graphData.timeInterval.Equals("hours") && (i % 24) == 0)
@@ -1869,22 +1869,22 @@ namespace OBD2_Utility
                                     currentDayIndex = 0;
                                 }
 
-                                if ((currentMonthIndex % 12) == 0)
-                                {
-                                    currentYearIndex++;
-                                    currentMonthIndex = 0;
-                                }
+                                //if ((currentMonthIndex % 12) == 0)
+                              //  {
+                               //     currentYearIndex++;
+                              //      currentMonthIndex = 0;
+                              //  }
 
                             } else if(graphData.timeInterval.Equals("days") && (i % 30) == 0)
                             {
                                 currentMonthIndex++;
                                 currGraphIndex = 0;
 
-                                if ((currentMonthIndex % 12) == 0)
-                                {
-                                    currentYearIndex++;
-                                    currentMonthIndex = 0;
-                                }
+                               // if ((currentMonthIndex % 12) == 0)
+                              //  {
+                              //      currentYearIndex++;
+                              //      currentMonthIndex = 0;
+                              //  }
 
                             } else if(graphData.timeInterval.Equals("months") && (i % 12) == 0)
                             {
@@ -2374,20 +2374,20 @@ namespace OBD2_Utility
             graphThree.graphDisplay.BackColor = System.Drawing.Color.Black;
         }
 
-        private int decodeData(String[] dataList, String dataType)
-        {
-            int value = 0;
+       // private int decodeData(String[] dataList, String dataType)
+      //  {
+         //   int value = 0;
 
-            if (dataType.Equals("RPM"))
-            {
-                int A = int.Parse(dataList[5], System.Globalization.NumberStyles.HexNumber);
-                int B = int.Parse(dataList[6], System.Globalization.NumberStyles.HexNumber);
+        //    if (dataType.Equals("RPM"))
+     //       {
+      //          int A = int.Parse(dataList[5], System.Globalization.NumberStyles.HexNumber);
+     //           int B = int.Parse(dataList[6], System.Globalization.NumberStyles.HexNumber);
 
-                value = ((256 * A) + B) / 4;
-            }
+      //          value = ((256 * A) + B) / 4;
+    //        }
 
-            return value;
-        }
+     //       return value;
+    //    }
 
         // 7. TAKE THE GOOGLE DATA AND EXTRACT THE INFORMATION NECESSARY
         private List<dataPoint> decodeData(List<List<Object>> dataList, String dataType)
@@ -2415,13 +2415,14 @@ namespace OBD2_Utility
                 else if(dataType.Equals("SPEED"))
                 {
                     int A = int.Parse(dataValues[3], System.Globalization.NumberStyles.HexNumber);
-                    value = A;
+
+                    value = (int)(A*.621371);
                 }
 
                 else if (dataType.Equals("TEMP"))
                 {
                     int A = int.Parse(dataValues[5], System.Globalization.NumberStyles.HexNumber);
-                    value = A - 40;
+                    value = (int)(((A - 40) * (9.0 / 5.0)) + 32);
                 }
 
                 else if (dataType.Equals("FUEL"))
