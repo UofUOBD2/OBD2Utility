@@ -1324,6 +1324,11 @@ namespace OBD2_Utility
                 }
             }
 
+            if(largestYValue == 0)
+            {
+                largestYValue = 1;
+            }
+
             // Add some head room
             double amountToAdd = largestYValue * .25;
             largestYValue += Convert.ToInt32(Math.Round(amountToAdd));
