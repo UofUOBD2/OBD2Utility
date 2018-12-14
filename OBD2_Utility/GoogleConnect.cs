@@ -87,7 +87,7 @@ namespace OBD2_Utility
 
         }
 
-        public static String[] retreiveMostRecentData(String rng, String spreadSheet, SheetsService service)
+        public static List<String[]> retreiveMostRecentData(String rng, String spreadSheet, SheetsService service)
         {
             String range = "Sheet1!" + rng;
             SpreadsheetsResource.ValuesResource.GetRequest getRequest = service.Spreadsheets.Values.Get(spreadSheet, range);
@@ -98,6 +98,9 @@ namespace OBD2_Utility
 
             String[] splitData;
 
+            List<String[]> returnData = new List<string[]>();
+            int count = 0;
+
             // DATA STRUCTRE
             // 1st bytes: 7E8
             // 1st 2 bytes: RPM data
@@ -107,21 +110,27 @@ namespace OBD2_Utility
 
             foreach (List<Object> list in values.Reverse<IList<Object>>())
             {
-
+                if(count < 10)
+                {
                     String data = (String)list[1];
                     splitData = data.Split('-');
 
                     if (validResult(splitData))
                     {
-                        return splitData;
+                        returnData.Add(splitData);
                     }
-
-                   
+                    count++;
+                } 
+                else
+                {
+                    return returnData;
+                }
+                    
                 
             }
 
             splitData = null;
-            return splitData;
+            return returnData;
                 
                 
 

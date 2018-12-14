@@ -34,6 +34,8 @@ namespace OBD2_Utility
         bool tempMessage;
         bool fuelMessage;
 
+        bool dashBoardTurn = true;
+
         Queue<Tuple<String, String>> messageQ;
 
         bool graphing;
@@ -70,12 +72,12 @@ namespace OBD2_Utility
         int mostRecentFuelValue = 0;
         int mostRecentTempValue = 0;
 
-
-
         int targetRpmValue = 0;
         int targetSpeedValue = 0;
         int targetFuelValue = 0;
         int targetTempValue = 0;
+
+        List<String[]> mostRecentData;
 
         bool updatingDash;
 
@@ -111,6 +113,8 @@ namespace OBD2_Utility
             graphOne = new GraphConfig(graphFlowPanel.Height, graphFlowPanel.Width);
             graphTwo = new GraphConfig(graphFlowPanel.Height, graphFlowPanel.Width);
             graphThree = new GraphConfig(graphFlowPanel.Height, graphFlowPanel.Width);
+
+            pictureBox2.Hide();
 
             graphDisplay = new PictureBox();
             graphFlowPanel.Controls.Add(graphDisplay);
@@ -158,6 +162,8 @@ namespace OBD2_Utility
             graphGraphButton.Enabled = false;
 
             messageCount = 0;
+
+            mostRecentData = new List<string[]>();
 
         }
 
@@ -245,7 +251,15 @@ namespace OBD2_Utility
 
         private void Time_Tick(object sender, EventArgs e)
         {
-            if(dashboard)
+            if(dashBoardTurn)
+            {
+                dashBoardTurn = false;
+            } else
+            {
+                dashBoardTurn = true;
+            }
+
+            if(dashboard && dashBoardTurn)
             {
                 updateDashboard();
                 dashBoard.Invalidate();
@@ -283,6 +297,10 @@ namespace OBD2_Utility
                 else if (graphTwoSelected)
                 {
                     switchGraphs(2);
+                }
+                else if (graphOneSelected)
+                {
+                    switchGraphs(1);
                 }
             }
             else
@@ -385,6 +403,10 @@ namespace OBD2_Utility
                 {
                     switchGraphs(1);
                 }
+                else if (graphTwoSelected)
+                {
+                    switchGraphs(2);
+                }
             } else
             {
                 first_time = false;
@@ -481,6 +503,10 @@ namespace OBD2_Utility
                 else if (graphTwoSelected)
                 {
                     switchGraphs(2);
+                }
+                else if (graphThreeSelected)
+                {
+                    switchGraphs(3);
                 }
             }
             else
@@ -1565,15 +1591,73 @@ namespace OBD2_Utility
 
         private void drawMessages(PaintEventArgs e)
         {
+            e.Graphics.DrawString("Incoming Data", new Font("Arial", 14), Brushes.White, 70, 420);
+            e.Graphics.DrawString("-------------------------", new Font("Arial", 20), Brushes.White, 70, 430);
+
+            if (mostRecentData.Count != 0)
+            {
+                
+                for (int i = 0; i < mostRecentData.Count; i++)
+                {
+                    String data = "";
+                    String numberData = "";
+
+                    for (int j = 0; j < mostRecentData[i].Count(); j++)
+                    {
+
+                        data += mostRecentData[i][j];
+                        if (j != mostRecentData[i].Count() - 1)
+                            data += "-";
+                    }
+
+
+                    int A = int.Parse(mostRecentData[i][1], System.Globalization.NumberStyles.HexNumber);
+                    int B = int.Parse(mostRecentData[i][2], System.Globalization.NumberStyles.HexNumber);
+                    int rpmValue = ((256 * A) + B) / 4;
+
+                    int A2 = int.Parse(mostRecentData[i][3], System.Globalization.NumberStyles.HexNumber);
+                    int speedValue = (int)(A2 * 0.621271);
+
+                    // TEMP
+                    A = int.Parse(mostRecentData[i][5], System.Globalization.NumberStyles.HexNumber);
+                    int tempValue = (int)(((A - 40) * (9.0 / 5.0)) + 32);
+
+                    // FUEL
+                    A = int.Parse(mostRecentData[i][7], System.Globalization.NumberStyles.HexNumber);
+                    double val = 100.0 / 255.0;
+                    int fuelValue = (int)(val * A);
+
+                    numberData = "\t\tRPM: " + rpmValue + "\tSPEED: " + speedValue + "\tTEMP: " + tempValue + "\tFUEL: " + fuelValue;
+
+                    data += numberData;
+
+                    if (i == 0)
+                    {
+                        e.Graphics.DrawString(data, new Font("Arial", 14), Brushes.Green, 70, 450 + (i * 20));
+                    }
+                    else if (i >= 1 && i <= 4)
+                    {
+                        e.Graphics.DrawString(data, new Font("Arial", 14), Brushes.Orange, 70, 450 + (i * 20));
+                    }
+                    else
+                    {
+                        e.Graphics.DrawString(data, new Font("Arial", 14), Brushes.Red, 70, 450 + (i * 20));
+                    }
+                    
+                }
+
+            }
+
             Graphics g = messageBubble.CreateGraphics();
             using (Font myFont = new Font("Arial", 14))
             {
                 if (messageQ.Count > 0)
                 {
+                    messageBubble.Show();
                     Tuple<String,String> message = messageQ.Peek();
                     g.DrawString(message.Item1, myFont, Brushes.Black, 35, 100);
 
-                    if(messageCount == 250)
+                    if(messageCount == 150)
                     {
 
                         if (message.Item2.Equals("RPM"))
@@ -1594,6 +1678,10 @@ namespace OBD2_Utility
                     {
                         messageCount++;
                     }
+                }
+                else
+                {
+                    messageBubble.Hide();
                 }
             }
 
@@ -1670,7 +1758,7 @@ namespace OBD2_Utility
                 else if (mostRecentFuelValue > 90 && fuelMessage == false && targetFuelValue > 90)
                 {
                     fuelMessage = true;
-                    messageQ.Enqueue(new Tuple<string, string>("Good job! Your tank is full.", "FUEL"));
+                    messageQ.Enqueue(new Tuple<string, string>("Good job! Your tank \nis full.", "FUEL"));
                 }
 
 
@@ -1690,7 +1778,7 @@ namespace OBD2_Utility
             {
                 if (mostRecentTempValue < targetTempValue)
                 {
-                    if (targetTempValue - mostRecentFuelValue > 10)
+                    if (targetTempValue - mostRecentTempValue > 10)
                         mostRecentTempValue += 10;
                     else
                         mostRecentTempValue++;
@@ -1704,14 +1792,14 @@ namespace OBD2_Utility
                         mostRecentTempValue--;
                 }
 
-                if (mostRecentTempValue > 200 && tempMessage == false && targetTempValue > 200)
+                if (mostRecentTempValue > 250 && tempMessage == false && targetTempValue > 250)
                 {
                     tempMessage = true;
                     messageQ.Enqueue(new Tuple<string, string>("You could cook an egg\n on that thing...", "TEMP"));
                 }
 
 
-                if (mostRecentTempValue > 200)
+                if (mostRecentTempValue > 250)
                 {
                     tempPic.Show();
                 }
@@ -1737,7 +1825,9 @@ namespace OBD2_Utility
             {
                 String spreadsheetId = "1buoculiAlX_jz9m9Tt8Y9YYF6LPOPOLEGSVmbB5bSHU";
                 SheetsService service = GoogleConnect.connectToGoogle();
-                setMostRecentData(GoogleConnect.retreiveMostRecentData("A:H", spreadsheetId, service));
+
+                mostRecentData = GoogleConnect.retreiveMostRecentData("A:H", spreadsheetId, service);
+                setMostRecentData(mostRecentData[0]);
             }
 
         }
@@ -1763,6 +1853,8 @@ namespace OBD2_Utility
             double val = 100.0 / 255.0;
             targetFuelValue = (int)(val * A);
         }
+
+
 
         // 9. DRAW THE GRAPH BEING STORED IN GLOBAL GRAPH OBJECT
         private void drawGraphData(PaintEventArgs e)
