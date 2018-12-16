@@ -2,7 +2,7 @@
 // loovee@seeed.cc
 
 // Code obtained from CAN Bus Shield Library https://github.com/Seeed-Studio/CAN_BUS_Shield
-// Modified for the purpose of our simulator
+// Modified for the purpose of our simulator (OBD2 Team)
 
 #include <mcp_can.h>
 #include <SPI.h>
