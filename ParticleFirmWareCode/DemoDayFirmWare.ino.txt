@@ -1,3 +1,8 @@
+// Main Firmware for our OBD2 Device
+// Used to obtain specific PID requests from a vehicle
+// Created by Danny Campbell, Kale Thompson, Josh Vidmar
+
+
 #include<vector>
 #include<string>
 
