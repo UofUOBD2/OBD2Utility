@@ -3,7 +3,7 @@
 // loovee, 2014-6-13
 
 // Code obtained from CAN Bus Shield Library https://github.com/Seeed-Studio/CAN_BUS_Shield
-// Modified for the purpose of our simulator
+// Modified for the purpose of our simulator (OBD2 Team)
 
 #include <SPI.h>
 #include "mcp_can.h"
